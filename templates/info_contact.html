@@ -1,0 +1,17 @@
+{% extends "_info.html" %}
+{% block title %}Contact Shel Property{% endblock %}
+{% block description %}Get in touch with the Shel Property team about listing your properties, a listing you've seen, or anything else.{% endblock %}
+{% block crumb %}Contact us{% endblock %}
+{% block body %}
+<h1>Contact us</h1>
+<p>For a question about a home, use the enquiry form on its listing: it goes straight to the agent. For anything else, write to us here.</p>
+<form class="enquiry" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate>
+  <label class="field">Your name<input name="name" required autocomplete="name"></label>
+  <label class="field">Email<input name="email" type="email" required autocomplete="email"></label>
+  <label class="field full">About<select name="topic"><option>I'm an agent or developer</option><option>A listing I've seen</option><option>Something else</option></select></label>
+  <label class="field full">Message<textarea name="msg" required></textarea></label>
+  <div class="full"><button class="btn btn-primary" type="submit">Send</button></div>
+  <p class="form-note full" role="status" tabindex="-1" hidden></p>
+</form>
+<p>Email: [hello@shelproperty.domain] · Registered office: [address, UK]</p>
+{% endblock %}

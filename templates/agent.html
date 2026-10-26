@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ a.name }}, estate agent in {{ a.office }} | Shel Property{% endblock %}
+{% block description %}{{ a.about }} Reg. no. {{ a.reg }}, licence no. {{ a.licence }}.{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><a href="{{ root }}agents/index.html">Find an agent</a><span aria-hidden="true">/</span><span aria-current="page">{{ a.name }}</span></nav>
+  <div class="agent-head">
+    <span class="monogram" aria-hidden="true">{{ a.name.split(' ')[-1] }}</span>
+    <div>
+      <h1 style="font-size:clamp(34px,4.5vw,46px)">{{ a.name }}</h1>
+      <p style="color:var(--drift)">{{ a.office }} office · since {{ a.since }} · sample agency</p>
+    </div>
+  </div>
+  <div class="keyinfo" style="padding-bottom:28px">
+    <section aria-label="About"><h3>About</h3><p style="font-size:15px">{{ a.about }}</p></section>
+    <section aria-label="Registration"><h3>Registration and licence</h3>
+      <dl><dt>Reg. no.</dt><dd>{{ a.reg }}</dd><dt>Licence no.</dt><dd>{{ a.licence }}</dd><dt>Phone</dt><dd>{{ a.phone }}</dd></dl>
+    </section>
+  </div>
+</div>
+<section class="section band-sand" aria-labelledby="theirs">
+  <div class="wrap">
+    <div class="section-head"><h2 id="theirs">Listings from {{ a.name }}</h2><p>{{ listings|length }} live</p></div>
+    <div class="grid">{% for l in listings %}{% include "_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

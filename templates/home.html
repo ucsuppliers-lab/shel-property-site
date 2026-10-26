@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Shel Property: homes for sale in Paphos, checked, in your language{% endblock %}
+{% block description %}Homes for sale and to rent in Paphos from licensed agents. Licence checks with dates, energy class, VAT and title deed status on every listing, and a buyer desk in English, German and Hebrew.{% endblock %}
+{% block main %}
+<section class="hero{% if HERO %} hero-photo{% endif %}" aria-labelledby="hero-title">
+  {% if HERO %}{{ photo_img("hero", root, "The coast north of Paphos from the air: a sandy bay and clear water", eager=True, sizes="100vw") }}{% endif %}
+  <div class="wrap">
+    <p class="eyebrow">Paphos · Republic of Cyprus</p>
+    <h1 id="hero-title">Homes in Paphos, checked, in your language</h1>
+    <p class="lead">We check every advertiser's licence and show the date we did it. Every home lists its energy class, VAT and title deed status, and our buyer desk answers in English, German and Hebrew.</p>
+    <form class="search-box" id="hero-search" role="search" aria-label="Search property" data-pages='{{ PAGES|tojson }}'>
+      <div class="tabs" role="group" aria-label="What are you looking for?">
+        <button type="button" class="tab" data-purpose="for-sale" aria-pressed="true">Sale</button>
+        <button type="button" class="tab" data-purpose="to-rent" aria-pressed="false">Rent</button>
+      </div>
+      <div class="search-row search-row-6">
+        <label class="field" data-sale-only>Category
+          <select name="cat"><option value="for-sale">All for sale</option><option value="new-build">New build</option><option value="resale">Resale</option><option value="developments">Development</option><option value="land">Land</option></select>
+        </label>
+        <label class="field">Location
+          <select name="area"><option value="">All of the Paphos district</option>{% for k, a in D.AREAS.items() %}<option value="{{ k }}">{{ a.name }}</option>{% endfor %}</select>
+        </label>
+        <label class="field">Type
+          <select name="type"><option value="">Any type</option><option>Apartment</option><option>Villa</option><option>Townhouse</option><option>House</option><option>Bungalow</option><option>Plot</option></select>
+        </label>
+        <label class="field">Max price
+          <select name="max"><option value="">No max</option><option value="250000">€250,000</option><option value="400000">€400,000</option><option value="600000">€600,000</option><option value="1000000">€1,000,000</option><option value="1500">€1,500 a month</option><option value="2500">€2,500 a month</option></select>
+        </label>
+        <label class="field">Bedrooms
+          <select name="beds"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select>
+        </label>
+        <button class="btn btn-primary" type="submit">{{ icons.search }} Search</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="abroad">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="abroad">Buying from abroad?</h2><p>The rules and costs differ depending on where you're buying from. Start with your own guide.</p></div></div>
+    <div class="markets">
+      <a class="market" href="{{ root }}buying-from-abroad/from-the-uk.html">
+        <span class="market-flag" aria-hidden="true">UK</span>
+        <h3>Buying from the UK</h3>
+        <p>British buyers topped the Interior Ministry's figures for Paphos in the year to September 2025. Since Brexit you'll need a permit to buy, and we explain how it works.</p>
+        <span class="market-go">Read the UK guide {{ icons.chev }}</span>
+      </a>
+      <a class="market" href="{{ root }}de/ratgeber-kauf-aus-deutschland.html" hreflang="de" lang="de">
+        <span class="market-flag" aria-hidden="true">DE</span>
+        <h3>Kauf aus Deutschland</h3>
+        <p>Als EU-Bürger kaufen Sie ohne Genehmigung. Wir erklären, was anders ist: kein Notar, Kaufnebenkosten, und wer den Makler bezahlt.</p>
+        <span class="market-go">Zum Ratgeber {{ icons.chev }}</span>
+      </a>
+      <a class="market" href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he" lang="he" dir="rtl">
+        <span class="market-flag" aria-hidden="true">IL</span>
+        <h3>קנייה מישראל</h3>
+        <p>אזרחי ישראל צריכים היתר כדי לקנות בקפריסין. במדריך: ההיתר, המיסוי על הכנסה משכירות, ואיך לחשב תשואה נטו בלי הבטחות.</p>
+        <span class="market-go">למדריך {{ icons.chev }}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section band-sky" aria-labelledby="desk">
+  <div class="wrap desk-band">
+    <div>
+      <p class="eyebrow">Buyer desk</p>
+      <h2 id="desk">Someone answers, and we check the agent does too</h2>
+      <p class="band-lead">Buying from another country means waiting on replies across time zones. So we answer first, then make sure the agent follows up.</p>
+      <a class="btn btn-ocean" href="{{ root }}buyer-desk.html">Ask the buyer desk</a>
+    </div>
+    <ol class="standards">
+      <li><strong>15 minutes</strong><span>for our first reply, 09:00 to 19:00 Cyprus time, every day</span></li>
+      <li><strong>48 hours</strong><span>after you enquire, we ask whether the agent has answered, and chase them if not</span></li>
+      <li><strong>One form</strong><span>your budget, timing and how you'll pay go to the agent with your enquiry, so you don't repeat yourself</span></li>
+      <li><strong>Viewing trips</strong><span>you pick the homes, we send your dates to each agent, and you get one plan for the trip</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="latest">
+  <div class="wrap">
+    <div class="section-head">
+      <div><h2 id="latest">Latest in Paphos</h2><p>Sample listings</p></div>
+      <a href="{{ root }}for-sale/index.html">See all property for sale</a>
+    </div>
+    <div class="grid">
+      {% for l in latest %}{% include "_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section band-sand" aria-labelledby="every">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="every">On every home for sale</h2><p>A sale listing can't go live on Shel until the first four are filled in.</p></div><a href="{{ root }}trust.html">How we check</a></div>
+    <ul class="facts-grid">
+      <li><strong>The agent's licence</strong><span>Registration and licence numbers, plus the date we checked them and where.</span></li>
+      <li><strong>Energy class</strong><span>Cyprus law requires it in every sale or rental advert for a building with a certificate.</span></li>
+      <li><strong>VAT treatment</strong><span>Resale with no VAT, or a new build with VAT on top, and when the 5% rate might apply.</span></li>
+      <li><strong>Title deed status</strong><span>Issued, after completion or pending, as the agent declares it. Your lawyer confirms it.</span></li>
+      <li><strong>What it costs to buy</strong><span>Transfer fees, VAT and legal fees worked out on the price, with our sources.</span></li>
+      <li><strong>Listed and last confirmed</strong><span>Two dates, so you can see the home is still on the market.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="areas">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="areas">Search by area</h2><p>From the harbour in Kato Paphos to Polis on the north coast.</p></div></div>
+    <div class="tiles">
+      {% for k, a in D.AREAS.items() if area_counts[k] %}
+      {% set first = (PAGES.get('for-sale/' ~ k) or PAGES.get('resale/' ~ k) or PAGES.get('new-build/' ~ k) or PAGES.get('land/' ~ k) or PAGES.get('to-rent/' ~ k)) %}
+      <a class="tile" href="{{ root }}{{ first }}"><strong>{{ a.name }}</strong><span>{{ area_counts[k] }} listing{{ 's' if area_counts[k] != 1 }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section band-sand" aria-labelledby="guides">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="guides">Before you buy</h2><p>The questions buyers from abroad ask us first.</p></div><a href="{{ root }}guides/index.html">All guides</a></div>
+    <div class="guides">
+      <a class="guide-card" href="{{ root }}buying-from-abroad/permit.html"><h3>Do I need a permit?</h3><p>EU citizens don't. UK, Israeli and other non-EU buyers apply to the Council of Ministers, and the rules may tighten.</p></a>
+      <a class="guide-card" href="{{ root }}buying-from-abroad/costs.html"><h3>What will it cost to buy?</h3><p>Put in a price and get transfer fees, VAT and legal fees, with the figures we're still confirming marked.</p></a>
+      {% for g in D.GUIDES[:2] %}<a class="guide-card" href="{{ root }}guides/{{ g.slug }}.html"><h3>{{ g.title }}</h3><p>{{ g.lead }}</p></a>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section band-sky" aria-labelledby="alerts">
+  <div class="wrap alerts">
+    <div><h2 id="alerts" style="font-size: clamp(28px,3.5vw,34px)">New Paphos homes by email</h2><p style="color: var(--drift); margin-top: 6px">Pick an area and a budget. We only email you if you tick the box, and you can stop any time.</p></div>
+    <form data-draft="Thanks. This is a draft site, so no email was saved or sent." novalidate>
+      <label class="visually-hidden" for="alert-email">Your email</label>
+      <input id="alert-email" type="email" required placeholder="Your email" autocomplete="email">
+      <button class="btn btn-primary" type="submit">Set up alerts</button>
+      <label class="consent" style="flex-basis:100%"><input type="checkbox" required> Email me new homes that match. <a href="{{ root }}privacy.html">Privacy notice</a></label>
+      <p class="form-note" role="status" tabindex="-1" hidden></p>
+    </form>
+  </div>
+</section>
+
+<section class="agents-band" aria-labelledby="agents-band">
+  <div class="wrap">
+    <div><h2 id="agents-band">Licensed agent or developer in Paphos?</h2>
+    <p>The first 30 offices to connect their listing feed pay nothing for three months. Enquiries reach you with the buyer's budget, timing and how they'll pay, and you get a report of every one each month.</p></div>
+    <a class="btn btn-white" href="{{ root }}for-agents.html">See the founding offer</a>
+  </div>
+</section>
+{% endblock %}

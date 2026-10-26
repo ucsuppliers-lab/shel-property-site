@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}For agents and developers: the founding offer | Shel Property{% endblock %}
+{% block description %}Buyers from the UK, Germany and Israel, enquiries that arrive with budget and timing, a reply check on every one, and a monthly report. Free for three months for the first 30 Paphos offices.{% endblock %}
+{% block main %}
+<section class="hero" aria-labelledby="fa-title">
+  <div class="wrap" style="padding-block:52px 44px">
+    <p class="eyebrow">For licensed agents and developers</p>
+    <h1 id="fa-title">Buyers from three countries, ready to talk</h1>
+    <p class="lead">Shel Property brings buyers from the UK, Germany and Israel to your Paphos listings. Each enquiry reaches you with the buyer's budget, timing and how they'll pay. The first 30 offices to connect their listing feed pay nothing for three months.</p>
+  </div>
+</section>
+<section class="section" aria-labelledby="get">
+  <div class="wrap stack-lg">
+    <div class="section-head"><h2 id="get">What you get</h2></div>
+    <div class="guides">
+      <div class="guide-card"><h3>Enquiries with a brief</h3><p>Name and contact, plus budget, when they want to buy, how they'll pay, whether they're EU or non-EU, and how they want to view. You can tell a serious buyer at a glance.</p></div>
+      <div class="guide-card"><h3>Three languages</h3><p>Your listings shown in English, German and Hebrew, with a buyer desk that answers buyers in their own language.</p></div>
+      <div class="guide-card"><h3>A report every month</h3><p>Every enquiry with the buyer's country and budget, whether you replied and how fast, viewings booked, and views and saves on each listing. <a href="{{ root }}agents/dashboard.html">See a sample</a>.</p></div>
+    </div>
+    <div class="section-head" style="margin-top:12px"><h2>What we ask of you</h2></div>
+    <ol class="standards standards-light">
+      <li><strong>Your licence</strong><span>We check your registration and licence with the Registration Council before you go live, and again each January.</span></li>
+      <li><strong>Your listing feed</strong><span>From the system you already use, such as Qobrix or Estatebud, so prices and sales update on their own. A failed import never takes your listings down.</span></li>
+      <li><strong>The required facts</strong><span>Energy class, VAT treatment and title deed status on every sale listing, before it goes live.</span></li>
+      <li><strong>Permission to publish</strong><span>Written agreement that we can show your photos, text and plans, and translate them.</span></li>
+      <li><strong>Replies</strong><span>We ask buyers after 48 hours whether you answered. Your reply times are private to you unless you choose to show a "fast reply" badge.</span></li>
+    </ol>
+    <div class="section-head" style="margin-top:12px"><h2>Prices</h2><p>We're setting them with our first agents.</p></div>
+    <div class="price-table">
+      <div class="plan"><h3>Founding office</h3><p class="amount">Free for 3 months</p><ul><li>For the first 30 Paphos offices that connect a feed</li><li>All listings, all types</li><li>Monthly enquiry report</li></ul></div>
+      <div class="plan"><h3>Office</h3><p class="amount">€[price] a month</p><ul><li>One flat monthly fee, by number of listings</li><li>No fee per enquiry or per sale</li><li>Cancel with a month's notice</li></ul></div>
+      <div class="plan"><h3>Developer</h3><p class="amount">€[price] a month</p><ul><li>A project page in three languages</li><li>Plans, stages and finish dates</li><li>Company checked before going live</li></ul></div>
+      <div class="plan"><h3>Sponsored places</h3><p class="amount">€[price] a month</p><ul><li>Top of an area's results</li><li>Always labelled "Sponsored"</li><li>Doesn't change the normal order</li></ul></div>
+    </div>
+    <p class="callout">We publish adverts. We don't negotiate, we don't recommend agents for payment, and we take no share of any sale. How listings are ranked is written into our terms, with 15 days' notice of any change. Want to be a founding office? <a href="{{ root }}contact.html">Get in touch</a> and tell us which system holds your listings.</p>
+  </div>
+</section>
+{% endblock %}

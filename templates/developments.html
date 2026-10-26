@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}New developments in Paphos: projects from checked developers | Shel Property{% endblock %}
+{% block description %}Building projects in the Paphos district: the developer, permits as declared, finish dates, prices from, and every home still for sale in each project.{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Development</span></nav>
+  <div class="results-head"><div><h1>Developments in Paphos</h1><p>{{ D.DEVELOPMENTS|length }} projects from checked developers. Sample projects.</p></div></div>
+  <aside class="before" aria-label="Before you buy"><strong>Before you buy</strong><p>{{ D.BEFORE.developments }}</p><p class="before-links">{% for href, text in D.BEFORE_LINKS.developments %}<a href="{{ root }}{{ href }}">{{ text }}</a>{% endfor %}</p></aside>
+  <div class="projects">
+    {% for d in D.DEVELOPMENTS %}
+    <a class="project" href="{{ root }}developments/{{ d.slug }}.html">
+      <div class="photo">{% if d.photo %}{{ photo_img(d.photo, root, d.name) }}<span class="cap cap-sample">Sample photo</span>{% else %}{{ scene(d.slug, 'sand') }}<span class="cap">Plans and drawings</span>{% endif %}</div>
+      <div class="project-body">
+        <p class="eyebrow">{{ D.AREAS[d.area].name }} · {{ d.status }}</p>
+        <h2 class="h3">{{ d.name }}</h2>
+        <p>{{ d.blurb }}</p>
+        <dl class="project-facts">
+          <div><dt>Homes</dt><dd>{{ d.homes }} homes: {{ d.kinds }}</dd></div>
+          <div><dt>Prices from</dt><dd>{{ money(d.from_price) }} + VAT</dd></div>
+          <div><dt>Finished by</dt><dd>{{ d.finish }}</dd></div>
+          <div><dt>For sale on Shel</dt><dd>{{ d.refs|length }}</dd></div>
+        </dl>
+        <span class="market-go">See the project {{ icons.chev }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <p class="map-note" style="padding:14px 0 56px">Developers pay for project pages. That doesn't change the order of normal search results. <a href="{{ root }}trust.html#ranking">How listings are ranked</a></p>
+</div>
+{% endblock %}

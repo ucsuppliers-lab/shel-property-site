@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ g.title }} | Buying in Cyprus | Shel Property{% endblock %}
+{% block description %}{{ g.lead }}{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><a href="{{ root }}guides/index.html">Buying in Cyprus</a><span aria-hidden="true">/</span><span aria-current="page">{{ g.title }}</span></nav>
+  <article class="prose">
+    <p class="eyebrow" style="margin-top:12px">Buying in Cyprus</p>
+    <h1>{{ g.title }}</h1>
+    <p class="callout callout-warn">Draft guide. A Cyprus lawyer checks every figure here before the site goes live. General information only, not legal or tax advice.</p>
+    {% block body %}{% endblock %}
+    <p style="font-size:14px;color:var(--drift)">By the Shel Property team. Last checked {{ today.strftime('%-d %B %Y') }}.</p>
+  </article>
+</div>
+{% endblock %}

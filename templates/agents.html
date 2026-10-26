@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Find a licensed estate agent in Paphos | Shel Property{% endblock %}
+{% block description %}Registered, licensed estate agents and developers in the Paphos district, with their registration and licence numbers and the homes they're selling and letting.{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Find an agent</span></nav>
+  <div class="results-head"><div><h1>Licensed agents in Paphos</h1><p>Every agent here is registered and licensed by the council that licenses estate agents in Cyprus. Sample agencies in this draft.</p></div></div>
+  <div class="agent-cards" style="padding-bottom:56px">
+    {% for k, a in D.AGENTS.items() %}
+    {% set n = D.LISTINGS|selectattr('agent','equalto',k)|list|length %}
+    <article class="agent-card">
+      <h3><a href="{{ root }}agents/{{ k }}.html">{{ a.name }}</a></h3>
+      <p>{{ a.office }} office · since {{ a.since }} · {{ n }} listing{{ 's' if n != 1 }}</p>
+      <p>{{ a.about }}</p>
+      <p class="agent-line">Reg. no. {{ a.reg }} · Licence no. {{ a.licence }}</p>
+      <a href="{{ root }}agents/{{ k }}.html">See their listings</a>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% set where = area.name if area else "Paphos district" %}
+{% block title %}{{ P.title }} in {{ where }} | Shel Property{% endblock %}
+{% block description %}{{ listings|length }} {{ P.noun }} listing{{ 's' if listings|length != 1 }} in {{ where }}, Cyprus, from registered, licensed agents. Title deed status shown on every listing.{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span>
+    {% if area %}<a href="{{ root }}{{ pur }}/index.html">{{ P.title }}</a><span aria-hidden="true">/</span><span aria-current="page">{{ area.name }}</span>
+    {% else %}<span aria-current="page">{{ P.title }}</span>{% endif %}
+  </nav>
+  <div class="results-head">
+    <div>
+      <h1>{{ P.title }} in {{ where }}</h1>
+      <p>{% if area %}{{ area.blurb }} {% endif %}{% set one, many = ('plot', 'plots') if pur == 'land' else ('property', 'properties') %}<span id="result-count" data-one="{{ one }}" data-many="{{ many }}">{{ listings|length }} {{ one if listings|length == 1 else many }}</span> from licensed agents. Sample listings.</p>
+    </div>
+    <button type="button" class="btn btn-outline" data-reveal="alert-note">Email me new matches</button>
+  </div>
+  {% if D.BEFORE.get(pur) %}<aside class="before" aria-label="Before you buy"><strong>Before you buy</strong><p>{{ D.BEFORE[pur] }}</p><p class="before-links">{% for href, text in D.BEFORE_LINKS[pur] %}<a href="{{ root }}{{ href }}">{{ text }}</a>{% endfor %}</p></aside>{% endif %}
+  <p id="alert-note" class="callout" hidden style="margin-bottom:14px">Email alerts come with the live site. Nothing is saved in this draft.</p>
+
+  <div class="results">
+    <section aria-label="Results">
+      <form id="filters" class="filters" aria-label="Filter results">
+        <label class="field">Type
+          <select name="type"><option value="">Any type</option>{% for k in listings|map(attribute='kind')|unique|sort %}<option>{{ k }}</option>{% endfor %}</select>
+        </label>
+        <label class="field">Min price
+          <input name="min" type="number" inputmode="numeric" min="0" step="1000" placeholder="No min">
+        </label>
+        <label class="field">Max price
+          <input name="max" type="number" inputmode="numeric" min="0" step="1000" placeholder="No max">
+        </label>
+        {% if pur != 'land' %}<label class="field">Bedrooms
+          <select name="beds"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select>
+        </label>{% endif %}
+        <div class="checks" role="group" aria-label="Must have">
+          {% if pur in ('for-sale','resale','new-build','land') %}<label class="check"><input type="checkbox" name="deed" value="1">Title deed issued only</label>{% endif %}
+          {% if pur != 'land' %}<label class="check"><input type="checkbox" name="pool" value="1">Private or shared pool</label>{% endif %}
+          <label class="check"><input type="checkbox" name="seaview" value="1">Sea view</label>
+          {% if pur in ('for-sale','new-build') %}<label class="check"><input type="checkbox" name="novat" value="1">No VAT</label>{% endif %}
+          {% if pur in ('for-sale','new-build') %}<label class="check"><input type="checkbox" name="vat5" value="1">5% VAT may apply</label>{% endif %}
+          <button class="btn btn-outline" type="reset" style="min-height:38px;padding:6px 12px;font-size:14px">Clear</button>
+        </div>
+      </form>
+      {% if areas_here|length > 1 %}
+      <nav class="checks" aria-label="Areas" style="margin-bottom:14px">
+        {% if area %}<a class="check" href="{{ root }}{{ pur }}/index.html">All areas</a>{% endif %}
+        {% for a, name, n in areas_here %}{% if not area or area.slug != a %}<a class="check" href="{{ root }}{{ pur }}/{{ a }}.html">{{ name }} ({{ n }})</a>{% endif %}{% endfor %}
+      </nav>
+      {% endif %}
+      <div class="result-bar">
+        <span>Newest first unless you change it. Sponsored listings are labelled. <a href="{{ root }}trust.html#ranking">How listings are ranked</a></span>
+        <label class="field">Show prices in&nbsp;<select id="currency"><option value="EUR">€ euros</option><option value="GBP">£ pounds (approx.)</option><option value="ILS">₪ shekels (approx.)</option></select></label>
+        <label class="field">Sort&nbsp;<select id="sort"><option value="new">Newest</option><option value="low">Lowest price</option><option value="high">Highest price</option><option value="sea">Closest to the sea</option></select></label>
+      </div>
+      <div class="grid">
+        {% for l in listings %}{% include "_card.html" %}{% endfor %}
+      </div>
+      <p id="empty" class="empty" hidden>Nothing matches those filters. Try a higher price or fewer must-haves.</p>
+    </section>
+    <aside class="map-panel" aria-label="Map">
+      {{ map_svg(listings, root, 0.72) }}
+      <p class="map-note">Illustrative map. The live site uses a real street map. Draw-your-own-area search comes once there are enough listings to make it useful.</p>
+    </aside>
+  </div>
+</div>
+{% endblock %}

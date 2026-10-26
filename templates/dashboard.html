@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Sample agent report | Shel Property{% endblock %}
+{% block description %}What an agent sees each month on Shel Property: enquiries with the buyer's brief, reply status and viewings.{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><a href="{{ root }}for-agents.html">For agents</a><span aria-hidden="true">/</span><span aria-current="page">Sample report</span></nav>
+  <div class="results-head"><div><h1>Agency B · October 2026</h1><p>Sample report with made-up figures, to show what an agent receives each month.</p></div><button type="button" class="btn btn-outline" data-reveal="csv-note">Download as a spreadsheet</button></div>
+  <p id="csv-note" class="callout" hidden style="margin-bottom:14px">The live report downloads as a spreadsheet. Not in this draft.</p>
+  <ul class="kpis" aria-label="This month">
+    <li><strong>1,840</strong><span>listing views</span></li>
+    <li><strong>96</strong><span>saves</span></li>
+    <li><strong>41</strong><span>clicks on WhatsApp or call</span><small>interest, not enquiries</small></li>
+    <li><strong>14</strong><span>enquiries received</span><small>forms and WhatsApp messages</small></li>
+    <li><strong>11</strong><span>with budget and timing</span></li>
+    <li><strong>12 of 14</strong><span>answered</span><small>buyers told us after 48 hours</small></li>
+    <li><strong>5</strong><span>viewings booked</span></li>
+  </ul>
+  <h2 class="h2" style="margin:28px 0 12px">Enquiries</h2>
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Received</th><th>Listing</th><th>Buyer from</th><th>Budget</th><th>Buying</th><th>Paying by</th><th>Viewing</th><th>Your reply</th></tr></thead>
+    <tbody>
+      <tr><td>21 Oct, 18:42</td><td>10238 Peyia villa</td><td>UK</td><td>€400k to €600k</td><td>3 to 6 months</td><td>Cash</td><td>Viewing trip</td><td><span class="chip">38 min</span></td></tr>
+      <tr><td>20 Oct, 09:15</td><td>10227 Tala villa</td><td>Germany</td><td>Over €600k</td><td>Within 3 months</td><td>Loan on a home abroad</td><td>Video call</td><td><span class="chip">2 h 10 min</span></td></tr>
+      <tr><td>19 Oct, 21:03</td><td>10238 Peyia villa</td><td>Israel</td><td>€400k to €600k</td><td>6 to 12 months</td><td>Not sure yet</td><td>Video call</td><td><span class="chip chip-warn">No reply yet, buyer desk chasing</span></td></tr>
+      <tr><td>17 Oct, 12:30</td><td>10224 Peyia long let</td><td>UK</td><td>€2,300 a month</td><td>From December</td><td>n/a</td><td>In person</td><td><span class="chip">1 h 5 min</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="map-note" style="padding:12px 0 56px">Reply times are private to your office. Buyers only see a "fast reply" badge if you choose to show it.</p>
+</div>
+{% endblock %}

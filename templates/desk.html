@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Buyer desk: ask us anything about buying in Paphos | Shel Property{% endblock %}
+{% block description %}Ask the Shel Property buyer desk in English, German or Hebrew. First reply within 15 minutes, 09:00 to 19:00 Cyprus time. Video viewings and viewing trips arranged with the agents.{% endblock %}
+{% block main %}
+<section class="hero" aria-labelledby="desk-title">
+  <div class="wrap" style="padding-block:52px 44px">
+    <p class="eyebrow">Buyer desk</p>
+    <h1 id="desk-title">Ask us first. We'll make sure the agent answers.</h1>
+    <p class="lead">We reply in English, German or Hebrew within 15 minutes, 09:00 to 19:00 Cyprus time, seven days a week. Outside those hours, we answer first thing the next morning.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="what">
+  <div class="wrap two-col">
+    <div class="stack">
+      <h2 id="what" class="h2">What we do for you</h2>
+      <ol class="standards standards-light">
+        <li><strong>Answer your questions</strong><span>About an area, a listing, the permit, VAT or costs. If it needs a lawyer, we say so and tell you why.</span></li>
+        <li><strong>Pass your enquiry on</strong><span>To the agent for the home you asked about, with your budget, timing and how you'll pay, so they can answer properly the first time.</span></li>
+        <li><strong>Check you got a reply</strong><span>48 hours later we ask you. If the agent hasn't answered, we chase them, and we note it in the agent's monthly report.</span></li>
+        <li><strong>Pass on viewing requests</strong><span>For a live video walk-through, or for a trip where you see homes from several agents. You choose the homes; each agent books its own viewing with you.</span></li>
+      </ol>
+      <p class="callout">We don't negotiate for you or recommend one agent over another, and nobody pays us when a home sells. Your own lawyer acts for you in the purchase.</p>
+    </div>
+    <form class="enquiry" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate aria-labelledby="ask">
+      <h2 id="ask" class="full h3">Ask the buyer desk</h2>
+      <label class="field">Your name<input name="name" required autocomplete="name"></label>
+      <label class="field">Email<input name="email" type="email" required autocomplete="email"></label>
+      <label class="field">Reply in<select name="lang"><option>English</option><option>Deutsch</option><option>עברית</option></select></label>
+      <label class="field">Best way to reach you<select name="via"><option>Email</option><option>WhatsApp</option><option>Phone call</option></select></label>
+      <label class="field">Your citizenship<select name="citizenship"><option>UK</option><option>EU</option><option>Israel</option><option>Other non-EU</option></select></label>
+      <label class="field">Budget<select name="budget"><option>Up to €250,000</option><option>€250,000 to €400,000</option><option>€400,000 to €600,000</option><option>Over €600,000</option></select></label>
+      <label class="field full">Your question<textarea name="msg" required placeholder="e.g. We're looking at two-bed flats near Kato Paphos for retirement. Can a UK buyer get the 5% VAT rate?"></textarea></label>
+      <p class="notice full">We use your details to answer you, and pass them to an agent only if you ask us to. <a href="{{ root }}privacy.html">Privacy notice</a>.</p>
+      <div class="full"><button class="btn btn-primary" type="submit">Send to the buyer desk</button></div>
+      <p class="form-note full" role="status" tabindex="-1" hidden></p>
+    </form>
+  </div>
+</section>
+
+<section class="section band-sand" aria-labelledby="trip">
+  <div class="wrap two-col">
+    <div class="stack">
+      <h2 id="trip" class="h2">Plan a viewing trip</h2>
+      <p class="band-lead">Save the homes you want to see, then tell us when you're flying. We send your dates to each agent, and each one books its own viewing with you. We put the confirmed times into one plan, area by area, so you're not crossing the district twice in a day.</p>
+      <p>Paphos airport has flights from the UK all year, and in summer 2026 there were direct flights from Berlin, Cologne, Düsseldorf, Memmingen and Munich. Many flights from Israel land at Larnaca, about 90 minutes' drive away.</p>
+    </div>
+    <form class="enquiry" data-draft="Thanks. This is a draft site, so no trip was requested." novalidate aria-label="Viewing trip">
+      <label class="field">Arriving<input name="from" type="date"></label>
+      <label class="field">Leaving<input name="to" type="date"></label>
+      <label class="field">Flying from<input name="airport" placeholder="e.g. Manchester"></label>
+      <label class="field full">The homes you want to see<input name="refs" placeholder="Listing refs, e.g. 10238, 10227"></label>
+      <label class="field full">Your email<input name="email" type="email" required autocomplete="email"></label>
+      <div class="full"><button class="btn btn-primary" type="submit">Send my dates to the agents</button></div>
+      <p class="form-note full" role="status" tabindex="-1" hidden></p>
+    </form>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="partners">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="partners">Independent help</h2><p>Listed, not recommended. We say how each one is regulated, and none of them pays us to be listed or for referrals.</p></div></div>
+    <div class="guides">
+      <div class="guide-card"><h3>Lawyers</h3><p>Cyprus lawyers who act only for the buyer, never for the developer selling you the home. Including firms that work in German and in Hebrew.</p><p class="tbc">List to follow</p></div>
+      <div class="guide-card"><h3>Sending money</h3><p>Currency transfer firms authorised by the UK's Financial Conduct Authority, so you aren't paying a bank's exchange rate on a deposit.</p><p class="tbc">List to follow</p></div>
+      <div class="guide-card"><h3>Renting it out</h3><p>Property managers who look after lettings while you're away, with their fees written down before you sign.</p><p class="tbc">List to follow</p></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

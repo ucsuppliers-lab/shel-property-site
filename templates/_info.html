@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">{% block crumb %}{% endblock %}</span></nav>
+  <article class="prose">
+    {% block body %}{% endblock %}
+  </article>
+</div>
+{% endblock %}

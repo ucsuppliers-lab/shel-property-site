@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% set A = D.AGENTS[d.developer] %}{% set C = D.CHECKS[d.developer] %}
+{% block title %}{{ d.name }}: new homes from {{ money(d.from_price) }} + VAT | Shel Property{% endblock %}
+{% block description %}{{ d.blurb }} Finished by {{ d.finish }}. {{ d.permits }}, as declared by the developer.{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><a href="{{ root }}developments/index.html">Development</a><span aria-hidden="true">/</span><span aria-current="page">{{ d.name }}</span></nav>
+  <div class="listing-top" style="padding-top:16px">
+    <div class="gallery gallery-one" aria-label="Photos"><div class="photo">{% if d.photo %}{{ photo_img(d.photo, root, d.name, eager=True, sizes="(max-width: 980px) 100vw, 820px") }}<span class="cap cap-sample">Sample photo</span>{% else %}{{ scene(d.slug, 'sand') }}<span class="cap">Plans and drawings from the developer</span>{% endif %}</div></div>
+    <aside class="summary" aria-label="Summary">
+      <p class="eyebrow">{{ d.status }}</p>
+      <h1>{{ d.name }}</h1>
+      <div class="price"><small>from</small> {{ money(d.from_price) }} <small>+ VAT</small></div>
+      <p class="place">{{ d.homes }} homes: {{ d.kinds }} · finished by {{ d.finish }}</p>
+      <div class="chips"><span class="chip">{{ d.deeds }}</span><span class="chip chip-energy">Energy class {{ d.energy }}</span><span class="chip chip-check">✓ Developer checked</span></div>
+      <div class="actions">
+        <a class="btn btn-primary" href="#enquire">Ask the developer</a>
+        <button type="button" class="btn btn-outline" data-reveal="dphone">Call</button>
+        <button type="button" class="btn btn-outline" data-reveal="dphone">WhatsApp</button>
+      </div>
+      <p id="dphone" class="callout" hidden>{{ A.name }}: {{ A.phone }}. Say you saw the project on Shel Property.</p>
+      <div class="licence">
+        <p><a href="{{ root }}agents/{{ d.developer }}.html">{{ A.name }}</a> (sample). Reg. no. {{ A.reg }}, licence no. {{ A.licence }}.</p>
+        <p class="checked">Developer checked on {{ nice_date(C.checked) }} with {{ C.source }}.</p>
+        <p>This checks the developer, not the title to the land. Your own lawyer does that.</p>
+      </div>
+    </aside>
+    <div class="listing-main">
+      <section class="block" aria-labelledby="about"><h2 id="about">About the project</h2><p class="desc">{{ d.blurb }}</p></section>
+      <section class="block" aria-labelledby="facts">
+        <h2 id="facts">Key information</h2>
+        <div class="keyinfo">
+          <section aria-label="The project"><h3>The project</h3><dl>
+            <dt>Homes</dt><dd>{{ d.homes }}</dd><dt>Type</dt><dd>{{ d.kinds }}</dd><dt>Status</dt><dd>{{ d.status }}</dd><dt>Finished by</dt><dd>{{ d.finish }}</dd>
+          </dl></section>
+          <section aria-label="Permits and deeds"><h3>Permits and deeds</h3><dl>
+            <dt>Permits</dt><dd>{{ d.permits }}<small>as declared by the developer</small></dd><dt>Title deeds</dt><dd>{{ d.deeds }}</dd><dt>Energy class</dt><dd>{{ d.energy }}</dd>
+          </dl></section>
+          <section aria-label="Price and payment"><h3>Price and payment</h3><dl>
+            <dt>Prices from</dt><dd>{{ money(d.from_price) }} + VAT</dd><dt>VAT</dt><dd>19%, or 5% on part of it if it will be your main home</dd><dt>Payments</dt><dd>{{ d.stages }}</dd>
+            <dt>Costs to buy</dt><dd><a href="{{ root }}buying-from-abroad/costs.html?price={{ d.from_price }}&amp;type=new">See the breakdown</a></dd>
+          </dl></section>
+          <section aria-label="Location"><h3>Location</h3><dl><dt>Area</dt><dd>{{ D.AREAS[d.area].name }}</dd><dt>To the sea</dt><dd>{{ ('%g'|format(d.sea_km * 1000)) ~ ' m' if d.sea_km < 1 else ('%g'|format(d.sea_km)) ~ ' km' }}</dd></dl></section>
+        </div>
+        <div class="land-check"><h3>Before you buy off plan</h3><ul>
+          <li>Your lawyer checks the developer's land at the Land Registry, including any mortgage on it, and asks how the mortgage will be lifted from your home.</li>
+          <li>Tie each stage payment to a stage of the building work in the contract, and have your lawyer lodge the contract at the Land Registry.</li>
+          <li>Ask when the separate title deed is due, and what happens if the finish date slips.</li>
+          <li>Buying from outside the EU? You'll need a permit, and residency through a new home has its own conditions. <a href="{{ root }}buying-from-abroad/permit.html">Do I need a permit?</a></li>
+        </ul></div>
+      </section>
+      <section class="block" aria-labelledby="where"><h2 id="where">Where it is</h2>{{ map_svg(units or [], root, 2.4) }}<p class="map-note" style="margin-top:8px">The pin shows the area, not the exact plot.</p></section>
+      <section class="block" aria-labelledby="enquire">
+        <h2 id="enquire">Ask {{ A.name }} about the project</h2>
+        <form class="enquiry" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate>
+          <label class="field">Your name<input name="name" required autocomplete="name"></label>
+          <label class="field">Email<input name="email" type="email" required autocomplete="email"></label>
+          <label class="field">Your budget<select name="budget"><option value="">Choose</option><option>Up to €400,000</option><option>€400,000 to €600,000</option><option>Over €600,000</option></select></label>
+          <label class="field">Main home or holiday home?<select name="use"><option value="">Choose</option><option>Main home in Cyprus</option><option>Holiday home</option><option>To rent out</option></select></label>
+          <label class="field full">Message<textarea name="msg">I'd like the price list and plans for {{ d.name }}.</textarea></label>
+          <p class="notice full">We send your enquiry to {{ A.name }}, who answers you directly. We ask you after 48 hours whether they did. <a href="{{ root }}privacy.html">Privacy notice</a>.</p>
+          <div class="full"><button class="btn btn-primary" type="submit">Send enquiry</button></div>
+          <p class="form-note full" role="status" tabindex="-1" hidden></p>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
+<section class="section band-sand" aria-labelledby="units">
+  <div class="wrap">
+    <div class="section-head"><h2 id="units">Homes for sale in this project</h2><p>{{ units|length }} on Shel Property</p></div>
+    <div class="grid">{% for l in units %}{% include "_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

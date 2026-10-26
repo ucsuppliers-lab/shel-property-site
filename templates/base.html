@@ -1,0 +1,126 @@
+{% set lang = lang|default('en') %}{% set t = T[lang] %}{% set alt = alt|default({}) %}<!doctype html>
+<html lang="{{ t.html_lang }}" dir="{{ t.dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}{% endblock %}</title>
+<meta name="description" content="{% block description %}{% endblock %}">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="{{ FAVICON }}">
+{% for code, path in alt.items() %}<link rel="alternate" hreflang="{{ T[code].html_lang }}" href="{{ root }}{{ path }}">
+{% endfor %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800{% if lang == 'he' %}&family=Assistant:wght@400;600;700;800&family=Frank+Ruhl+Libre:wght@500;700{% endif %}&display=swap">
+<link rel="stylesheet" href="{{ root }}style.css">
+{% block head %}{% endblock %}
+</head>
+<body>
+<a class="skip" href="#main">{{ t.skip }}</a>
+<div class="draft" role="note">{{ t.draft|safe }}</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="{{ root }}{{ 'index.html' if lang == 'en' else lang ~ '/index.html' }}" aria-label="Shel Property">
+      {{ seal(42) }}
+      <span class="brand-name"><span class="brand-shel">SHEL</span><span class="brand-prop">PROPERTY</span></span>
+    </a>
+    <nav class="nav" aria-label="{{ t.nav_main }}">
+      <div class="nav-drop{% if nav in ('for-sale', 'new-build', 'resale', 'developments', 'land') %} is-current{% endif %}">
+        <a class="nav-drop-link" href="{{ root }}for-sale/index.html"{% if nav == 'for-sale' %} aria-current="page"{% endif %}>{{ t.nav_salemenu }}</a>
+        <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="sale-menu" aria-label="{{ t.nav_salemenu }}: {{ t.nav_new }}, {{ t.nav_sale }}, {{ t.nav_dev }}, {{ t.nav_land }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-drop-menu" id="sale-menu" hidden>
+          <a href="{{ root }}new-build/index.html"{% if nav == 'new-build' %} aria-current="page"{% endif %}>{{ t.nav_new }}</a>
+          <a href="{{ root }}resale/index.html"{% if nav == 'resale' %} aria-current="page"{% endif %}>{{ t.nav_sale }}</a>
+          <a href="{{ root }}developments/index.html"{% if nav == 'developments' %} aria-current="page"{% endif %}>{{ t.nav_dev }}</a>
+          <a href="{{ root }}land/index.html"{% if nav == 'land' %} aria-current="page"{% endif %}>{{ t.nav_land }}</a>
+        </div>
+      </div>
+      <a href="{{ root }}to-rent/index.html"{% if nav == 'to-rent' %} aria-current="page"{% endif %}>{{ t.nav_rent }}</a>
+      <div class="nav-drop{% if nav in ('services', 'abroad', 'desk') %} is-current{% endif %}">
+        <a class="nav-drop-link" href="{{ root }}services/index.html"{% if nav == 'services' %} aria-current="page"{% endif %}>{{ t.nav_services }}</a>
+        <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="services-menu" aria-label="{{ t.nav_services }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-drop-menu" id="services-menu" hidden>
+          <a href="{{ root }}buying-from-abroad/from-the-uk.html">{{ t.f_uk }}</a>
+          <a href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he">{{ t.f_il }}</a>
+          <a href="{{ root }}buying-from-abroad/costs.html">{{ t.nav_svc_costs }}</a>
+          <a href="{{ root }}services/legal.html">{{ t.nav_svc_legal }}</a>
+          <a href="{{ root }}services/finance.html">{{ t.nav_svc_finance }}</a>
+          <a href="{{ root }}services/residency.html">{{ t.nav_svc_residency }}</a>
+          <a href="{{ root }}buyer-desk.html"{% if nav == 'desk' %} aria-current="page"{% endif %}>{{ t.nav_desk }}</a>
+        </div>
+      </div>
+      <div class="nav-drop{% if nav in ('about', 'guides') %} is-current{% endif %}">
+        <a class="nav-drop-link" href="{{ root }}about.html"{% if nav == 'about' %} aria-current="page"{% endif %}>{{ t.nav_about }}</a>
+        <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="about-menu" aria-label="{{ t.nav_about }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-drop-menu" id="about-menu" hidden>
+          <a href="{{ root }}about.html">{{ t.f_about }}</a>
+          <a href="{{ root }}guides/index.html">{{ t.f_guides }}</a>
+          <a href="{{ root }}trust.html">{{ t.f_trust }}</a>
+        </div>
+      </div>
+      <a href="{{ root }}contact.html"{% if nav == 'contact' %} aria-current="page"{% endif %}>{{ t.f_contact }}</a>
+    </nav>
+    <div class="header-tools">
+      <a class="icon-link" href="{{ root }}saved.html" aria-label="{{ t.saved }}">{{ icons.heart }}<span class="count" data-saved-count hidden>0</span></a>
+      <nav class="langs" aria-label="{{ t.lang_label }}">
+        {% for code in ['en', 'de', 'he'] %}
+        {% set target = alt.get(code) or ('index.html' if code == 'en' else code ~ '/index.html') %}
+        <a href="{{ root }}{{ target }}" hreflang="{{ T[code].html_lang }}" lang="{{ T[code].html_lang }}"{% if code == lang %} aria-current="true"{% endif %}>{{ T[code].code if code != 'he' else 'עב' }}<span class="visually-hidden"> {{ T[code].name }}</span></a>
+        {% endfor %}
+      </nav>
+      <a class="btn btn-ocean" href="{{ root }}for-agents.html">{{ t.for_agents }}</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+{% block main %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="brand" href="{{ root }}index.html" aria-label="Shel Property">
+        {{ seal(48, dark=True) }}
+        <span class="brand-name"><span class="brand-shel">SHEL</span><span class="brand-prop">PROPERTY</span></span>
+      </a>
+      <span class="foot-where">{{ t.f_where }}</span>
+    </div>
+    <div class="foot-cols">
+      <nav aria-label="{{ t.f_homes }}"><h3>{{ t.f_homes }}</h3><ul>
+        <li><a href="{{ root }}for-sale/peyia.html">{{ "פגיה" if lang == "he" else "Peyia" }}</a></li>
+        <li><a href="{{ root }}for-sale/tala.html">{{ "טאלה" if lang == "he" else "Tala" }}</a></li>
+        <li><a href="{{ root }}for-sale/kato-paphos.html">{{ "קאטו פאפוס" if lang == "he" else "Kato Paphos" }}</a></li>
+        <li><a href="{{ root }}for-sale/polis.html">{{ "פוליס" if lang == "he" else "Polis" }}</a></li>
+        <li><a href="{{ root }}new-build/index.html">{{ t.nav_new }}</a></li>
+        <li><a href="{{ root }}developments/index.html">{{ t.nav_dev }}</a></li>
+        <li><a href="{{ root }}land/index.html">{{ t.nav_land }}</a></li>
+      </ul></nav>
+      <nav aria-label="{{ t.f_abroad }}"><h3>{{ t.f_abroad }}</h3><ul>
+        <li><a href="{{ root }}buying-from-abroad/from-the-uk.html">{{ t.f_uk }}</a></li>
+        <li><a href="{{ root }}de/ratgeber-kauf-aus-deutschland.html" hreflang="de">{{ t.f_de }}</a></li>
+        <li><a href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he">{{ t.f_il }}</a></li>
+        <li><a href="{{ root }}buying-from-abroad/permit.html">{{ t.f_permit }}</a></li>
+        <li><a href="{{ root }}buying-from-abroad/costs.html">{{ t.f_costs }}</a></li>
+        <li><a href="{{ root }}guides/index.html">{{ t.f_guides }}</a></li>
+      </ul></nav>
+      <nav aria-label="{{ t.f_trust }}"><h3>{{ t.f_trust }}</h3><ul>
+        <li><a href="{{ root }}trust.html#checks">{{ t.f_check }}</a></li>
+        <li><a href="{{ root }}trust.html#ranking">{{ t.f_rank }}</a></li>
+        <li><a href="{{ root }}report.html">{{ t.f_report }}</a></li>
+        <li><a href="{{ root }}agents/index.html">{{ t.f_agents }}</a></li>
+      </ul></nav>
+      <nav aria-label="{{ t.f_shel }}"><h3>{{ t.f_shel }}</h3><ul>
+        <li><a href="{{ root }}about.html">{{ t.f_about }}</a></li>
+        <li><a href="{{ root }}buyer-desk.html">{{ t.f_desk }}</a></li>
+        <li><a href="{{ root }}for-agents.html">{{ t.for_agents }}</a></li>
+        <li><a href="{{ root }}contact.html">{{ t.f_contact }}</a></li>
+      </ul></nav>
+    </div>
+    <div class="foot-legal">
+      <nav aria-label="{{ {"en":"Legal","de":"Rechtliches","he":"מידע משפטי"}[lang] }}"><a href="{{ root }}privacy.html">{{ t.f_privacy }}</a><a href="{{ root }}cookies.html">{{ t.f_cookies }}</a><a href="{{ root }}terms.html">{{ t.f_terms }}</a><a href="{{ root }}accessibility.html">{{ t.f_access }}</a><a href="{{ root }}trust.html#eu-representative">{{ t.f_eurep }}</a></nav>
+      <p>{{ t.f_legal }}</p>
+    </div>
+  </div>
+</footer>
+<script src="{{ root }}app.js"></script>
+</body>
+</html>

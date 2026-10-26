@@ -1,0 +1,35 @@
+{% extends "_info.html" %}
+{% block title %}Do I need a permit to buy property in Cyprus? | Shel Property{% endblock %}
+{% block description %}EU citizens buy property in Cyprus without a permit. UK, Israeli and other non-EU buyers need permission from the Council of Ministers. Where the new rules stand.{% endblock %}
+{% block crumb %}Do I need a permit?{% endblock %}
+{% block body %}
+<h1>Do I need a permit to buy?</h1>
+<p>It depends on your citizenship, not where you live.</p>
+<form class="permit-check" aria-label="Check your citizenship" onsubmit="return false">
+  <label class="field">I'm a citizen of
+    <select id="citizen">
+      <option value="">Choose</option>
+      <option value="eu">An EU country (for example Germany)</option>
+      <option value="uk">The United Kingdom</option>
+      <option value="il">Israel</option>
+      <option value="other">Another country outside the EU</option>
+    </select>
+  </label>
+</form>
+<div class="permit-answer" id="ans-eu" hidden><h2>No permit needed</h2><p>As an EU citizen you buy on the same terms as a Cypriot. If you move to Cyprus for more than three months, you register as a resident and get a registration certificate (form MEU1).</p></div>
+<div class="permit-answer" id="ans-noneu" hidden><h2>Yes, you'll need a permit</h2><p>Non-EU buyers need permission from the Council of Ministers under the Acquisition of Immovable Property (Aliens) Law, Cap. 109. Your lawyer applies to the District Officer on form Comm.145. It usually takes one to two months.</p><p>Sources disagree on how much a non-EU buyer may own, so ask your lawyer before you commit to more than one home or a large plot.</p><p id="ans-il" hidden>If you're tax-resident in Israel, you'll also pay Israeli tax on rent you earn in Cyprus. <a href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he">The guide in Hebrew</a> explains your options.</p><p id="ans-uk" hidden>The <a href="{{ root }}buying-from-abroad/from-the-uk.html">UK guide</a> covers residency after Brexit too.</p></div>
+<h2>If you want to buy land</h2>
+<p>A non-EU buyer's permit is usually for one home with a limited plot, and lawyers disagree on the exact limit. The rules under discussion go further for land: no farmland, nothing near military sites, ports or the Green Line, and caps on plot size. If you're planning to buy a plot and build, talk to a lawyer before you make an offer. EU citizens aren't affected.</p>
+<h2>Where the new rules stand</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Date</th><th>What happened</th></tr></thead>
+  <tbody>
+    <tr><td>October 2026</td><td>The House interior committee is due to discuss purchases made through companies.</td></tr>
+    <tr><td>3 September 2026</td><td>The government circulates its own draft: limits on the number and size of homes, and no farmland or land near military sites, ports or the Green Line.</td></tr>
+    <tr><td>March 2026</td><td>A bill restricting foreign land purchases heads to the plenum. Several parties have tabled their own versions.</td></tr>
+  </tbody>
+</table></div>
+<p>None of this applied when we last checked on 23 October 2026. The drafts we've seen don't apply to homes already bought, but that could change. We update this page when anything passes.</p>
+<p class="callout">General information, not legal advice. Your lawyer confirms what applies to you.</p>
+<p class="sources">Sources: <a href="https://www.moi.gov.cy/mOi/da/dadmin.nsf/All/B1A52BAD21363A68C22579E60029854F/$file/Form%20Comm.%20145-EN.pdf">District Administration, form Comm.145</a>; <a href="https://www.gov.uk/guidance/living-in-cyprus">GOV.UK, living in Cyprus</a>; <a href="https://cyprus-mail.com/2026/03/19/bill-to-restrict-foreign-land-purchases-heads-to-plenum">Cyprus Mail, 19 Mar 2026</a>; <a href="https://cyprus-mail.com/2026/09/03/government-moves-to-restrict-foreign-property-purchases">Cyprus Mail, 3 Sep 2026</a>.</p>
+{% endblock %}

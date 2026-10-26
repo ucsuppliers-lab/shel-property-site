@@ -1,0 +1,37 @@
+{% extends "_info.html" %}
+{% block title %}Cyprus property buying costs calculator | Shel Property{% endblock %}
+{% block description %}Work out Land Registry transfer fees, VAT and legal fees on a Paphos home, resale or new build. Figures we're still confirming are marked.{% endblock %}
+{% block crumb %}Buying costs calculator{% endblock %}
+{% block body %}
+<h1>What will it cost to buy?</h1>
+<p>Put in the price and what you're buying. The figures are estimates for planning. Your lawyer gives you the exact sums before you sign.</p>
+<form id="calc" class="calc" aria-label="Buying costs" onsubmit="return false">
+  <label class="field">Price in euros<input id="c-price" type="number" inputmode="numeric" min="0" step="1000" value="300000"></label>
+  <label class="field">Buying<select id="c-type"><option value="resale">A resale home (no VAT)</option><option value="new">A new build (VAT on top)</option><option value="land">Land from a private owner (no VAT)</option><option value="landvat">Land from a business (+19% VAT)</option></select></label>
+  <fieldset class="vat-only" hidden>
+    <legend>For the 5% VAT rate</legend>
+    <label class="field">Covered area in m²<input id="c-area" type="number" inputmode="numeric" min="0" value="110"></label>
+    <label class="check"><input id="c-main" type="checkbox"> It will be my main and permanent home in Cyprus</label>
+  </fieldset>
+  <label class="check"><input id="c-stamp" type="checkbox"> Include stamp duty (see the note below)</label>
+</form>
+<div class="table-wrap"><table class="calc-out" aria-live="polite">
+  <tbody>
+    <tr><th scope="row">Price</th><td id="o-price"></td></tr>
+    <tr class="row-resale"><th scope="row">Land Registry transfer fees, after the 50% reduction</th><td id="o-transfer"></td></tr>
+    <tr class="row-new" hidden><th scope="row">VAT <span id="o-vatnote" class="muted"></span></th><td id="o-vat"></td></tr>
+    <tr class="row-stamp" hidden><th scope="row">Stamp duty</th><td id="o-stamp"></td></tr>
+    <tr><th scope="row">Legal fees, about 1% plus 19% VAT</th><td id="o-legal"></td></tr>
+    <tr class="total"><th scope="row">Total on top of the price</th><td id="o-total"></td></tr>
+  </tbody>
+</table></div>
+<h2>How we work it out</h2>
+<ul>
+  <li><strong>Transfer fees</strong> on resales: 3% of the first €85,000, 5% from €85,001 to €170,000, and 8% above that, then halved. New builds bought with VAT don't normally pay them.</li>
+  <li><strong>VAT</strong> on new builds: 19%. The 5% rate can apply to the first 130 m² and the first €350,000 if it will be your main home, but not at all if the home is over 190 m² or the price is over €475,000. The Tax Department has to approve it, and you repay the difference if you move out within 10 years.</li>
+  <li><strong>Land</strong>: since January 2018, building land sold by a business carries 19% VAT, with no transfer fees. A private owner selling occasionally usually doesn't charge VAT, so transfer fees apply. Agricultural and protected land is outside the VAT rule. The 5% rate is only for homes.</li>
+  <li><strong>Legal fees</strong> usually run at 1% to 2% of the price. We use 1% plus VAT.</li>
+</ul>
+<p class="callout callout-warn"><strong>Stamp duty, still to confirm.</strong> EY reports that Cyprus abolished stamp duty on contracts from 1 January 2026. Some buyers' guides published since still list it at 0.15% and 0.2%. We leave it out unless you tick the box, until a Cyprus tax adviser confirms which is right.</p>
+<p class="sources">Sources: <a href="https://www.youroverseashome.com/cyprus/advice/cyprus-property-buying-costs/">Your Overseas Home, Cyprus property buying costs, May 2026</a>; <a href="https://etek.org.cy/uploads/2025/news/aa10f64dc7.pdf">ETEK, VAT amending law guidance</a>; <a href="https://globaltaxnews.ey.com/news/2026-0140-cyprus-enacts-major-tax-reform-legislation">EY, Cyprus tax reform 2026</a>; <a href="https://taxsummaries.pwc.com/cyprus/corporate/other-taxes">PwC, Cyprus other taxes</a>, <a href="https://globaltaxnews.ey.com/news/2018-5148-cypriot-parliament-and-tax-authority-release-guidance-on-implementation-of-vat-on-immovable-property">EY</a> and <a href="https://www.mondaq.com/cyprus/sales-taxes-vat-gst/668322/vat-on-the-purchase-of-cyprus-land">Mondaq</a> on VAT on land. Checked 23 October 2026.</p>
+{% endblock %}

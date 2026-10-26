@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% set lt = L[lang|default('en')] %}
+{% set lg = lang|default('en') %}{% set A = l.agent_obj %}{% set C = D.CHECKS[l.agent] %}
+{% set tr = l.tr.get(lang|default('en'), {}) %}
+{% set title = tr.title or l.title %}{% set kind = tr.kind or l.kind %}{% set place = tr.area or l.area_name %}
+{% set is_sale = l.period is none %}
+{% block title %}{{ title }}, {{ place }}, {{ money(l.price, lg) }}{% if l.period %} / {{ l.period }}{% endif %} | Shel Property{% endblock %}
+{% block description %}{{ (tr.desc or l.desc).split('. ')[0] }}. {{ lt.ref }} {{ l.ref }}.{% endblock %}
+{% block head %}
+<script type="application/ld+json">{{ {
+  "@context": "https://schema.org", "@type": "RealEstateListing", "name": title ~ ", " ~ place,
+  "description": tr.desc or l.desc, "datePosted": l.added, "dateModified": l.confirmed,
+  "offers": {"@type": "Offer", "price": l.price, "priceCurrency": "EUR"},
+  "about": {"@type": "Accommodation", "numberOfRooms": l.beds, "floorSize": {"@type": "QuantitativeValue", "value": l.covered, "unitCode": "MTK"},
+            "address": {"@type": "PostalAddress", "addressLocality": l.area_name, "addressRegion": "Paphos", "addressCountry": "CY"}}
+}|tojson }}</script>
+{% endblock %}
+{% block main %}
+<div class="wrap">
+  <nav class="crumbs" aria-label="{{ {"en":"Breadcrumb","de":"Brotkrumen","he":"ניווט"}[lg] }}">
+    <a href="{{ root }}{{ 'index.html' if lang|default('en') == 'en' else lang ~ '/index.html' }}">{{ lt.home }}</a><span aria-hidden="true">/</span>
+    <a href="{{ root }}{{ l.purpose }}/index.html">{{ D.PURPOSES[l.purpose].title if lg == 'en' else T[lg].nav_sale }}</a><span aria-hidden="true">/</span>
+    <span aria-current="page">{{ lt.ref }} {{ l.ref }}</span>
+  </nav>
+  <div class="listing-top">
+    <div class="gallery" aria-label="{{ {"en":"Photos","de":"Fotos","he":"תמונות"}[lg] }}">
+      {% for i in range(3) %}
+      {% if l.photos|length > i %}<div class="photo">{{ photo_img(l.photos[i], root, title ~ (', ' ~ (i + 1) if i else ''), eager=(i == 0), sizes=("(max-width: 980px) 100vw, 620px" if i == 0 else "(max-width: 980px) 100vw, 300px")) }}{% if i == 0 %}<span class="cap cap-sample">{{ {"en":"Sample photos","de":"Beispielfotos","he":"תמונות לדוגמה"}[lg] }}</span>{% endif %}</div>
+      {% else %}<div class="photo">{{ scene(l.ref ~ ('' if i == 0 else 'bc'[i-1]), (l.tone if i == 0 else ['sky','sand'][i-1])) }}<span class="cap">{{ ('Photo: ' ~ l.photo) if i == 0 else ('Photo 2' if i == 1 else 'More photos') }}</span></div>{% endif %}
+      {% endfor %}
+    </div>
+
+    <aside class="summary" aria-label="{{ {"en":"Summary","de":"Übersicht","he":"סיכום"}[lg] }}">
+      <div class="price" data-eur="{{ l.price }}" data-period="{{ l.period or '' }}">{{ price(l, lg) }}</div>
+      {% if lang|default('en') != 'de' %}<p class="fx" data-fx="{{ 'ILS' if lang|default('en') == 'he' else 'GBP' }}" data-eur="{{ l.price }}" data-approx="{{ lt.approx }}" data-note="{{ lt.fx_note|replace('{d}', D.FX.date) }}"></p>{% endif %}
+      <h1>{{ title }}</h1>
+      <p class="place">{{ place }}, {{ {"en":"Paphos","de":"Paphos","he":"פאפוס"}[lg] }} · {{ lt.ref }} {{ l.ref }}</p>
+      <div class="icon-row">
+        {% if l.beds %}<span>{{ icons.bed }}{{ l.beds }} {{ lt.beds|lower if lg == 'en' else lt.beds }}</span>{% elif l.beds == 0 %}<span>{{ icons.bed }}Studio</span>{% endif %}
+        {% if l.baths %}<span>{{ icons.bath }}{{ l.baths }} {{ lt.baths|lower if lg == 'en' else lt.baths }}</span>{% endif %}
+        {% if l.covered %}<span>{{ icons.area }}{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</span>{% endif %}
+        {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) }} {{ 'מ״ר' if lg == 'he' else 'm²' }} {{ lt.plot|lower if lg == 'en' else lt.plot }}</span>{% endif %}
+      </div>
+      <div class="chips">{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}<span class="chip chip-check">✓ {% if C.kind == 'developer' %}{{ {'en':'Developer checked','de':'Bauträger geprüft','he':'היזם נבדק'}[lg] }}{% else %}{{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}{% endif %}</span></div>
+      <div class="actions">
+        <a class="btn btn-primary" href="#enquire">{{ lt.viewing }}</a>
+        <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}">{{ lt.call }}</button>
+        <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}">{{ lt.whatsapp }}</button>
+        <a class="btn btn-outline btn-wide" href="#enquire" data-view="video">{{ lt.video }}</a>
+      </div>
+      <p id="phone-{{ l.ref }}" class="callout" hidden>{{ lt.reveal|replace('{a}', A.name)|replace('{p}', A.phone)|replace('{r}', l.ref) }}</p>
+      <div class="tool-row">
+        <button type="button" class="save save-inline" data-ref="{{ l.ref }}" aria-pressed="false" data-on="{{ {"en":"Saved","de":"Gemerkt","he":"נשמר"}[lg] }}" data-off="{{ 'Save this plot' if l.purpose == 'land' and lg == 'en' else lt.save }}">{{ icons.heart }} <span class="save-text">{{ 'Save this plot' if l.purpose == 'land' and lg == 'en' else lt.save }}</span></button>
+        <button type="button" class="btn btn-outline btn-small" data-reveal="pdf-{{ l.ref }}">{{ lt.pdf }}</button>
+      </div>
+      <p id="pdf-{{ l.ref }}" class="callout" hidden>{{ {"en":"The live site makes a one-page summary of this home, in your language, to print or send. Not in this draft.","de":"Die fertige Seite erstellt ein einseitiges Exposé in Ihrer Sprache zum Drucken oder Weitersenden. Nicht in diesem Entwurf.","he":"באתר המלא תוכלו להוריד סיכום של עמוד אחד על הנכס, בשפה שלכם, להדפסה או לשליחה. לא בטיוטה זו."}[lg] }}</p>
+      <div class="licence">
+        <p><a href="{{ root }}agents/{{ l.agent }}.html">{{ A.name }}</a> ({{ {"en":"sample","de":"Beispiel","he":"לדוגמה"}[lg] }}), {{ lt.lic }}{% if l.agent == 'developer-d' %}, {{ lt.sellsfor }}{% endif %}. {{ lt.regno }} {{ A.reg }}, {{ lt.licno }} {{ A.licence }}.</p>
+        <p class="checked">{{ (lt.checked_dev if C.kind == 'developer' else lt.checked_agent)|replace('{d}', nice_date(C.checked, lg))|replace('{s}', C.source if lg == 'en' else C['source_' ~ lg]) }}</p>
+        <p>{{ lt.check_note }} <a href="{{ root }}trust.html#checks">{{ T[lang|default('en')].f_check }}</a></p>
+      </div>
+    </aside>
+
+    <div class="listing-main">
+      <section class="block" aria-labelledby="key">
+        <h2 id="key">{{ lt.key }}</h2>
+        <div class="keyinfo">
+          {% if is_sale %}
+          <section aria-label="{{ lt.own }}">
+            <h3>{{ lt.own }}</h3>
+            <dl>
+              <dt>{{ lt.deed }}</dt><dd>{{ deed_text(l.deed, lg) }}<small>{{ lt.deed_note }}</small></dd>
+              {% if l.completion %}<dt>{{ lt.finish }}</dt><dd>{{ l.completion }}</dd>{% endif %}
+              <dt>{{ lt.saletype }}</dt><dd>{{ lt.newbuild if l.purpose == 'new-build' else (lt.landsale if l.purpose == 'land' else lt.resale) }}</dd>
+            </dl>
+          </section>
+          {% else %}
+          <section aria-label="Let"><h3>The let</h3><dl><dt>Let type</dt><dd>Long let</dd><dt>Available</dt><dd>{{ l.available }}</dd></dl></section>
+          {% endif %}
+          <section aria-label="{{ lt.pc }}">
+            <h3>{{ lt.pc }}</h3>
+            <dl>
+              <dt>{{ lt.price }}</dt><dd>{{ price(l, lg) }}</dd>
+              {% if is_sale %}
+              <dt>{{ lt.vat }}</dt><dd>{% if l.purpose == 'land' %}{{ '+ 19% VAT (sold by a business)' if l.vat else 'No VAT (private seller)' }}{% else %}{{ lt.vat_new if l.vat else lt.vat_resale }}{% endif %}</dd>
+              {% if l.fees is not none %}<dt>{{ lt.fees }}</dt><dd>{{ (money(l.fees) ~ ' / yr') if l.fees else lt.fees_none }}</dd>{% endif %}
+              <dt>{{ lt.costs }}</dt><dd><a href="{{ root }}buying-from-abroad/costs.html?price={{ l.price }}&amp;type={{ ('landvat' if l.vat else 'land') if l.purpose == 'land' else ('new' if l.vat else 'resale') }}">{{ lt.costs_link }}</a></dd>
+              {% elif l.period == 'month' %}<dt>Deposit</dt><dd>Ask the agent</dd>{% endif %}
+            </dl>
+          </section>
+          {% if l.purpose == 'land' %}
+          <section aria-label="The plot">
+            <h3>The plot</h3>
+            <dl>
+              <dt>Plot size</dt><dd>{{ "{:,}".format(l.plot) }} m²</dd>
+              <dt>Zone</dt><dd>{{ l.zone }}</dd>
+              <dt>Building density</dt><dd>{{ l.density }}<small>as stated by the agent</small></dd>
+              <dt>Access</dt><dd>{{ l.access }}</dd>
+              <dt>Utilities</dt><dd>{{ l.utilities }}</dd>
+              <dt>Seller</dt><dd>{{ l.seller }}</dd>
+              <dt>{{ lt.energy }}</dt><dd>{{ lt.energy_none }}</dd>
+            </dl>
+          </section>
+          {% else %}
+          <section aria-label="{{ lt.prop }}">
+            <h3>{{ lt.prop }}</h3>
+            <dl>
+              <dt>{{ lt.type }}</dt><dd>{{ kind }}</dd>
+              {% if l.beds is not none %}<dt>{{ lt.beds }}</dt><dd>{{ l.beds if l.beds else 'Studio' }}</dd>{% endif %}
+              {% if l.baths %}<dt>{{ lt.baths }}</dt><dd>{{ l.baths }}</dd>{% endif %}
+              {% if l.covered %}<dt>{{ lt.living }}</dt><dd>{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
+              {% if l.extra and l.extra[0] in ('veranda','terrace') %}<dt>{{ l.extra[0]|capitalize }}</dt><dd>{{ l.extra[1] }} m²</dd>{% endif %}
+              {% if l.plot %}<dt>{{ lt.plot }}</dt><dd>{{ "{:,}".format(l.plot) }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
+              {% if l.extra and l.extra[0] == 'sleeps' %}<dt>Sleeps</dt><dd>{{ l.extra[1] }}</dd>{% endif %}
+              {% if l.year %}<dt>{{ lt.built }}</dt><dd>{{ l.year }}</dd>{% endif %}
+              <dt>{{ lt.energy }}</dt><dd>{{ l.energy if l.energy else lt.energy_none }}</dd>
+            </dl>
+          </section>
+          {% endif %}
+          <section aria-label="{{ lt.loc }}">
+            <h3>{{ lt.loc }}</h3>
+            <dl>
+              <dt>{{ lt.area }}</dt><dd>{{ place }}</dd>
+              <dt>{{ lt.district }}</dt><dd>{{ {"en":"Paphos","de":"Paphos","he":"פאפוס"}[lg] }}</dd>
+              {% if l.sea_km %}<dt>{{ lt.sea }}</dt><dd>{% if l.sea_km < 1 %}{{ '%g'|format(l.sea_km * 1000) }} {{ 'מ׳' if lg == 'he' else 'm' }}{% else %}{{ ('%g'|format(l.sea_km))|replace('.', ',') if lg == 'de' else '%g'|format(l.sea_km) }} {{ 'ק״מ' if lg == 'he' else 'km' }}{% endif %}</dd>{% endif %}
+              <dt>{{ lt.listed }}</dt><dd>{{ nice_date(l.added, lg) }}</dd>
+              <dt>{{ lt.confirmed }}</dt><dd>{{ nice_date(l.confirmed, lg) }}</dd>
+            </dl>
+          </section>
+        </div>
+        {% if l.purpose == 'land' %}
+        <div class="land-check"><h3>Before you buy this plot</h3><ul>
+          <li>Ask an architect to confirm what you can build: the zone, building density, coverage and height all limit the size of the house.</li>
+          <li>Your lawyer checks the title deed, any mortgage on the land, and that the access road is a registered public road.</li>
+          <li>{% if l.vat %}The seller is a business, so 19% VAT is added and no transfer fees are due.{% else %}A private owner selling occasionally doesn't usually charge VAT, so you pay transfer fees instead.{% endif %} Confirm it in the contract.</li>
+          <li>Buying from outside the EU? Permits are usually for one home with a limited plot, and the rules under discussion would ban farmland and cap plot sizes. Speak to a lawyer before you offer.</li>
+        </ul></div>
+        {% endif %}
+        {% if is_sale %}<p class="callout permit">{{ lt.permit_note }} <a href="{{ root }}buying-from-abroad/permit.html">{{ lt.permit_link }}</a></p>{% endif %}
+      </section>
+
+      {% if l.project %}<p class="callout">Part of <a href="{{ root }}developments/{{ l.project.slug }}.html">{{ l.project.name }}</a>: {{ l.project.homes }} homes, finished by {{ l.project.finish }}.</p>{% endif %}
+      <section class="block" aria-labelledby="about">
+        <h2 id="about">{{ lt.about }}</h2>
+        <p class="desc">{{ tr.desc or l.desc }}</p>
+        <p class="desc-note">{{ lt.written|replace('{a}', A.name) }}</p>
+      </section>
+
+      <section class="block" aria-labelledby="features">
+        <h2 id="features">{{ lt.feat }}</h2>
+        <ul class="features">{% for f in (tr.features or l.features) %}<li>{{ f }}</li>{% endfor %}</ul>
+      </section>
+
+      <section class="block" aria-labelledby="where">
+        <h2 id="where">{{ lt.where }}</h2>
+        {{ map_svg([l], root, 2.4) }}
+        <p class="map-note" style="margin-top:8px">{{ lt.pin_note }}</p>
+      </section>
+
+      <section class="block" aria-labelledby="enquire">
+        <h2 id="enquire">{{ lt.ask|replace('{a}', A.name)|replace('{k}', kind|lower) }}</h2>
+        <form class="enquiry" data-draft="{{ lt.sent }}" novalidate>
+          <label class="field">{{ lt.name }}<input name="name" required autocomplete="name"></label>
+          <label class="field">{{ lt.email }}<input name="email" type="email" required autocomplete="email"></label>
+          <div class="field full">{{ lt.phone }}
+            <div class="phone-row">
+              <label class="visually-hidden" for="cc-{{ l.ref }}">{{ lt.cc }}</label>
+              <select id="cc-{{ l.ref }}" name="cc">{% for o in (['+972 IL','+44 UK','+49 DE'] if lang == 'he' else (['+49 DE','+43 AT','+41 CH','+44 UK'] if lang == 'de' else ['+44 UK','+49 DE','+972 IL'])) %}<option>{{ o }}</option>{% endfor %}<option>+357 CY</option><option>+1 US</option></select>
+              <label class="visually-hidden" for="tel-{{ l.ref }}">{{ lt.tel }}</label>
+              <input id="tel-{{ l.ref }}" name="tel" type="tel" autocomplete="tel-national">
+            </div>
+          </div>
+          {% if is_sale %}
+          <label class="field">{{ lt.budget }}<select name="budget"><option value="">{{ lt.choose }}</option>{% for o in lt.brief_budget %}<option>{{ o }}</option>{% endfor %}</select></label>
+          <label class="field">{{ lt.timing }}<select name="timing"><option value="">{{ lt.choose }}</option>{% for o in lt.brief_timing %}<option>{{ o }}</option>{% endfor %}</select></label>
+          <label class="field">{{ lt.pay }}<select name="pay"><option value="">{{ lt.choose }}</option>{% for o in lt.brief_pay %}<option>{{ o }}</option>{% endfor %}</select></label>
+          <label class="field">{{ lt.eu }}<select name="citizenship"><option value="">{{ lt.choose }}</option>{% for o in lt.brief_eu %}<option>{{ o }}</option>{% endfor %}</select></label>
+          {% endif %}
+          <label class="field full">{{ lt.view }}<select name="view">{% for o in lt.brief_view %}<option{% if loop.first %} value="video"{% endif %}>{{ o }}</option>{% endfor %}</select></label>
+          <label class="field full">{{ lt.msg }}<textarea name="msg">{{ lt.msg_default|replace('{r}', l.ref)|replace('{t}', title|lower if lg == 'en' else title)|replace('{p}', place) }}</textarea></label>
+          <label class="consent full"><input type="checkbox" name="alerts"> {{ lt.alerts }}</label>
+          <p class="notice full">{{ lt.notice|replace('{a}', A.name)|replace('{root}', root)|safe }}</p>
+          <div class="full"><button class="btn btn-primary" type="submit">{{ lt.send }}</button></div>
+          <p class="form-note full" role="status" tabindex="-1" hidden></p>
+        </form>
+        <p class="report-line"><a href="{{ root }}report.html?ref={{ l.ref }}">{{ lt.report }}</a></p>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="contact-bar" aria-label="{{ {"en":"Contact","de":"Kontakt","he":"יצירת קשר"}[lg] }}">
+  <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}" data-scroll="1">{{ lt.whatsapp }}</button>
+  <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}" data-scroll="1">{{ lt.call }}</button>
+  <a class="btn btn-primary" href="#enquire">{{ lt.viewing }}</a>
+</div>
+{% if similar %}
+<section class="section band-sand" aria-labelledby="similar">
+  <div class="wrap">
+    <div class="section-head"><h2 id="similar">{{ lt.similar }}</h2><a href="{{ root }}{{ l.purpose }}/index.html">{{ lt.seeall }}</a></div>
+    <div class="grid">{% for l in similar %}{% include "_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

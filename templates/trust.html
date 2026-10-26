@@ -1,0 +1,49 @@
+{% extends "_info.html" %}
+{% block title %}Trust centre: how we check advertisers and rank listings | Shel Property{% endblock %}
+{% block description %}How Shel Property checks agents and developers, which facts every listing must show, how listings are ranked and labelled, and how to report a problem.{% endblock %}
+{% block crumb %}Trust centre{% endblock %}
+{% block body %}
+<h1>Trust centre</h1>
+<p>What we check, what we don't, and how we decide the order you see listings in. If something here doesn't match what you see on a listing, <a href="{{ root }}report.html">tell us</a>.</p>
+<nav class="toc" aria-label="On this page"><a href="#checks">Advertiser checks</a><a href="#facts">Facts on every listing</a><a href="#accuracy">Keeping listings current</a><a href="#ranking">How listings are ranked</a><a href="#report">Reporting a problem</a><a href="#not-an-agent">What we are not</a><a href="#eu-representative">EU representative</a></nav>
+
+<h2 id="checks">How we check advertisers</h2>
+<p><strong>Estate agents.</strong> Before an agent's first listing goes live, we check their registration and licence numbers against the Real Estate Agents Registration Council's list of licensed agents. Each listing then shows both numbers, as Article 23 of the Real Estate Agents Law requires, with the date we checked and where.</p>
+<p><strong>Every January.</strong> Agents' licences run out on 31 December each year. Their listings pause on 1 January and come back once we've confirmed the renewed licence. Trading without a current licence is an offence in Cyprus, so we don't make exceptions.</p>
+<p><strong>Developers.</strong> We check the company with the Registrar of Companies and, where a licensed agent handles its sales, that agent's licence.</p>
+<p><strong>Private owners.</strong> We don't take adverts from private sellers at launch. If we do later, the law requires their name and contact details on the advert, and we'll show them.</p>
+<p class="callout">A licence check tells you the advertiser is who they say they are. It doesn't tell you who owns the home or whether the title deed is clear. Your own lawyer checks that at the Land Registry before you sign anything.</p>
+
+<h2 id="facts">Facts every listing must show</h2>
+<p>A listing can't go live until these are filled in. "Ask agent" is only allowed for the optional details further down a listing.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Fact</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Agent's registration and licence numbers</td><td>Required in every advert by the Real Estate Agents Law 71(I)/2010</td></tr>
+    <tr><td>Energy class</td><td>Required in every sale or rental advert for a building with an energy certificate (Law 142(I)/2006). Land, and some buildings the law exempts, don't need one</td></tr>
+    <tr><td>VAT treatment</td><td>Whether VAT is added. Whether you qualify for the 5% rate depends on you, so we show that separately</td></tr>
+    <tr><td>Title deed status</td><td>As the agent declares it: issued, after completion, or pending</td></tr>
+    <tr><td>For land: zone, building density, access, and whether VAT applies</td><td>So you know roughly what you can build and what you'll pay before you call an architect</td></tr>
+    <tr><td>Date listed and date last confirmed</td><td>So you can see a home is still for sale</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="accuracy">Keeping listings current</h2>
+<p>Most listings come straight from the agent's own system, several times a day. When an agent marks a home sold or withdrawn, it comes off Shel. If a feed fails or comes through half-finished, we keep the listings as they were and check with the agent, rather than wiping their stock. Listings an agent adds by hand have to be confirmed every 30 days or they come down.</p>
+
+<h2 id="ranking">How listings are ranked</h2>
+<p>Search results show the newest listings first unless you choose another order: lowest or highest price, or closest to the sea.</p>
+<p>Agents and developers can pay for <strong>Sponsored</strong> places. Those listings are always labelled "Sponsored". Paying for a package doesn't change where a listing appears in the normal order.</p>
+<p>The same rules are written into our terms for agents, with 15 days' notice before we change them.</p>
+
+<h2 id="report">Reporting a problem</h2>
+<p>Every listing has a "Report this listing" link. We reply within two working days, and we take a listing down while we look into it if it could mislead buyers.</p>
+<p class="callout callout-warn">Never send money to hold a viewing or a rental before you've seen the property and signed a contract through your own lawyer.</p>
+
+<h2 id="not-an-agent">What we are not</h2>
+<p>Shel Property publishes adverts. We aren't an estate agent: we don't negotiate, we don't recommend agents in return for payment, and nobody pays us a share of a sale. We only list property in the Republic of Cyprus, never in the north of the island.</p>
+
+<h2 id="eu-representative">Our EU representative</h2>
+<p>Shel Property is a UK company. Our representative in the EU, for data protection and for the EU Digital Services Act, is [name, address and email to follow].</p>
+<p class="sources">Sources: <a href="https://www.businessincyprus.gov.cy/business-sectors/real-estate-agent/">businessincyprus.gov.cy, real estate agents</a>; <a href="https://bfu.meci.gov.cy/en/energy-performance-certificates/">Cyprus energy ministry, Energy Performance Certificates</a>; <a href="https://ktimatomesites.com/">Real Estate Agents Registration Council</a>. Checked 23 October 2026.</p>
+{% endblock %}

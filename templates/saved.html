@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Saved homes | Shel Property{% endblock %}
+{% block description %}The homes you've saved on Shel Property.{% endblock %}
+{% block main %}
+<div class="wrap" style="padding-bottom:56px">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Saved homes</span></nav>
+  <div class="results-head"><div><h1>Saved homes</h1><p>Kept in this browser only. With an account on the live site, they'll follow you to your phone.</p></div></div>
+  <div id="saved-list" class="grid"></div>
+  <p id="saved-empty" class="empty">Nothing saved yet. Tap the heart on any listing to keep it here.</p>
+  <script type="application/json" id="saved-data">{{ saved_json }}</script>
+</div>
+{% endblock %}

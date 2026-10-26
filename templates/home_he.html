@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Shel Property: נכסים בפאפוס, בדוקים, בעברית{% endblock %}
+{% block description %}בתים ודירות בפאפוס ממתווכים בעלי רישיון. רישיון נבדק עם תאריך, דירוג אנרגטי, מע״מ ומצב הטאבו בכל מודעה, ושירות לקונים בעברית.{% endblock %}
+{% block main %}
+<section class="hero{% if HERO %} hero-photo{% endif %}" aria-labelledby="hero-title">
+  {% if HERO %}{{ photo_img("hero", root, "החוף מצפון לפאפוס ממבט אוויר: מפרץ חולי ומים צלולים", eager=True, sizes="100vw") }}{% endif %}
+  <div class="wrap">
+    <p class="eyebrow">פאפוס · הרפובליקה של קפריסין</p>
+    <h1 id="hero-title">נכסים בפאפוס. בדוקים, בעברית.</h1>
+    <p class="lead">אנחנו בודקים את הרישיון של כל מפרסם ומציגים מתי בדקנו. בכל מודעה מופיעים הדירוג האנרגטי, המע״מ ומצב הטאבו, והשירות לקונים עונה בעברית.</p>
+    <div class="hero-actions"><a class="btn btn-primary" href="{{ root }}for-sale/index.html" hreflang="en">לכל הנכסים (באנגלית)</a><a class="btn btn-white" href="{{ root }}he/madrich-kniya-mi-israel.html">המדריך לקונים מישראל</a></div>
+  </div>
+</section>
+<section class="section" aria-labelledby="why">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="why">מה חשוב לדעת כשקונים מישראל</h2></div></div>
+    <ul class="facts-grid">
+      <li><strong>צריך היתר</strong><span>אזרחי ישראל אינם אזרחי האיחוד האירופי, ולכן צריכים היתר ממועצת השרים. עורך הדין מגיש את הבקשה, ובדרך כלל זה לוקח חודש עד חודשיים.</span></li>
+      <li><strong>מס בשתי המדינות</strong><span>קפריסין ממסה את השכירות, וישראל ממסה את תושביה על הכנסה מחו״ל. כדאי לדבר עם יועץ מס לפני הקנייה.</span></li>
+      <li><strong>בלי הבטחות לתשואה</strong><span>אנחנו לא מפרסמים תשואה על מודעות. במדריך מוסבר איך לחשב תשואה נטו, אחרי דמי ניהול, תקופות בלי שוכרים ומס.</span></li>
+      <li><strong>מימון</strong><span>קשה לקבל בישראל משכנתה על נכס בחו״ל. קונים רבים לוקחים הלוואה על נכס בישראל או משכנתה מבנק בקפריסין.</span></li>
+    </ul>
+  </div>
+</section>
+<section class="section band-sky" aria-labelledby="service">
+  <div class="wrap desk-band">
+    <div>
+      <p class="eyebrow">שירות לקונים</p>
+      <h2 id="service">אנחנו עונים, ומוודאים שגם המתווך עונה</h2>
+      <p class="band-lead">תשובה ראשונה תוך 15 דקות, בין 9:00 ל-19:00 שעון קפריסין, כל יום. אחרי 48 שעות נשאל אתכם אם המתווך חזר אליכם, ואם לא, נבדוק מולו.</p>
+      <a class="btn btn-ocean" href="{{ root }}buyer-desk.html" hreflang="en">פנייה לשירות לקונים</a>
+    </div>
+    <ol class="standards">
+      <li><strong>וואטסאפ קודם</strong><span>אפשר לפנות אלינו בוואטסאפ, בעברית.</span></li>
+      <li><strong>צפייה בווידאו</strong><span>סיור חי עם המתווך לפני שאתם טסים.</span></li>
+      <li><strong>טיול צפייה</strong><span>אתם בוחרים את הנכסים, אנחנו שולחים את התאריכים שלכם לכל מתווך, ואתם מקבלים תוכנית אחת לטיול.</span></li>
+    </ol>
+  </div>
+</section>
+<section class="section" aria-labelledby="featured">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="featured">דוגמה בעברית</h2><p>כך נראית כל מודעה. מודעה לדוגמה.</p></div></div>
+    <a class="feature-listing" href="{{ root }}he/nehes/10238-villa-peyia.html">
+      <div class="photo">{{ photo_img("10238-1", root, "וילה עם בריכה בפגיה") }}<span class="cap cap-sample">תמונה לדוגמה</span></div>
+      <div class="fl-body"><p class="price">€485,000</p><p class="fx-static">בערך ₪{{ "{:,.0f}".format(485000 * D.FX.ILS) }}, לפי שער לדוגמה</p><h3>וילה עם 3 חדרי שינה ובריכה פרטית</h3><p class="place">פגיה, פאפוס · מודעה 10238</p><p>170 מ״ר בנוי · מגרש 450 מ״ר · דירוג אנרגטי B · טאבו הונפק · ללא מע״מ (יד שנייה)</p><span class="market-go">למודעה {{ icons.chev }}</span></div>
+    </a>
+  </div>
+</section>
+{% endblock %}

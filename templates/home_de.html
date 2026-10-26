@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Shel Property: Immobilien in Paphos, geprüft, auf Deutsch{% endblock %}
+{% block description %}Häuser und Wohnungen in Paphos von lizenzierten Maklern. Lizenz geprüft mit Datum, Energieklasse, MwSt. und Title Deed bei jedem Angebot, und ein Käuferservice auf Deutsch.{% endblock %}
+{% block main %}
+<section class="hero{% if HERO %} hero-photo{% endif %}" aria-labelledby="hero-title">
+  {% if HERO %}{{ photo_img("hero", root, "Die Küste nördlich von Paphos aus der Luft: eine Sandbucht und klares Wasser", eager=True, sizes="100vw") }}{% endif %}
+  <div class="wrap">
+    <p class="eyebrow">Paphos · Republik Zypern</p>
+    <h1 id="hero-title">Immobilien in Paphos. Geprüft, auf Deutsch.</h1>
+    <p class="lead">Wir prüfen die Lizenz jedes Anbieters und zeigen, wann wir es getan haben. Jedes Angebot nennt Energieklasse, Mehrwertsteuer und den Stand des Title Deed, und unser Käuferservice antwortet auf Deutsch.</p>
+    <div class="hero-actions"><a class="btn btn-primary" href="{{ root }}for-sale/index.html" hreflang="en">Alle Angebote ansehen (Englisch)</a><a class="btn btn-white" href="{{ root }}de/ratgeber-kauf-aus-deutschland.html">Ratgeber: Kauf aus Deutschland</a></div>
+  </div>
+</section>
+<section class="section" aria-labelledby="why">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="why">Was anders ist, wenn Sie aus Deutschland kaufen</h2></div></div>
+    <ul class="facts-grid">
+      <li><strong>Keine Genehmigung</strong><span>Als EU-Bürger kaufen Sie zu denselben Bedingungen wie Zyprer. Die geplanten Beschränkungen würden nach den bisherigen Entwürfen nur Käufer außerhalb der EU betreffen.</span></li>
+      <li><strong>Kein Notar</strong><span>In Zypern übernimmt Ihr eigener Anwalt diese Aufgabe und hinterlegt den Vertrag beim Grundbuchamt (Land Registry).</span></li>
+      <li><strong>Maklerprovision</strong><span>In der Regel zahlt sie der Verkäufer. Fragen Sie trotzdem nach, bevor Sie unterschreiben.</span></li>
+      <li><strong>Kaufnebenkosten</strong><span>Übertragungsgebühren (Transfer Fees) beim Wiederverkauf oder Mehrwertsteuer beim Neubau, dazu Anwaltskosten. Wir rechnen sie für jedes Angebot aus.</span></li>
+    </ul>
+  </div>
+</section>
+<section class="section band-sky" aria-labelledby="service">
+  <div class="wrap desk-band">
+    <div>
+      <p class="eyebrow">Käuferservice</p>
+      <h2 id="service">Wir antworten, und wir sorgen dafür, dass der Makler antwortet</h2>
+      <p class="band-lead">Erste Antwort innerhalb von 15 Minuten, 9 bis 19 Uhr zyprischer Zeit, jeden Tag. Nach 48 Stunden fragen wir Sie, ob der Makler sich gemeldet hat, und haken nach, wenn nicht.</p>
+      <a class="btn btn-ocean" href="{{ root }}buyer-desk.html" hreflang="en">Käuferservice kontaktieren</a>
+    </div>
+    <ol class="standards">
+      <li><strong>Besichtigungsreise</strong><span>Sie wählen die Häuser, wir schicken Ihre Reisedaten an jeden Makler, und Sie bekommen einen gemeinsamen Plan. Im Sommer 2026 gab es Direktflüge nach Paphos aus Berlin, Köln, Düsseldorf, Memmingen und München.</span></li>
+      <li><strong>Video-Besichtigung</strong><span>Live mit dem Makler, bevor Sie fliegen.</span></li>
+      <li><strong>Deutschsprachige Anwälte</strong><span>Die Deutsche Botschaft in Nikosia führt eine Liste von Kanzleien, die auf Deutsch arbeiten.</span></li>
+    </ol>
+  </div>
+</section>
+<section class="section" aria-labelledby="featured">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="featured">Ein Beispiel auf Deutsch</h2><p>So sieht jedes Angebot aus. Beispielangebot.</p></div></div>
+    <a class="feature-listing" href="{{ root }}de/immobilie/10238-villa-peyia.html">
+      <div class="photo">{{ photo_img("10238-1", root, "Villa mit Pool in Peyia") }}<span class="cap cap-sample">Beispielfoto</span></div>
+      <div class="fl-body"><p class="price">485.000 €</p><h3>Villa mit 3 Schlafzimmern und eigenem Pool</h3><p class="place">Peyia, Paphos · Ref. 10238</p><p>170 m² Wohnfläche · 450 m² Grundstück · Energieklasse B · Title Deed ausgestellt · keine MwSt. (Wiederverkauf)</p><span class="market-go">Zum Angebot {{ icons.chev }}</span></div>
+    </a>
+  </div>
+</section>
+{% endblock %}

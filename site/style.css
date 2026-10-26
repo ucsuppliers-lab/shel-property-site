@@ -430,3 +430,7 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
 .nav .nav-drop-menu a:first-child { font-weight: 600; border-bottom: 0; margin-bottom: 0; border-radius: 6px; }
 .search-row-6 { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)) auto; }
 @media (max-width: 860px) { .search-row-6 { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } .search-row-6 .field:first-child, .search-row-6 .field:nth-child(2) { grid-column: auto; } }
+
+.story { max-width: 720px; }
+.story h2 { margin: 6px 0 12px; }
+.story p { line-height: 1.65; margin: 0 0 14px; }

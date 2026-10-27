@@ -37,15 +37,15 @@
       </div>
       <a href="{{ root }}to-rent/index.html"{% if nav == 'to-rent' %} aria-current="page"{% endif %}>{{ t.nav_rent }}</a>
       <div class="nav-drop{% if nav in ('services', 'abroad', 'desk') %} is-current{% endif %}">
-        <a class="nav-drop-link" href="{{ root }}services/index.html"{% if nav == 'services' %} aria-current="page"{% endif %}>{{ t.nav_services }}</a>
+        <a class="nav-drop-link" href="{{ root }}{{ 'he/' if lang == 'he' else '' }}services/index.html"{% if nav == 'services' %} aria-current="page"{% endif %}>{{ t.nav_services }}</a>
         <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="services-menu" aria-label="{{ t.nav_services }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-drop-menu" id="services-menu" hidden>
           <a href="{{ root }}buying-from-abroad/from-the-uk.html">{{ t.f_uk }}</a>
           <a href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he">{{ t.f_il }}</a>
           <a href="{{ root }}buying-from-abroad/costs.html">{{ t.nav_svc_costs }}</a>
-          <a href="{{ root }}services/legal.html">{{ t.nav_svc_legal }}</a>
-          <a href="{{ root }}services/finance.html">{{ t.nav_svc_finance }}</a>
-          <a href="{{ root }}services/residency.html">{{ t.nav_svc_residency }}</a>
+          <a href="{{ root }}{{ 'he/' if lang == 'he' else '' }}services/legal.html">{{ t.nav_svc_legal }}</a>
+          <a href="{{ root }}{{ 'he/' if lang == 'he' else '' }}services/finance.html">{{ t.nav_svc_finance }}</a>
+          <a href="{{ root }}{{ 'he/' if lang == 'he' else '' }}services/residency.html">{{ t.nav_svc_residency }}</a>
           <a href="{{ root }}buyer-desk.html"{% if nav == 'desk' %} aria-current="page"{% endif %}>{{ t.nav_desk }}</a>
         </div>
       </div>

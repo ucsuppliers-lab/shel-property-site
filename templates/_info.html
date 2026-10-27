@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
 <div class="wrap">
-  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">{% block crumb %}{% endblock %}</span></nav>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}{{ 'he/' if lang == 'he' else ('de/' if lang == 'de' else '') }}index.html">{{ {"en":"Home","de":"Startseite","he":"דף הבית"}[lang|default("en")] }}</a><span aria-hidden="true">/</span><span aria-current="page">{% block crumb %}{% endblock %}</span></nav>
   <article class="prose">
     {% block body %}{% endblock %}
   </article>

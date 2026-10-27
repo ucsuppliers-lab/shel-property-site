@@ -6,7 +6,7 @@ from markupsafe import Markup
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.join(HERE, "..", "lux"))
+sys.path.insert(0, os.path.join(HERE, "lib"))
 import data as D
 import i18n as I18N
 from seal import wave_seal_g, icon_g
@@ -244,6 +244,7 @@ def build():
     made.append(write("trust.html", "trust.html", nav=None))
     for f,t in (("index","svc_index"),("legal","svc_legal"),("finance","svc_finance"),("residency","svc_residency")):
         made.append(write(f"services/{f}.html", t+".html", nav="services"))
+        made.append(write(f"he/services/{f}.html", t+"_he.html", nav="services", lang="he", alt={"en": f"services/{f}.html", "he": f"he/services/{f}.html"}))
     made.append(write("agents/dashboard.html", "dashboard.html", nav=None))
     made.append(write("accessibility.html", "info_accessibility.html", nav=None))
     made.append(write("agents/index.html", "agents.html", nav="agents"))

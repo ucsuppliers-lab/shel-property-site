@@ -20,7 +20,7 @@
       </div>
       <p id="dphone" class="callout" hidden>{{ A.name }}: {{ A.phone }}. Say you saw the project on Shel Property.</p>
       <div class="licence">
-        <p><a href="{{ root }}agents/{{ d.developer }}.html">{{ A.name }}</a> (sample). Reg. no. {{ A.reg }}, licence no. {{ A.licence }}.</p>
+        <p><a href="{{ root }}agents/{{ d.developer }}.html">{{ A.name }}</a>{% if SAMPLE %} (sample){% endif %}. Reg. no. {{ A.reg }}, licence no. {{ A.licence }}.</p>
         <p class="checked">Developer checked on {{ nice_date(C.checked) }} with {{ C.source }}.</p>
         <p>This checks the developer, not the title to the land. Your own lawyer does that.</p>
       </div>

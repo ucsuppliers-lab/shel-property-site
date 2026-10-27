@@ -196,7 +196,7 @@ def price_short(l):
     if l["period"] == "month": return f"€{p:,}/mo"
     return f"€{p/1000:.0f}k" if p < 1_000_000 else f"€{p/1_000_000:.1f}m"
 
-env.globals.update(map_svg=map_svg)
+env.globals.update(map_svg=map_svg, SAMPLE=D.SAMPLE)
 
 def card_html(l, root):
     return env.get_template("_card.html").render(l=l, root=root)
@@ -220,9 +220,9 @@ def build():
     DE_L, HE_L = "de/immobilie/10238-villa-peyia.html", "he/nehes/10238-villa-peyia.html"
     for l in D.LISTINGS:
         similar = [s for s in LIST_BY_DATE if s["purpose"] == l["purpose"] and s["ref"] != l["ref"]][:3]
-        alt = {"en": l["path"], "de": DE_L, "he": HE_L} if l["ref"] == "10238" else {"en": l["path"]}
+        alt = {"en": l["path"], "de": DE_L, "he": HE_L} if (l["ref"] == "10238" and D.SAMPLE) else {"en": l["path"]}
         made.append(write(l["path"], "listing.html", l=l, similar=similar, nav=l["purpose"], alt=alt))
-        if l["ref"] == "10238":
+        if l["ref"] == "10238" and D.SAMPLE:
             made.append(write(DE_L, "listing.html", l=l, similar=[], nav="resale", lang="de", alt=alt))
             made.append(write(HE_L, "listing.html", l=l, similar=[], nav="resale", lang="he", alt=alt))
     HOME_ALT = {"en": "index.html", "de": "de/index.html", "he": "he/index.html"}

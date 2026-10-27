@@ -202,6 +202,7 @@ EXTRA = {
     "10205": dict(year=None, fees=None, confirmed="2026-10-15", zone="Residential", density="60%", access="Upper road", utilities="Water and electricity along the road", seller="Private owner"),
 }
 SPONSORED = {"10233"}
+SAMPLE = True
 
 CHECKS = {
     "agency-a": dict(kind="agent", checked="2026-10-22", source="the Registration Council's list of licensed agents", source_de="der Liste lizenzierter Makler des Registration Council", source_he="רשימת המתווכים בעלי הרישיון של מועצת הרישום"),
@@ -240,3 +241,26 @@ DEVELOPMENTS = [
          blurb="Three detached villas on the edge of Emba, sold off plan. You choose the ground-floor layout from three plans.",
          stages="Deposit on signing, then stages as the building goes up", deeds="Separate title deeds after completion"),
 ]
+
+
+# Real listings from partner agents (listings/*.csv) replace the samples once they exist.
+try:
+    import sys as _sys, os as _os
+    _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "listings"))
+    import import_csv as _imp
+    _agents = _imp.load_agents()
+    _rows, _extra, LISTING_PROBLEMS = _imp.load_listings(_agents)
+    if _rows:
+        AGENTS = _agents
+        LISTINGS = _rows
+        EXTRA = _extra
+        SPONSORED = set()
+        DEVELOPMENTS = []
+        SAMPLE = False
+        CHECKS = {k: dict(kind="agent", checked=v["licence_checked"], source="the Registration Council's list of licensed agents",
+                          source_de="der Liste lizenzierter Makler des Registration Council", source_he="רשימת המתווכים בעלי הרישיון של מועצת הרישום")
+                  for k, v in _agents.items()}
+    for _p in LISTING_PROBLEMS:
+        print("LISTING SKIPPED:", _p)
+except Exception as _e:
+    print("Listing import error:", _e)

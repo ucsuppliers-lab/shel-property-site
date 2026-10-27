@@ -434,3 +434,13 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
 .story { max-width: 720px; }
 .story h2 { margin: 6px 0 12px; }
 .story p { line-height: 1.65; margin: 0 0 14px; }
+
+/* Interactive map */
+.lmap { position: relative; width: 100%; max-width: 100%; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.lmap-canvas { position: absolute; inset: 0; z-index: 1; }
+.lmap .lmap-fallback { position: absolute; inset: 0; }
+.lmap.is-live .lmap-fallback { visibility: hidden; }
+.lmap-fallback .map { height: 100%; aspect-ratio: auto !important; }
+.lmap-pin span { display: inline-block; transform: translate(-50%, -100%); background: var(--ocean, #0E4470); color: #fff; font: 700 13px/1 Manrope, system-ui, sans-serif; padding: 6px 8px; border-radius: 6px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.lmap-pin { background: none; border: 0; }
+.leaflet-popup-content a { color: var(--ocean, #0E4470); }

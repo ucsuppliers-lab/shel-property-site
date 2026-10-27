@@ -190,13 +190,29 @@ def map_svg(listings, root, aspect=0.75):
     out.append('</div>')
     return Markup("".join(out))
 
+def leaflet_map(listings, root, aspect=0.75, area_circle=False):
+    """Interactive OpenStreetMap map (Leaflet). The drawn SVG map stays inside as the fallback if the map can't load."""
+    import json as _j, math as _m
+    seen, pins = {}, []
+    for l in listings:
+        a = D.AREAS[l["area"]]; k = seen.get(l["area"], 0); seen[l["area"]] = k + 1
+        lat = l.get("lat") or a["lat"]; lng = l.get("lng") or a["lng"]
+        if not l.get("lat") and k:  # spread homes in the same area so markers don't sit on top of each other
+            lat += 0.004 * _m.sin(k * 2.1); lng += 0.005 * _m.cos(k * 2.1)
+        pins.append({"lat": round(lat, 5), "lng": round(lng, 5), "label": price_short(l), "title": l["title"],
+                     "area": l["area_name"], "href": root + l["path"]})
+    import html as _h
+    data = _h.escape(_j.dumps({"pins": pins, "circle": area_circle}), quote=True)
+    return Markup(f'<div class="lmap" style="aspect-ratio:{aspect:.3f}" data-map="{data}">'
+                  f'<div class="lmap-fallback">{map_svg(listings, root, aspect)}</div></div>')
+
 def price_short(l):
     p = l["price"]
     if l["period"] == "night": return f"€{p}/night"
     if l["period"] == "month": return f"€{p:,}/mo"
     return f"€{p/1000:.0f}k" if p < 1_000_000 else f"€{p/1_000_000:.1f}m"
 
-env.globals.update(map_svg=map_svg, SAMPLE=D.SAMPLE)
+env.globals.update(map_svg=map_svg, leaflet_map=leaflet_map, SAMPLE=D.SAMPLE)
 
 def card_html(l, root):
     return env.get_template("_card.html").render(l=l, root=root)

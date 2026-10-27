@@ -153,7 +153,7 @@
 
       <section class="block" aria-labelledby="where">
         <h2 id="where">{{ lt.where }}</h2>
-        {{ map_svg([l], root, 2.4) }}
+        {{ leaflet_map([l], root, 2.4, area_circle=True) }}
         <p class="map-note" style="margin-top:8px">{{ lt.pin_note }}</p>
       </section>
 

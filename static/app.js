@@ -269,3 +269,36 @@
   var refIn = document.querySelector("form [name=ref]");
   if (refIn) { try { var r0 = new URLSearchParams(window.location.search).get("ref"); if (r0) refIn.value = r0; } catch (e) {} }
 })();
+
+/* Interactive maps: Leaflet + OpenStreetMap, loaded only on pages that have a map */
+(function () {
+  var maps = document.querySelectorAll(".lmap[data-map]");
+  if (!maps.length) return;
+  var css = document.createElement("link"); css.rel = "stylesheet";
+  css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(css);
+  var js = document.createElement("script"); js.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+  js.onload = function () {
+    maps.forEach(function (el) {
+      var d; try { d = JSON.parse(el.getAttribute("data-map")); } catch (e) { return; }
+      var box = document.createElement("div"); box.className = "lmap-canvas"; el.appendChild(box);
+      var map = L.map(box, { scrollWheelZoom: false, attributionControl: true });
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+      var pts = [];
+      d.pins.forEach(function (p) {
+        pts.push([p.lat, p.lng]);
+        if (d.circle) {
+          L.circle([p.lat, p.lng], { radius: 700, color: "#0E4470", weight: 2, fillColor: "#24ADA9", fillOpacity: .18 }).addTo(map);
+        } else {
+          var icon = L.divIcon({ className: "lmap-pin", html: "<span>" + p.label + "</span>", iconSize: null });
+          L.marker([p.lat, p.lng], { icon: icon, title: p.title }).addTo(map)
+            .bindPopup('<a href="' + p.href + '"><strong>' + p.title + "</strong></a><br>" + p.area + " · " + p.label);
+        }
+      });
+      if (pts.length === 1) map.setView(pts[0], d.circle ? 13 : 14);
+      else map.fitBounds(pts, { padding: [40, 40] });
+      el.classList.add("is-live");
+    });
+  };
+  document.head.appendChild(js);
+})();

@@ -444,3 +444,21 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
 .lmap-pin span { display: inline-block; transform: translate(-50%, -100%); background: var(--ocean, #0E4470); color: #fff; font: 700 13px/1 Manrope, system-ui, sans-serif; padding: 6px 8px; border-radius: 6px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
 .lmap-pin { background: none; border: 0; }
 .leaflet-popup-content a { color: var(--ocean, #0E4470); }
+
+/* search band: one style from title to filters (Fox-style hero search) */
+.search-band { background: linear-gradient(160deg, var(--ocean) 0%, var(--ocean-deep) 100%); color: #fff; padding-block: 0 26px; margin-bottom: 22px; }
+.search-band .crumbs, .search-band .crumbs a { color: var(--mist); }
+.search-band .results-head p { color: var(--mist); }
+.search-band h1 { color: #fff; }
+.search-band .btn-outline { background: transparent; color: #fff; border-color: rgba(255,255,255,.6); }
+.search-band .btn-outline:hover { background: rgba(255,255,255,.12); color: #fff; }
+.search-band .filters { background: #fff; border: 0; border-radius: 12px; padding: 16px; box-shadow: 0 12px 30px rgba(5,25,45,.28); margin-bottom: 14px; }
+.search-band .filters .field { color: var(--drift); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.search-band .filters .checks { border-top: 1px solid var(--line); padding-top: 12px; }
+.search-band .check { background: var(--foam); }
+.search-band nav.checks { margin-bottom: 0 !important; }
+.search-band nav.checks .check { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); color: #fff; text-decoration: none; }
+.search-band nav.checks .check:hover { background: rgba(255,255,255,.18); }
+.search-band .filters { color: var(--ink); }
+.search-band .filters .btn-outline { background: #fff; color: var(--ink); border-color: var(--ink); }
+.result-bar .field { white-space: nowrap; }

@@ -256,7 +256,10 @@ try:
     import import_csv as _imp
     _agents = _imp.load_agents()
     _rows, _extra, LISTING_PROBLEMS = _imp.load_listings(_agents)
-    if _rows:
+    _bad = [r for r in _rows if r["area"] not in AREAS]
+    for r in _bad: LISTING_PROBLEMS.append(f'{r["ref"]}: area "{r["area"]}" is not one of the site areas')
+    _rows = [r for r in _rows if r["area"] in AREAS]
+    if _rows or _agents:
         AGENTS = _agents
         LISTINGS = _rows
         EXTRA = _extra

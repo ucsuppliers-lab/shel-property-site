@@ -1,0 +1,24 @@
+name: Publish website
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: "Sent by the website editor"
+        required: false
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the site builds
+        run: |
+          pip install -r requirements.txt
+          python3 build.py
+      - name: Tell Netlify to publish
+        run: |
+          git config user.name "Shel website editor"
+          git config user.email "adam@shelproperty.com"
+          git commit --allow-empty -m "Publish website (from the editor)"
+          git push

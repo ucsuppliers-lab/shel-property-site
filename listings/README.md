@@ -7,6 +7,6 @@
    - price, purpose (resale / new-build / land / to-rent), title deed status (sale), energy class A–G or "exempt" (not land);
    - `photo_rights_confirmed` must be "yes".
 4. Photos go in `listings/photos/` named `<ref>-1.jpg`, `<ref>-2.jpg`…
-5. While `listings.csv` doesn't exist, the site shows the sample listings.
+5. Sample listings are switched off (SHOW_SAMPLES = False in data.py, 28 Oct 2026). Until `listings.csv` has rows, pages show a "first homes are being added" message.
 
 The columns map one-to-one to the Kyero XML feed most Cyprus agent systems export, so feeds can replace the CSV later.

@@ -13,7 +13,7 @@
   <div class="results-head">
     <div>
       <h1>{{ P.title }} in {{ where }}</h1>
-      <p>{% if area %}{{ area.blurb }} {% endif %}{% set one, many = ('plot', 'plots') if pur == 'land' else ('property', 'properties') %}<span id="result-count" data-one="{{ one }}" data-many="{{ many }}">{{ listings|length }} {{ one if listings|length == 1 else many }}</span> from licensed agents. Sample listings.</p>
+      <p>{% if area %}{{ area.blurb }} {% endif %}{% if listings %}{% set one, many = ('plot', 'plots') if pur == 'land' else ('property', 'properties') %}<span id="result-count" data-one="{{ one }}" data-many="{{ many }}">{{ listings|length }} {{ one if listings|length == 1 else many }}</span> from licensed agents.{% if D.SAMPLE %} Sample listings.{% endif %}{% else %}Homes from licensed agents, with the title deed status shown on every listing.{% endif %}</p>
     </div>
     <button type="button" class="btn btn-outline" data-reveal="alert-note">Email me new matches</button>
   </div>
@@ -51,7 +51,7 @@
   {% if D.BEFORE.get(pur) %}<aside class="before" aria-label="Before you buy"><strong>Before you buy</strong><p>{{ D.BEFORE[pur] }}</p><p class="before-links">{% for href, text in D.BEFORE_LINKS[pur] %}<a href="{{ root }}{{ href }}">{{ text }}</a>{% endfor %}</p></aside>{% endif %}
   <p id="alert-note" class="callout" hidden style="margin-bottom:14px">Email alerts come with the live site. Nothing is saved in this draft.</p>
 
-  <div class="results">
+  <div class="results{% if not listings %} results-solo{% endif %}">
     <section aria-label="Results">
       <div class="result-bar">
         <span>Newest first unless you change it. Sponsored listings are labelled. <a href="{{ root }}trust.html#ranking">How listings are ranked</a></span>
@@ -61,12 +61,13 @@
       <div class="grid">
         {% for l in listings %}{% include "_card.html" %}{% endfor %}
       </div>
-      <p id="empty" class="empty" hidden>Nothing matches those filters. Try a higher price or fewer must-haves.</p>
+      {% if not listings %}<p class="empty">We're adding the first homes from licensed agents now. Check back soon, or <a href="{{ root }}contact.html">tell us what you're looking for</a>.</p>{% endif %}
+      {% if listings %}<p id="empty" class="empty" hidden>Nothing matches those filters. Try a higher price or fewer must-haves.</p>{% endif %}
     </section>
-    <aside class="map-panel" aria-label="Map">
+{% if listings %}    <aside class="map-panel" aria-label="Map">
       {{ leaflet_map(listings, root, 0.72) }}
       <p class="map-note">Illustrative map. The live site uses a real street map. Draw-your-own-area search comes once there are enough listings to make it useful.</p>
-    </aside>
+    </aside>{% endif %}
   </div>
 </div>
 {% endblock %}

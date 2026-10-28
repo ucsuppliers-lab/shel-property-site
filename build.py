@@ -230,7 +230,8 @@ def build():
         ls = [l for l in LIST_BY_DATE if in_cat(l, pur)]
         areas_here = [(a, D.AREAS[a]["name"], sum(1 for l in ls if l["area"] == a)) for a in D.AREAS if any(l["area"] == a for l in ls)]
         made.append(write(f"{pur}/index.html", "results.html", listings=ls, pur=pur, P=P, area=None, areas_here=areas_here, nav=pur))
-        for a, name, n in areas_here:
+        area_pages = [(a, D.AREAS[a]["name"], 0) for a in D.AREAS] if (pur == "for-sale" and not areas_here) else areas_here
+        for a, name, n in area_pages:
             made.append(write(f"{pur}/{a}.html", "results.html", listings=[l for l in ls if l["area"] == a], pur=pur, P=P,
                               area=dict(D.AREAS[a], slug=a), areas_here=areas_here, nav=pur))
     DE_L, HE_L = "de/immobilie/10238-villa-peyia.html", "he/nehes/10238-villa-peyia.html"

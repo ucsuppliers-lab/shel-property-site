@@ -4,7 +4,7 @@
 {% block main %}
 <div class="wrap">
   <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Development</span></nav>
-  <div class="results-head"><div><h1>Developments in Paphos</h1><p>{{ D.DEVELOPMENTS|length }} projects from checked developers. Sample projects.</p></div></div>
+  <div class="results-head"><div><h1>Developments in Paphos</h1><p>{% if D.DEVELOPMENTS %}{{ D.DEVELOPMENTS|length }} projects from checked developers.{% else %}New-build projects from checked developers are being added now.{% endif %}{% if D.SAMPLE %} Sample projects.{% endif %}</p></div></div>
   <aside class="before" aria-label="Before you buy"><strong>Before you buy</strong><p>{{ D.BEFORE.developments }}</p><p class="before-links">{% for href, text in D.BEFORE_LINKS.developments %}<a href="{{ root }}{{ href }}">{{ text }}</a>{% endfor %}</p></aside>
   <div class="projects">
     {% for d in D.DEVELOPMENTS %}

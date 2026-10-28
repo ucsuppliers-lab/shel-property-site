@@ -37,7 +37,7 @@
     </ol>
   </div>
 </section>
-<section class="section" aria-labelledby="featured">
+{% if D.SAMPLE %}<section class="section" aria-labelledby="featured">
   <div class="wrap">
     <div class="section-head"><div><h2 id="featured">דוגמה בעברית</h2><p>כך נראית כל מודעה. מודעה לדוגמה.</p></div></div>
     <a class="feature-listing" href="{{ root }}he/nehes/10238-villa-peyia.html">
@@ -45,5 +45,5 @@
       <div class="fl-body"><p class="price">€485,000</p><p class="fx-static">בערך ₪{{ "{:,.0f}".format(485000 * D.FX.ILS) }}, לפי שער לדוגמה</p><h3>וילה עם 3 חדרי שינה ובריכה פרטית</h3><p class="place">פגיה, פאפוס · מודעה 10238</p><p>170 מ״ר בנוי · מגרש 450 מ״ר · דירוג אנרגטי B · טאבו הונפק · ללא מע״מ (יד שנייה)</p><span class="market-go">למודעה {{ icons.chev }}</span></div>
     </a>
   </div>
-</section>
+</section>{% endif %}
 {% endblock %}

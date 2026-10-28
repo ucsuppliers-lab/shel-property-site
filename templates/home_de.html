@@ -37,7 +37,7 @@
     </ol>
   </div>
 </section>
-<section class="section" aria-labelledby="featured">
+{% if D.SAMPLE %}<section class="section" aria-labelledby="featured">
   <div class="wrap">
     <div class="section-head"><div><h2 id="featured">Ein Beispiel auf Deutsch</h2><p>So sieht jedes Angebot aus. Beispielangebot.</p></div></div>
     <a class="feature-listing" href="{{ root }}de/immobilie/10238-villa-peyia.html">
@@ -45,5 +45,5 @@
       <div class="fl-body"><p class="price">485.000 €</p><h3>Villa mit 3 Schlafzimmern und eigenem Pool</h3><p class="place">Peyia, Paphos · Ref. 10238</p><p>170 m² Wohnfläche · 450 m² Grundstück · Energieklasse B · Title Deed ausgestellt · keine MwSt. (Wiederverkauf)</p><span class="market-go">Zum Angebot {{ icons.chev }}</span></div>
     </a>
   </div>
-</section>
+</section>{% endif %}
 {% endblock %}

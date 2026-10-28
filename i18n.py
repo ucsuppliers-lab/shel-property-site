@@ -4,7 +4,7 @@ T = {
 "en": dict(
     html_lang="en-GB", dir="ltr", name="English", code="EN",
     skip="Skip to content",
-    draft="<strong>DRAFT</strong> · Shel Property preview. Sample listings and agencies; nothing here is live and no form sends anything.",
+    draft="<strong>DRAFT</strong> · Shel Property preview. Nothing here is live and no form sends anything.",
     nav_main="Main", nav_forsale="For sale", nav_salemenu="Sale", nav_allsale="All property for sale", nav_sale="Resale", nav_new="New build", nav_dev="Development", nav_land="Land", nav_rent="Rent", nav_abroad="Buying from abroad", nav_desk="Buyer desk", nav_services="Services", nav_about="About", nav_svc_costs="Costs and tax", nav_svc_legal="Legal and title deeds", nav_svc_finance="Finance and mortgages", nav_svc_residency="Residency",
     saved="Saved homes", for_agents="For agents", lang_label="Language",
     f_homes="Homes in Paphos", f_abroad="Buying from abroad", f_trust="Trust", f_shel="Shel Property",
@@ -19,7 +19,7 @@ T = {
 "de": dict(
     html_lang="de", dir="ltr", name="Deutsch", code="DE",
     skip="Zum Inhalt springen",
-    draft="<strong>ENTWURF</strong> · Vorschau von Shel Property. Beispielangebote und Beispielmakler; nichts ist live, kein Formular sendet etwas. Auf Deutsch gibt es in diesem Entwurf die Startseite, die Villa in Peyia und den Ratgeber für Käufer aus Deutschland. Die Übersetzung prüft vor dem Start ein Muttersprachler.",
+    draft="<strong>ENTWURF</strong> · Vorschau von Shel Property. Nichts ist live, kein Formular sendet etwas. Auf Deutsch gibt es in diesem Entwurf die Startseite und den Ratgeber für Käufer aus Deutschland. Die Übersetzung prüft vor dem Start ein Muttersprachler.",
     nav_main="Hauptmenü", nav_forsale="Kaufen", nav_salemenu="Kaufen", nav_allsale="Alle Kaufangebote", nav_sale="Bestand", nav_new="Neubau", nav_dev="Projekte", nav_land="Grundstücke", nav_rent="Mieten", nav_abroad="Kauf aus dem Ausland", nav_desk="Käuferservice", nav_services="Service", nav_about="Über uns", nav_svc_costs="Kosten und Steuern", nav_svc_legal="Recht und Grundbuch", nav_svc_finance="Finanzierung", nav_svc_residency="Aufenthalt",
     saved="Gemerkte Immobilien", for_agents="Für Makler", lang_label="Sprache",
     f_homes="Immobilien in Paphos", f_abroad="Kauf aus dem Ausland", f_trust="Vertrauen", f_shel="Shel Property",
@@ -34,7 +34,7 @@ T = {
 "he": dict(
     html_lang="he", dir="rtl", name="עברית", code="HE",
     skip="דילוג לתוכן",
-    draft="<strong>טיוטה</strong> · תצוגה מקדימה של Shel Property. מודעות ומתווכים לדוגמה בלבד; שום דבר כאן אינו פעיל ואף טופס אינו נשלח. בעברית יש בטיוטה זו את דף הבית, הווילה בפגיה והמדריך לקונים מישראל. דובר עברית יבדוק את התרגום לפני ההשקה.",
+    draft="<strong>טיוטה</strong> · תצוגה מקדימה של Shel Property. שום דבר כאן אינו פעיל ואף טופס אינו נשלח. בעברית יש בטיוטה זו את דף הבית, דפי השירותים והמדריך לקונים מישראל. דובר עברית יבדוק את התרגום לפני ההשקה.",
     nav_main="תפריט ראשי", nav_forsale="למכירה", nav_salemenu="למכירה", nav_allsale="כל הנכסים למכירה", nav_sale="יד שנייה", nav_new="בנייה חדשה", nav_dev="פרויקטים", nav_land="מגרשים", nav_rent="להשכרה", nav_abroad="קנייה מחו״ל", nav_desk="שירות לקונים", nav_services="שירותים", nav_about="אודות", nav_svc_costs="עלויות ומיסוי", nav_svc_legal="משפטי וטאבו", nav_svc_finance="מימון ומשכנתאות", nav_svc_residency="תושבות",
     saved="נכסים שמורים", for_agents="למתווכים", lang_label="שפה",
     f_homes="נכסים בפאפוס", f_abroad="קנייה מחו״ל", f_trust="אמון", f_shel="Shel Property",

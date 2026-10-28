@@ -462,3 +462,4 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
 .search-band .filters { color: var(--ink); }
 .search-band .filters .btn-outline { background: #fff; color: var(--ink); border-color: var(--ink); }
 .result-bar .field { white-space: nowrap; }
+.results-solo { grid-template-columns: minmax(0,1fr); }

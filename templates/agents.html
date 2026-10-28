@@ -4,7 +4,7 @@
 {% block main %}
 <div class="wrap">
   <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Find an agent</span></nav>
-  <div class="results-head"><div><h1>Licensed agents in Paphos</h1><p>Every agent here is registered and licensed by the council that licenses estate agents in Cyprus. Sample agencies in this draft.</p></div></div>
+  <div class="results-head"><div><h1>Licensed agents in Paphos</h1><p>Every agent here is registered and licensed by the council that licenses estate agents in Cyprus.{% if D.SAMPLE %} Sample agencies in this draft.{% endif %}</p></div></div>
   <div class="agent-cards" style="padding-bottom:56px">
     {% for k, a in D.AGENTS.items() %}
     {% set n = D.LISTINGS|selectattr('agent','equalto',k)|list|length %}
@@ -17,5 +17,6 @@
     </article>
     {% endfor %}
   </div>
+  {% if not D.AGENTS %}<p class="empty" style="margin-bottom:56px">The first licensed agents are joining now. <a href="{{ root }}for-agents.html">Are you an agent in Paphos?</a></p>{% endif %}
 </div>
 {% endblock %}

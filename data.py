@@ -243,6 +243,12 @@ DEVELOPMENTS = [
 ]
 
 
+# Eli, 28 Oct 2026: take all sample properties off the site; real listings come in via listings/*.csv.
+SHOW_SAMPLES = False
+if not SHOW_SAMPLES:
+    AGENTS, LISTINGS, EXTRA, SPONSORED, DEVELOPMENTS, CHECKS = {}, [], {}, set(), [], {}
+    SAMPLE = False
+
 # Real listings from partner agents (listings/*.csv) replace the samples once they exist.
 try:
     import sys as _sys, os as _os

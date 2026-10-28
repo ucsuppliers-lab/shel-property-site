@@ -93,12 +93,13 @@
 <section class="section" aria-labelledby="latest">
   <div class="wrap">
     <div class="section-head">
-      <div><h2 id="latest">New on the market</h2><p>Sample listings</p></div>
+      <div><h2 id="latest">New on the market</h2><p>{% if D.SAMPLE %}Sample listings{% elif not latest %}New homes from licensed agents are being added now.{% endif %}</p></div>
       <a href="{{ root }}for-sale/index.html">See all property for sale</a>
     </div>
     <div class="grid">
       {% for l in latest %}{% include "_card.html" %}{% endfor %}
     </div>
+    {% if not latest %}<p class="empty">We're adding the first homes from licensed agents in Paphos now. Check back soon, or <a href="{{ root }}contact.html">tell us what you're looking for</a>.</p>{% endif %}
   </div>
 </section>
 

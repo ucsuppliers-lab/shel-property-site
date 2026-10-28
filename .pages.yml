@@ -1,0 +1,146 @@
+# Website editor (Pages CMS, app.pagescms.org). Saving an entry commits it here; Netlify rebuilds the site.
+media:
+  - name: photos
+    label: Property photos
+    input: content/photos
+    output: /content/photos
+    extensions: [jpg, jpeg, png, webp]
+    rename: true
+
+settings:
+  commit:
+    templates:
+      create: "Add {path} [skip netlify]"
+      update: "Update {path} [skip netlify]"
+      delete: "Delete {path} [skip netlify]"
+      rename: "Rename {oldPath} to {newPath} [skip netlify]"
+
+actions:
+  - name: publish
+    label: Publish website
+    workflow: publish.yml
+    confirm:
+      title: "Publish all saved changes to the website?"
+      button: Publish
+
+content:
+  - name: listings
+    label: Properties
+    type: collection
+    path: content/listings
+    format: json
+    filename: "{fields.ref}.json"
+    view:
+      fields: [ref, title, area, price, published]
+      primary: title
+      sort: [ref, price]
+    fields:
+      - { name: published, label: "Show on website", type: boolean, default: true, description: "Untick to take the home off the site without deleting it." }
+      - { name: ref, label: "Reference", type: string, required: true, description: "Your own reference number, e.g. 20001. Can't be changed later." }
+      - name: agent_id
+        label: Agent
+        type: reference
+        required: true
+        options: { collection: agents, value: "{id}", label: "{name}" }
+      - name: purpose
+        label: Section
+        type: select
+        required: true
+        options:
+          values:
+          - { name: resale, label: "For sale: resale" }
+          - { name: new-build, label: "For sale: new build" }
+          - { name: land, label: "For sale: land" }
+          - { name: to-rent, label: "To rent (long let)" }
+      - name: area
+        label: Area
+        type: select
+        required: true
+        options:
+          values:
+          - { name: kato-paphos, label: "Kato Paphos" }
+          - { name: paphos-town, label: "Paphos town" }
+          - { name: chloraka, label: "Chloraka" }
+          - { name: kissonerga, label: "Kissonerga" }
+          - { name: coral-bay, label: "Coral Bay" }
+          - { name: peyia, label: "Peyia" }
+          - { name: tala, label: "Tala" }
+          - { name: emba, label: "Emba" }
+          - { name: geroskipou, label: "Geroskipou" }
+          - { name: polis, label: "Polis" }
+          - { name: latchi, label: "Latchi" }
+      - name: type
+        label: Property type
+        type: select
+        required: true
+        options:
+          values:
+          - { name: "Apartment", label: "Apartment" }
+          - { name: "Penthouse", label: "Penthouse" }
+          - { name: "Studio", label: "Studio" }
+          - { name: "Townhouse", label: "Townhouse" }
+          - { name: "Semi-detached house", label: "Semi-detached house" }
+          - { name: "Detached house", label: "Detached house" }
+          - { name: "Villa", label: "Villa" }
+          - { name: "Bungalow", label: "Bungalow" }
+          - { name: "Maisonette", label: "Maisonette" }
+          - { name: "Building plot", label: "Building plot" }
+          - { name: "Land", label: "Land" }
+      - { name: title, label: "Headline", type: string, required: true, description: "Short and factual, e.g. 3 bed villa with private pool" }
+      - { name: price, label: "Price (€)", type: number, required: true, description: "Numbers only. For rentals: per month." }
+      - { name: plus_vat, label: "VAT added on top", type: boolean, default: false }
+      - { name: bedrooms, label: Bedrooms, type: number }
+      - { name: bathrooms, label: Bathrooms, type: number }
+      - { name: covered_m2, label: "Covered area (m²)", type: number }
+      - { name: plot_m2, label: "Plot (m²)", type: number }
+      - name: title_deed
+        label: Title deed
+        type: select
+        description: Required for sales.
+        options:
+          values:
+          - { name: issued, label: Issued }
+          - { name: after-completion, label: "After completion" }
+          - { name: pending, label: Pending }
+      - name: energy_class
+        label: Energy class
+        type: select
+        description: "From the Energy Performance Certificate. Required for buildings, not land."
+        options:
+          values: [A, B, C, D, E, F, G, exempt]
+      - { name: distance_to_sea_km, label: "Distance to sea (km)", type: number }
+      - { name: year_built, label: "Year built", type: number }
+      - { name: common_fees_month, label: "Communal fees (€ a month)", type: number }
+      - { name: features, label: Features, type: string, description: "Separate with | e.g. Sea view|Private pool|Solar panels" }
+      - { name: description, label: Description, type: text, required: true }
+      - name: photos
+        label: Photos
+        type: image
+        description: "First photo is the main one. Landscape, at least 1600 px wide."
+        options: { media: photos, multiple: { max: 20 } }
+      - { name: photo_caption, label: "Main photo shows", type: string }
+      - { name: photo_rights_confirmed, label: "Agent confirms we may use these photos", type: boolean, default: false }
+      - { name: latitude, label: Latitude, type: number, description: "From Google Maps. Approximate is fine; the site shows an area circle." }
+      - { name: longitude, label: Longitude, type: number }
+      - { name: date_listed, label: "Date listed", type: date }
+      - { name: last_confirmed, label: "Agent last confirmed available", type: date }
+
+  - name: agents
+    label: Agents
+    type: collection
+    path: content/agents
+    format: json
+    filename: "{fields.id}.json"
+    view:
+      fields: [name, office, licence_no]
+      primary: name
+    fields:
+      - { name: id, label: "Short code", type: string, required: true, description: "Lower case, no spaces, e.g. sunrise-estates" }
+      - { name: name, label: "Agency name", type: string, required: true }
+      - { name: office, label: "Main office", type: string, required: true }
+      - { name: since, label: "Year started", type: number }
+      - { name: registration_no, label: "Registration no.", type: string, required: true }
+      - { name: licence_no, label: "Licence no.", type: string, required: true }
+      - { name: licence_checked_on, label: "Licence checked on (Shel)", type: date }
+      - { name: phone, label: Phone, type: string, required: true }
+      - { name: about, label: About, type: text }

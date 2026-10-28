@@ -3,7 +3,7 @@
     {% if l.photos %}{{ photo_img(l.photos[0], root, l.photo ~ ', ' ~ l.title ~ ' in ' ~ l.area_name) }}{% else %}{{ scene(l.ref, l.tone) }}{% endif %}
     {% if l.sponsored %}<span class="sponsored">Sponsored</span>{% endif %}
     {% if l.tags %}<div class="badges">{% for t in l.tags %}<span class="badge{% if not loop.first %} badge-light{% endif %}">{{ t }}</span>{% endfor %}</div>{% endif %}
-    {% if l.photos %}<span class="cap cap-sample">Sample photo</span>{% else %}<span class="cap">Photo: {{ l.photo }}</span>{% endif %}
+    {% if l.photos %}{% if SAMPLE %}<span class="cap cap-sample">Sample photo</span>{% endif %}{% else %}<span class="cap">Photo: {{ l.photo }}</span>{% endif %}
   </div>
   <button type="button" class="save" data-ref="{{ l.ref }}" aria-pressed="false" aria-label="Save this home">{{ icons.heart }}</button>
   <div class="card-body">

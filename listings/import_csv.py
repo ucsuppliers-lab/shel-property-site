@@ -17,12 +17,27 @@ def _num(v, kind=float):
 def _yes(v):
     return (v or "").strip().lower() in ("yes", "y", "true", "1")
 
+CONTENT = os.path.join(os.path.dirname(HERE), "content")
+
+def _json_rows(kind):
+    """Entries saved by the website editor (Pages CMS) in content/<kind>/*.json."""
+    import json
+    d = os.path.join(CONTENT, kind)
+    out = []
+    if os.path.isdir(d):
+        for f in sorted(os.listdir(d)):
+            if f.endswith(".json"):
+                r = json.load(open(os.path.join(d, f), encoding="utf-8"))
+                out.append({k: ("" if v is None else v if isinstance(v, list) else str(v)) for k, v in r.items()})
+    return out
+
+def _csv_rows(name):
+    p = os.path.join(HERE, name)
+    return list(csv.DictReader(open(p, encoding="utf-8-sig"))) if os.path.exists(p) else []
+
 def load_agents():
-    p = os.path.join(HERE, "agents.csv")
-    if not os.path.exists(p):
-        return {}
     out = {}
-    for r in csv.DictReader(open(p, encoding="utf-8-sig")):
+    for r in _csv_rows("agents.csv") + _json_rows("agents"):
         if not r.get("id"):
             continue
         out[r["id"].strip()] = {"name": r["name"], "office": r["office"], "since": _num(r.get("since"), int),
@@ -31,11 +46,10 @@ def load_agents():
     return out
 
 def load_listings(agents):
-    p = os.path.join(HERE, "listings.csv")
-    if not os.path.exists(p):
-        return [], {}, []
     rows, extra, problems = [], {}, []
-    for i, r in enumerate(csv.DictReader(open(p, encoding="utf-8-sig")), start=2):
+    for i, r in enumerate(_csv_rows("listings.csv") + _json_rows("listings"), start=2):
+        if str(r.get("published", "yes")).lower() in ("false", "no", "0"):
+            continue
         if not (r.get("ref") or "").strip():
             continue
         ref = r["ref"].strip()
@@ -47,6 +61,7 @@ def load_listings(agents):
         if r.get("purpose") != "land" and (r.get("energy_class") or "").strip() not in ENERGY: errs.append("energy_class missing (A-G or exempt)")
         if r.get("purpose") != "to-rent" and r.get("title_deed") not in DEEDS: errs.append("title_deed must be issued / after-completion / pending")
         if not _yes(r.get("photo_rights_confirmed")): errs.append("photo rights not confirmed by agent")
+        if not (r.get("area") or "").strip(): errs.append("area missing")
         if errs:
             problems.append(f"row {i} ({ref}): " + "; ".join(errs))
             continue
@@ -61,6 +76,7 @@ def load_listings(agents):
             "added": r.get("date_listed") or "", "tags": [], "features": [f.strip() for f in (r.get("features") or "").split("|") if f.strip()],
             "photo": r.get("photo_caption") or r["title"], "tone": "sky", "desc": r.get("description", "").strip(),
             "lat": _num(r.get("latitude")), "lng": _num(r.get("longitude")),
+            "photo_files": [x for x in (r.get("photos") or []) if x] if isinstance(r.get("photos"), list) else [],
         })
         extra[ref] = {"year": _num(r.get("year_built"), int), "fees": _num(r.get("common_fees_month"), int),
                       "confirmed": r.get("last_confirmed") or r.get("date_listed") or ""}

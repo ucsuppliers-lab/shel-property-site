@@ -56,8 +56,33 @@ def scene(ref, tone):
         f'<path d="M0 300 L0 {275 - h % 20} Q200 {255 - h % 30} 400 {270 - (h >> 3) % 25} L400 300 z" fill="#E8CBB2"/>'
         f'</svg>')
 
+CACHE = os.path.join(HERE, ".photo_cache")
+
+def _img_dir(key):
+    return CACHE if os.path.exists(os.path.join(CACHE, f"{key}-m.jpg")) else PH.IMG
+
+def make_listing_photos(ref, files):
+    """Resize photos uploaded through the website editor (content/photos) to the site's two sizes."""
+    keys = []
+    os.makedirs(CACHE, exist_ok=True)
+    for n, f in enumerate(files, start=1):
+        src = os.path.join(HERE, f.lstrip("/"))
+        if not os.path.exists(src):
+            print("PHOTO MISSING:", ref, f); continue
+        key = f"{ref}-{n}"
+        stamp = os.path.join(CACHE, key + ".src")
+        sig = f"{f}:{os.path.getmtime(src)}:{os.path.getsize(src)}"
+        if not (os.path.exists(stamp) and open(stamp).read() == sig):
+            im = _Im.open(src).convert("RGB")
+            for w, suffix, q in ((1600, "l", 76), (720, "m", 74)):
+                r = im.copy(); r.thumbnail((w, w * 2))
+                r.save(os.path.join(CACHE, f"{key}-{suffix}.jpg"), "JPEG", quality=q, optimize=True, progressive=True)
+            open(stamp, "w").write(sig)
+        keys.append(key)
+    return keys
+
 def photo_img(key, root, alt, eager=False, sizes="(max-width: 700px) 100vw, 400px"):
-    m = os.path.join(PH.IMG, f"{key}-m.jpg"); l = os.path.join(PH.IMG, f"{key}-l.jpg")
+    m = os.path.join(_img_dir(key), f"{key}-m.jpg"); l = os.path.join(_img_dir(key), f"{key}-l.jpg")
     w, h = _Im.open(m).size; wl = _Im.open(l).size[0]
     load = 'fetchpriority="high"' if eager else 'loading="lazy" decoding="async"'
     return Markup(f'<img src="{root}img/{key}-m.jpg" srcset="{root}img/{key}-m.jpg {w}w, {root}img/{key}-l.jpg {wl}w" sizes="{sizes}" width="{w}" height="{h}" alt="{alt}" {load}>')
@@ -100,7 +125,7 @@ def slug(s):
 
 HAVE = PH.available()
 for l in D.LISTINGS:
-    l["photos"] = HAVE.get(l["ref"], [])
+    l["photos"] = make_listing_photos(l["ref"], l["photo_files"]) if l.get("photo_files") else (HAVE.get(l["ref"], []) if D.SAMPLE else [])
     l["area_name"] = D.AREAS[l["area"]]["name"]
     l["agent_obj"] = D.AGENTS[l["agent"]]
     l["path"] = f'property/{l["ref"]}-{slug(l["title"])}-{l["area"]}.html'
@@ -223,6 +248,9 @@ def build():
     shutil.copy(os.path.join(HERE, "static", "style.css"), os.path.join(OUT, "style.css"))
     shutil.copy(os.path.join(HERE, "static", "app.js"), os.path.join(OUT, "app.js"))
     if os.path.isdir(PH.IMG): shutil.copytree(PH.IMG, os.path.join(OUT, "img"))
+    if os.path.isdir(CACHE):
+        for f in os.listdir(CACHE):
+            if f.endswith(".jpg"): shutil.copy(os.path.join(CACHE, f), os.path.join(OUT, "img", f))
     made = []
     area_counts = {k: sum(1 for l in D.LISTINGS if l["area"] == k) for k in D.AREAS}
     made.append(write("index.html", "home.html", latest=LIST_BY_DATE[:8], area_counts=area_counts, page_title=None, nav=None, alt={"en": "index.html", "de": "de/index.html", "he": "he/index.html"}))

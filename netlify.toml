@@ -1,6 +1,12 @@
+# Netlify builds the site itself, so changes saved in the website editor (Pages CMS) go live without anyone running a build.
+# Editor saves carry [skip netlify] so each save doesn't use a deploy; the editor's "Publish website" button
+# (.github/workflows/publish.yml) makes one deploy with everything saved so far.
 [build]
-  publish = "site"
-  command = ""
+  publish = "out"
+  command = "python3 build.py"
+
+[build.environment]
+  PYTHON_VERSION = "3.12"
 
 [[headers]]
   for = "/*"

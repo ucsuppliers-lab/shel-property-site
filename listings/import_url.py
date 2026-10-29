@@ -163,6 +163,7 @@ def main(url, agent_id="", ref=""):
              "photo_caption": "", "photo_rights_confirmed": False, "date_listed": today, "last_confirmed": today,
              "source_url": url, "imported_on": today}
     entry = {k: v for k, v in entry.items() if v is not None}
+    print("::notice::Draft " + ref + ": " + str(len(saved)) + " photos; found " + ", ".join(k for k in ("title","price","area","type","bedrooms","bathrooms","covered_m2","title_deed","energy_class") if entry.get(k)))
     out = os.path.join(ROOT, "content", "listings", ref + ".json")
     json.dump(entry, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     missing = [k for k in ("title", "price", "area", "type", "bedrooms", "title_deed", "energy_class", "description") if not entry.get(k)]
@@ -175,4 +176,11 @@ if __name__ == "__main__":
     if not a:
         p = json.loads(os.environ.get("PAYLOAD") or "{}").get("inputs", {})
         a = [p.get("url", ""), p.get("agent_id", ""), p.get("ref", "")]
-    main(*a)
+    try:
+        main(*a)
+    except Exception as e:
+        msg = f"Couldn't import {a[0]}: {type(e).__name__}: {e}"
+        if "403" in str(e) or "401" in str(e):
+            msg += ". The site blocks automatic reading; ask the agent for their property feed or the details in the onboarding sheet."
+        print("::error::" + msg)
+        sys.exit(1)

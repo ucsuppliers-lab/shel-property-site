@@ -67,7 +67,13 @@ def extract(url, html):
     h1 = soup.find("h1")
     h1 = re.sub(r"\s+", " ", h1.get_text(" ")).strip() if h1 else None
     paras = [re.sub(r"\s+", " ", p.get_text(" ")).strip() for p in soup.find_all(["p", "div"]) if not p.find(["p", "div"])]
-    long_para = max((x for x in paras if 120 < len(x) < 3000 and "cookie" not in x.lower()), key=len, default=None)
+    def prose(x):  # real sentences, not a menu of links
+        return 120 < len(x) < 3000 and "cookie" not in x.lower() and len(re.findall(r"[a-z][.!?](?:\s|$)", x)) >= 2 \
+            and len(re.findall(r"\b[A-Z][a-z]+", x)) < len(x.split()) * 0.5
+    long_para = max((x for x in paras if prose(x)), key=len, default=None)
+    gone = " ".join(filter(None, [h1, soup.title.string if soup.title else ""])).lower()
+    if re.search(r"not found|404|no longer available|has been sold|page cannot be found|doesn.t exist", gone):
+        raise ValueError("this page says the property isn't there any more (sold, removed or a wrong link)")
     text = re.sub(r"\s+", " ", soup.get_text(" ")).strip()
     low = text.lower()
 

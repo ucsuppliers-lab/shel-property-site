@@ -473,3 +473,8 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
 .foot-contact a { color: #fff; }
 /* invisible bridge over the gap between a menu word and its drop-down, so moving the mouse down doesn't close it */
 .nav-drop-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }
+/* home: search sits in the same blue band and white card as the listings pages */
+.home-search { padding-block: 22px 26px; margin-bottom: 0; }
+.home-search .filters { display: block; margin: 0; }
+.home-search .search-row { gap: 10px; }
+.home-search .field select { min-height: 46px; }

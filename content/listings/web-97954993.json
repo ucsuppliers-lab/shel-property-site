@@ -1,0 +1,33 @@
+{
+  "published": false,
+  "ref": "web-97954993",
+  "agent_id": "",
+  "title": "Villa, For Sale, Paphos, Universal",
+  "description": "The Villa showcases a sleek, modern aesthetic with open-plan living spaces and kitchens featuring elegant granite worktops. Each bedroom includes fitted wardrobes, with the master bedroom offering the convenience of en-suite facilities. Outside, a private garden provides a peaceful retreat for relaxation and outdoor enjoyment. Other key features comprise off-plan options and large tiled balconies and verandas ideal for hosting gatherings.",
+  "price": 850000,
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "covered_m2": 154,
+  "plot_m2": 311,
+  "energy_class": "A",
+  "area": "chloraka",
+  "type": "Villa",
+  "purpose": "to-rent",
+  "plus_vat": true,
+  "latitude": 34.76250063091021,
+  "longitude": 32.431767387981154,
+  "features": "Garden|Fireplace|Furnished",
+  "photos": [
+    "/content/photos/web-97954993-1.jpg",
+    "/content/photos/web-97954993-2.jpg",
+    "/content/photos/web-97954993-3.jpg",
+    "/content/photos/web-97954993-4.jpg",
+    "/content/photos/web-97954993-5.jpg"
+  ],
+  "photo_caption": "",
+  "photo_rights_confirmed": false,
+  "date_listed": "2026-10-29",
+  "last_confirmed": "2026-10-29",
+  "source_url": "https://foxrealty.com.cy/property/36375/villa-for-sale-paphos-universal",
+  "imported_on": "2026-10-29"
+}

@@ -121,7 +121,9 @@ def extract(url, html):
     m = re.search(r"(?:built|construction|completed|year built)\D{0,15}((?:19|20)\d{2})", low); year = num(m.group(1)) if m else None
     hay = " ".join(filter(None, [title, url.lower(), low[:4000]])).lower()
     alias = {"pegeia": "peyia", "pegia": "peyia", "kato pafos": "kato-paphos", "chlorakas": "chloraka", "yeroskipou": "geroskipou",
-             "polis chrysochous": "polis", "latsi": "latchi", "paphos town": "paphos-town", "paphos centre": "paphos-town"}
+             "polis chrysochous": "polis", "latsi": "latchi", "paphos town": "paphos-town", "paphos centre": "paphos-town",
+             "pafos (center)": "paphos-town", "pafos center": "paphos-town", "pafos centre": "paphos-town", "paphos center": "paphos-town",
+             "kato pafos": "kato-paphos", "pafos town": "paphos-town", "universal": "paphos-town"}
     def find_area(t):
         hits = []
         for k, v in D.AREAS.items():
@@ -133,7 +135,9 @@ def extract(url, html):
     area = find_area(head) or find_area(low[:4000])
     kind = next((t for w, t in TYPE_WORDS if re.search(r"\b" + re.escape(w) + r"\b", head)), None) or \
            next((t for w, t in TYPE_WORDS if w not in ("land", "plot") and re.search(r"\b" + re.escape(w) + r"\b", low[:3000])), None)
-    rent = bool(re.search(r"\b(for rent|to rent|to let|per month|/month|monthly rent)\b", hay))
+    if re.search(r"\bfor sale\b", head): rent = False
+    elif re.search(r"\b(for rent|to rent|to let)\b", head): rent = True
+    else: rent = bool(re.search(r"\b(per month|/month|monthly rent)\b", low[:3000]))
     newb = bool(re.search(r"\b(new build|new-build|off[- ]plan|under construction|\+ ?vat|plus vat)\b", hay))
     purpose = "to-rent" if rent else "land" if kind in ("Land", "Building plot") else "new-build" if newb else "resale"
     geo = next((o.get("geo") for o in ld if isinstance(o.get("geo"), dict)), {}) or {}
@@ -161,7 +165,7 @@ def extract(url, html):
         if key not in seen: seen.add(key); photos.append(u)
     return dict(title=title, description=desc, price=price, bedrooms=beds, bathrooms=baths, covered_m2=covered, plot_m2=plot_m2,
                 energy_class=energy, title_deed=deed, distance_to_sea_km=sea, year_built=year, area=area, type=kind,
-                purpose=purpose, plus_vat=bool(re.search(r"\+ ?vat|plus vat", low)), latitude=lat, longitude=lng,
+                purpose=purpose, plus_vat=bool(re.search(r"(?:€\s?[\d.,]{4,}|[\d.,]{4,}\s?€)\s*(?:\+|plus)\s?vat", low) or re.search(r"\+ ?vat|plus vat", head)), latitude=lat, longitude=lng,
                 features="|".join(feats)), photos
 
 def main(url, agent_id="", ref=""):

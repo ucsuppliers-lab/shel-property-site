@@ -12,3 +12,7 @@
   for = "/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+# Private previews (pull requests) also show hidden drafts, so they can be checked before anyone ticks "Show on website".
+[context.deploy-preview]
+  command = "SHOW_DRAFTS=1 python3 build.py"

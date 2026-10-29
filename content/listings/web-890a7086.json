@@ -8,7 +8,7 @@
   "covered_m2": 1361,
   "title_deed": "issued",
   "type": "Building plot",
-  "purpose": "to-rent",
+  "purpose": "land",
   "plus_vat": true,
   "latitude": 34.700797,
   "longitude": 32.590979,
@@ -23,5 +23,6 @@
   "date_listed": "2026-10-29",
   "last_confirmed": "2026-10-29",
   "source_url": "https://foxrealty.com.cy/property/53906",
-  "imported_on": "2026-10-29"
+  "imported_on": "2026-10-29",
+  "area": "paphos-town"
 }

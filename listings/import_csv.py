@@ -12,7 +12,9 @@ ENERGY = set("A B C D E F G".split()) | {"exempt"}
 
 def _num(v, kind=float):
     v = (v or "").replace(",", "").replace("€", "").strip()
-    return kind(v) if v else None
+    if not v: return None
+    try: return kind(v)
+    except ValueError: return kind(round(float(v)))
 
 def _yes(v):
     return (v or "").strip().lower() in ("yes", "y", "true", "1")
@@ -48,7 +50,8 @@ def load_agents():
 def load_listings(agents):
     rows, extra, problems = [], {}, []
     for i, r in enumerate(_csv_rows("listings.csv") + _json_rows("listings"), start=2):
-        if str(r.get("published", "yes")).lower() in ("false", "no", "0"):
+        DRAFTS = os.environ.get("SHOW_DRAFTS") == "1"  # private previews only: show hidden drafts too
+        if str(r.get("published", "yes")).lower() in ("false", "no", "0") and not DRAFTS:
             continue
         if not (r.get("ref") or "").strip():
             continue
@@ -62,19 +65,24 @@ def load_listings(agents):
         if r.get("purpose") != "to-rent" and r.get("title_deed") not in DEEDS: errs.append("title_deed must be issued / after-completion / pending")
         if not _yes(r.get("photo_rights_confirmed")): errs.append("photo rights not confirmed by agent")
         if not (r.get("area") or "").strip(): errs.append("area missing")
+        if errs and DRAFTS:
+            problems.append(f"row {i} ({ref}) DRAFT, would be held back: " + "; ".join(errs))
+            errs = [e for e in errs if e.startswith("purpose") or e.startswith("price")]
+            if not r.get("agent_id") or r.get("agent_id") not in agents:
+                r = dict(r, agent_id="_draft")
         if errs:
             problems.append(f"row {i} ({ref}): " + "; ".join(errs))
             continue
         rows.append({
-            "ref": ref, "purpose": r["purpose"], "area": r["area"].strip(), "kind": r["type"].strip(),
-            "title": r["title"].strip(), "price": _num(r["price"], int),
+            "ref": ref, "purpose": r["purpose"], "area": (r.get("area") or "").strip(), "kind": (r.get("type") or "Property").strip(),
+            "title": (r.get("title") or "").strip(), "price": _num(r["price"], int),
             "period": "month" if r["purpose"] == "to-rent" else None, "vat": _yes(r.get("plus_vat")),
             "beds": _num(r.get("bedrooms"), int), "baths": _num(r.get("bathrooms"), int),
             "covered": _num(r.get("covered_m2"), int), "extra": None, "plot": _num(r.get("plot_m2"), int),
             "deed": r.get("title_deed") or None, "sea_km": _num(r.get("distance_to_sea_km")),
             "energy": (r.get("energy_class") or "").strip() or None, "agent": r["agent_id"],
             "added": r.get("date_listed") or "", "tags": [], "features": [f.strip() for f in (r.get("features") or "").split("|") if f.strip()],
-            "photo": r.get("photo_caption") or r["title"], "tone": "sky", "desc": r.get("description", "").strip(),
+            "photo": r.get("photo_caption") or r.get("title") or "", "tone": "sky", "desc": r.get("description", "").strip(),
             "lat": _num(r.get("latitude")), "lng": _num(r.get("longitude")),
             "photo_files": [x for x in (r.get("photos") or []) if x] if isinstance(r.get("photos"), list) else [],
         })

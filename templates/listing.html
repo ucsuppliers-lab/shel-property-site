@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set lt = L[lang|default('en')] %}
-{% set lg = lang|default('en') %}{% set A = l.agent_obj %}{% set C = D.CHECKS[l.agent] %}
+{% set lg = lang|default('en') %}{% set A = l.agent_obj %}{% set C = D.CHECKS.get(l.agent) %}
 {% set tr = l.tr.get(lang|default('en'), {}) %}
 {% set title = tr.title or l.title %}{% set kind = tr.kind or l.kind %}{% set place = tr.area or l.area_name %}
 {% set is_sale = l.period is none %}
@@ -39,9 +39,9 @@
         {% if l.beds %}<span>{{ icons.bed }}{{ l.beds }} {{ lt.beds|lower if lg == 'en' else lt.beds }}</span>{% elif l.beds == 0 %}<span>{{ icons.bed }}Studio</span>{% endif %}
         {% if l.baths %}<span>{{ icons.bath }}{{ l.baths }} {{ lt.baths|lower if lg == 'en' else lt.baths }}</span>{% endif %}
         {% if l.covered %}<span>{{ icons.area }}{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</span>{% endif %}
-        {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) }} {{ 'מ״ר' if lg == 'he' else 'm²' }} {{ lt.plot|lower if lg == 'en' else lt.plot }}</span>{% endif %}
+        {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} {{ 'מ״ר' if lg == 'he' else 'm²' }} {{ lt.plot|lower if lg == 'en' else lt.plot }}</span>{% endif %}
       </div>
-      <div class="chips">{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}<span class="chip chip-check">✓ {% if C.kind == 'developer' %}{{ {'en':'Developer checked','de':'Bauträger geprüft','he':'היזם נבדק'}[lg] }}{% else %}{{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}{% endif %}</span></div>
+      <div class="chips">{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}{% if C and C.checked %}<span class="chip chip-check">✓ {% if C.kind == 'developer' %}{{ {'en':'Developer checked','de':'Bauträger geprüft','he':'היזם נבדק'}[lg] }}{% else %}{{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}{% endif %}</span>{% endif %}</div>
       <div class="actions">
         <a class="btn btn-primary" href="#enquire">{{ lt.viewing }}</a>
         <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}">{{ lt.call }}</button>
@@ -56,7 +56,7 @@
       <p id="pdf-{{ l.ref }}" class="callout" hidden>{{ {"en":"The live site makes a one-page summary of this home, in your language, to print or send. Not in this draft.","de":"Die fertige Seite erstellt ein einseitiges Exposé in Ihrer Sprache zum Drucken oder Weitersenden. Nicht in diesem Entwurf.","he":"באתר המלא תוכלו להוריד סיכום של עמוד אחד על הנכס, בשפה שלכם, להדפסה או לשליחה. לא בטיוטה זו."}[lg] }}</p>
       <div class="licence">
         <p><a href="{{ root }}agents/{{ l.agent }}.html">{{ A.name }}</a>{% if SAMPLE %} ({{ {"en":"sample","de":"Beispiel","he":"לדוגמה"}[lg] }}){% endif %}, {{ lt.lic }}{% if l.agent == 'developer-d' %}, {{ lt.sellsfor }}{% endif %}. {{ lt.regno }} {{ A.reg }}, {{ lt.licno }} {{ A.licence }}.</p>
-        <p class="checked">{{ (lt.checked_dev if C.kind == 'developer' else lt.checked_agent)|replace('{d}', nice_date(C.checked, lg))|replace('{s}', C.source if lg == 'en' else C['source_' ~ lg]) }}</p>
+        {% if C and C.checked %}<p class="checked">{{ (lt.checked_dev if C.kind == 'developer' else lt.checked_agent)|replace('{d}', nice_date(C.checked, lg))|replace('{s}', C.source if lg == 'en' else C['source_' ~ lg]) }}</p>{% else %}<p class="checked" style="color:var(--warn-ink)">{{ {"en":"Licence not checked yet.","de":"Lizenz noch nicht geprüft.","he":"הרישיון טרם נבדק."}[lg] }}</p>{% endif %}
         <p>{{ lt.check_note }} <a href="{{ root }}trust.html#checks">{{ T[lang|default('en')].f_check }}</a></p>
       </div>
     </aside>
@@ -92,7 +92,7 @@
           <section aria-label="The plot">
             <h3>The plot</h3>
             <dl>
-              <dt>Plot size</dt><dd>{{ "{:,}".format(l.plot) }} m²</dd>
+              <dt>Plot size</dt><dd>{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} m²</dd>
               <dt>Zone</dt><dd>{{ l.zone }}</dd>
               <dt>Building density</dt><dd>{{ l.density }}<small>as stated by the agent</small></dd>
               <dt>Access</dt><dd>{{ l.access }}</dd>
@@ -110,7 +110,7 @@
               {% if l.baths %}<dt>{{ lt.baths }}</dt><dd>{{ l.baths }}</dd>{% endif %}
               {% if l.covered %}<dt>{{ lt.living }}</dt><dd>{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
               {% if l.extra and l.extra[0] in ('veranda','terrace') %}<dt>{{ l.extra[0]|capitalize }}</dt><dd>{{ l.extra[1] }} m²</dd>{% endif %}
-              {% if l.plot %}<dt>{{ lt.plot }}</dt><dd>{{ "{:,}".format(l.plot) }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
+              {% if l.plot %}<dt>{{ lt.plot }}</dt><dd>{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
               {% if l.extra and l.extra[0] == 'sleeps' %}<dt>Sleeps</dt><dd>{{ l.extra[1] }}</dd>{% endif %}
               {% if l.year %}<dt>{{ lt.built }}</dt><dd>{{ l.year }}</dd>{% endif %}
               <dt>{{ lt.energy }}</dt><dd>{{ l.energy if l.energy else lt.energy_none }}</dd>

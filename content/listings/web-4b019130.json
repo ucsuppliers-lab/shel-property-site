@@ -1,0 +1,31 @@
+{
+  "published": false,
+  "ref": "web-4b019130",
+  "agent_id": "",
+  "title": "Building, For Sale, Paphos, Kato Paphos",
+  "description": "INVESTMENT OPPORTUNITY!The property has an area of 1881m² and a building density of 100% It has a huge front coverage towards one of the busiest streets in Paphos.The property has already 2 well maintained buildings of 224m² in total.",
+  "price": 2100000,
+  "bedrooms": 4,
+  "bathrooms": 4,
+  "covered_m2": 224,
+  "plot_m2": 1881,
+  "title_deed": "issued",
+  "year_built": 1900,
+  "area": "kato-paphos",
+  "purpose": "to-rent",
+  "plus_vat": true,
+  "latitude": 34.75587,
+  "longitude": 32.410806,
+  "features": "Furnished",
+  "photos": [
+    "/content/photos/web-4b019130-1.jpg",
+    "/content/photos/web-4b019130-2.jpg",
+    "/content/photos/web-4b019130-3.jpg"
+  ],
+  "photo_caption": "",
+  "photo_rights_confirmed": false,
+  "date_listed": "2026-10-29",
+  "last_confirmed": "2026-10-29",
+  "source_url": "https://foxrealty.com.cy/property/21870",
+  "imported_on": "2026-10-29"
+}

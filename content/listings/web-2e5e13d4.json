@@ -1,0 +1,23 @@
+{
+  "published": false,
+  "ref": "web-2e5e13d4",
+  "agent_id": "",
+  "title": "Prestige Property Group",
+  "description": "Luxury International Property, Hotels for sale, Real Estate",
+  "price": 820000,
+  "bedrooms": 5,
+  "area": "peyia",
+  "type": "Land",
+  "purpose": "land",
+  "plus_vat": false,
+  "features": "Sea view|Mountain view|Garden",
+  "photos": [
+    "/content/photos/web-2e5e13d4-1.jpg"
+  ],
+  "photo_caption": "",
+  "photo_rights_confirmed": false,
+  "date_listed": "2026-10-29",
+  "last_confirmed": "2026-10-29",
+  "source_url": "https://www.prestigeproperty.co.uk/3-bed-villa-peyia-paphos-cyprus-254878",
+  "imported_on": "2026-10-29"
+}

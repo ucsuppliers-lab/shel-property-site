@@ -92,6 +92,7 @@ def extract(url, html):
     desc = first(ldv("description"), meta("og:description", "description"))
     if desc: desc = re.sub(r"\s+", " ", BeautifulSoup(str(desc), "html.parser").get_text(" ")).strip()
     if long_para and (not desc or len(desc) < 160 or re.search(r"we've got information|for sale at", desc, re.I)): desc = long_para
+    if desc and re.search(r"we've got information|for sale at [A-Z ]+\.?$", desc, re.I): desc = None  # site boilerplate: leave for a person
     head = " ".join(filter(None, [title, urllib.parse.unquote(url).replace("-", " ").lower()])).lower()
     price = num(first(ldv("price"), meta("product:price:amount", "og:price:amount")))
     if not price:

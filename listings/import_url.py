@@ -90,7 +90,8 @@ def extract(url, html):
     cands = [re.split(r"\s+[|–]\s+", c.strip())[0] for c in cands if isinstance(c, str) and c.strip()]
     title = next((c for c in cands if c.lower() != site and len(c) > 8 and not re.search(r"group|ltd|limited|estates?$|realty$", c, re.I)), cands[0] if cands else None)
     desc = first(ldv("description"), meta("og:description", "description"))
-    if long_para and (not desc or len(desc) < 120): desc = long_para
+    if desc: desc = re.sub(r"\s+", " ", BeautifulSoup(str(desc), "html.parser").get_text(" ")).strip()
+    if long_para and (not desc or len(desc) < 160 or re.search(r"we've got information|for sale at", desc, re.I)): desc = long_para
     head = " ".join(filter(None, [title, urllib.parse.unquote(url).replace("-", " ").lower()])).lower()
     price = num(first(ldv("price"), meta("product:price:amount", "og:price:amount")))
     if not price:
@@ -118,7 +119,17 @@ def extract(url, html):
     sea = (num(m.group(1)) / (1000 if m.group(2) == "m" else 1)) if m else None
     m = re.search(r"(?:built|construction|completed|year built)\D{0,15}((?:19|20)\d{2})", low); year = num(m.group(1)) if m else None
     hay = " ".join(filter(None, [title, url.lower(), low[:4000]])).lower()
-    area = next((k for k, v in D.AREAS.items() if v["name"].lower() in hay or k in hay), None)
+    alias = {"pegeia": "peyia", "pegia": "peyia", "kato pafos": "kato-paphos", "chlorakas": "chloraka", "yeroskipou": "geroskipou",
+             "polis chrysochous": "polis", "latsi": "latchi", "paphos town": "paphos-town", "paphos centre": "paphos-town"}
+    def find_area(t):
+        hits = []
+        for k, v in D.AREAS.items():
+            for w in {v["name"].lower(), k.replace("-", " ")} | {a for a, kk in alias.items() if kk == k}:
+                if w in ("paphos",): continue
+                i = t.find(w)
+                if i >= 0: hits.append((i, k))
+        return min(hits)[1] if hits else None
+    area = find_area(head) or find_area(low[:4000])
     kind = next((t for w, t in TYPE_WORDS if re.search(r"\b" + re.escape(w) + r"\b", head)), None) or \
            next((t for w, t in TYPE_WORDS if w not in ("land", "plot") and re.search(r"\b" + re.escape(w) + r"\b", low[:3000])), None)
     rent = bool(re.search(r"\b(for rent|to rent|to let|per month|/month|monthly rent)\b", hay))

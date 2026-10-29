@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Shel Property: homes for sale in Paphos, checked, in your language{% endblock %}
-{% block description %}Homes for sale and to rent in Paphos from licensed agents. Licence checks with dates, energy class, VAT and title deed status on every listing, and a buyer desk in English, German and Hebrew.{% endblock %}
+{% block description %}Homes for sale in Paphos from licensed agents. Licence checks with dates, energy class, VAT and title deed status on every listing, and a buyer desk in English, German and Hebrew.{% endblock %}
 {% block main %}
 <section class="hero{% if HERO %} hero-photo{% endif %}" aria-labelledby="hero-title">
   {% if HERO %}{{ photo_img("hero", root, "The coast north of Paphos from the air: a sandy bay and clear water", eager=True, sizes="100vw") }}{% endif %}
@@ -9,10 +9,6 @@
     <h1 id="hero-title">Understand, find &amp; buy property properly</h1>
     <p class="lead">Homes in Paphos from licensed agents, with the licence check, energy class, VAT and title deed status on every listing. Our team in London and Paphos helps you through every step, in English and Hebrew.</p>
     <form class="search-box" id="hero-search" role="search" aria-label="Search property" data-pages='{{ PAGES|tojson }}'>
-      <div class="tabs" role="group" aria-label="What are you looking for?">
-        <button type="button" class="tab" data-purpose="for-sale" aria-pressed="true">Sale</button>
-        <button type="button" class="tab" data-purpose="to-rent" aria-pressed="false">Rent</button>
-      </div>
       <div class="search-row search-row-6">
         <label class="field" data-sale-only>Category
           <select name="cat"><option value="for-sale">All for sale</option><option value="new-build">New build</option><option value="resale">Resale</option><option value="developments">Development</option><option value="land">Land</option></select>
@@ -24,7 +20,7 @@
           <select name="type"><option value="">Any type</option><option>Apartment</option><option>Villa</option><option>Townhouse</option><option>House</option><option>Bungalow</option><option>Plot</option></select>
         </label>
         <label class="field">Max price
-          <select name="max"><option value="">No max</option><option value="250000">€250,000</option><option value="400000">€400,000</option><option value="600000">€600,000</option><option value="1000000">€1,000,000</option><option value="1500">€1,500 a month</option><option value="2500">€2,500 a month</option></select>
+          <select name="max"><option value="">No max</option><option value="250000">€250,000</option><option value="400000">€400,000</option><option value="600000">€600,000</option><option value="1000000">€1,000,000</option></select>
         </label>
         <label class="field">Bedrooms
           <select name="beds"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select>
@@ -122,7 +118,7 @@
     <div class="section-head"><div><h2 id="areas">Search by area</h2><p>From the harbour in Kato Paphos to Polis on the north coast.</p></div></div>
     <div class="tiles">
       {% for k, a in D.AREAS.items() if area_counts[k] %}
-      {% set first = (PAGES.get('for-sale/' ~ k) or PAGES.get('resale/' ~ k) or PAGES.get('new-build/' ~ k) or PAGES.get('land/' ~ k) or PAGES.get('to-rent/' ~ k)) %}
+      {% set first = (PAGES.get('for-sale/' ~ k) or PAGES.get('resale/' ~ k) or PAGES.get('new-build/' ~ k) or PAGES.get('land/' ~ k)) %}
       <a class="tile" href="{{ root }}{{ first }}"><strong>{{ a.name }}</strong><span>{{ area_counts[k] }} listing{{ 's' if area_counts[k] != 1 }}</span></a>
       {% endfor %}
     </div>

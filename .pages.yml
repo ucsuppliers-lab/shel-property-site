@@ -63,7 +63,6 @@ content:
           - { name: resale, label: "For sale: resale" }
           - { name: new-build, label: "For sale: new build" }
           - { name: land, label: "For sale: land" }
-          - { name: to-rent, label: "To rent (long let)" }
       - name: area
         label: Area
         type: select

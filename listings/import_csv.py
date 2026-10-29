@@ -6,7 +6,7 @@ Photos: put files in listings/photos/<ref>-1.jpg, <ref>-2.jpg ... (agent must co
 """
 import csv, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
-PURPOSES = {"resale", "new-build", "land", "to-rent"}
+PURPOSES = {"resale", "new-build", "land"}  # rentals removed 29 Oct 2026
 DEEDS = {"issued", "after-completion", "pending"}
 ENERGY = set("A B C D E F G".split()) | {"exempt"}
 

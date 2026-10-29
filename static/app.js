@@ -168,8 +168,9 @@
     drop.addEventListener("keydown", function (e) { if (e.key === "Escape") { setOpen(false); btn.focus(); } });
     drop.addEventListener("focusout", function (e) { if (!drop.contains(e.relatedTarget)) setOpen(false); });
     if (hover) {
-      drop.addEventListener("mouseenter", function () { setOpen(true); });
-      drop.addEventListener("mouseleave", function () { setOpen(false); });
+      var t;
+      drop.addEventListener("mouseenter", function () { clearTimeout(t); setOpen(true); });
+      drop.addEventListener("mouseleave", function () { t = setTimeout(function () { setOpen(false); }, 250); });
     }
   });
 

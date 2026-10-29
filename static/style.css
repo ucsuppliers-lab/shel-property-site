@@ -463,3 +463,13 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
 .search-band .filters .btn-outline { background: #fff; color: var(--ink); border-color: var(--ink); }
 .result-bar .field { white-space: nowrap; }
 .results-solo { grid-template-columns: minmax(0,1fr); }
+
+.contact-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 28px; padding: 22px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); }
+.contact-card h2 { font-family: var(--sans); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 6px; }
+.contact-card address, .contact-card p { font-style: normal; font-size: 17px; line-height: 1.5; }
+.contact-card a { font-weight: 700; }
+.foot-contact { display: flex; flex-wrap: wrap; gap: 6px 24px; padding-block: 14px 4px; font-size: 15px; color: var(--mist); }
+.foot-contact address { font-style: normal; }
+.foot-contact a { color: #fff; }
+/* invisible bridge over the gap between a menu word and its drop-down, so moving the mouse down doesn't close it */
+.nav-drop-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }

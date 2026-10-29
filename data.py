@@ -31,7 +31,7 @@ AGENTS = {
                  "about": "A family-run office on the seafront road, selling resale apartments and villas across the Paphos district."},
     "agency-b": {"name": "Agency B", "office": "Peyia", "since": 2014,
                  "reg": "[000]", "licence": "[000]", "phone": "+357 [00 000000]",
-                 "about": "Villas, plots and long lets in Peyia, Coral Bay and Tala."},
+                 "about": "Villas and plots in Peyia, Coral Bay and Tala."},
     "agency-c": {"name": "Agency C", "office": "Paphos town", "since": 2018,
                  "reg": "[000]", "licence": "[000]", "phone": "+357 [00 000000]",
                  "about": "Lettings and town-centre homes, with Greek, English and Russian spoken in the office."},
@@ -60,13 +60,15 @@ BEFORE_LINKS = {
 
 PURPOSES = {
     "for-sale": {"name": "For sale", "title": "Property for sale", "noun": "for sale"},
-    "to-rent": {"name": "Rent", "title": "Property to rent", "noun": "to rent"},
     "new-build": {"name": "New build", "title": "New build homes for sale", "noun": "new homes"},
     "land": {"name": "Land", "title": "Land and building plots for sale", "noun": "plots"},
     "resale": {"name": "Resale", "title": "Resale homes for sale", "noun": "resale homes"},
 }
 
 # deed: issued | after-completion | pending | n/a
+CONTACT = {"address": ["80a Dean Street", "London W1D 3SL", "United Kingdom"],
+           "phone": "+44 20 3538 1303", "phone_tel": "+442035381303", "email": "adam@shelproperty.com"}
+
 DEED = {
     "issued": "Title deed issued",
     "after-completion": "Deed after completion",

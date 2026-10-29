@@ -35,7 +35,6 @@
           <a href="{{ root }}land/index.html"{% if nav == 'land' %} aria-current="page"{% endif %}>{{ t.nav_land }}</a>
         </div>
       </div>
-      <a href="{{ root }}to-rent/index.html"{% if nav == 'to-rent' %} aria-current="page"{% endif %}>{{ t.nav_rent }}</a>
       <div class="nav-drop{% if nav in ('services', 'abroad', 'desk') %} is-current{% endif %}">
         <a class="nav-drop-link" href="{{ root }}{{ 'he/' if lang == 'he' else '' }}services/index.html"{% if nav == 'services' %} aria-current="page"{% endif %}>{{ t.nav_services }}</a>
         <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="services-menu" aria-label="{{ t.nav_services }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -83,6 +82,11 @@
         <span class="brand-name"><span class="brand-shel">SHEL</span><span class="brand-prop">PROPERTY</span></span>
       </a>
       <span class="foot-where">{{ t.f_where }}</span>
+    </div>
+    <div class="foot-contact">
+      <address>80a Dean Street, London W1D 3SL, {{ {"en":"United Kingdom","de":"Vereinigtes Königreich","he":"בריטניה"}[lang] }}</address>
+      <a href="tel:{{ D.CONTACT.phone_tel }}" dir="ltr">{{ D.CONTACT.phone }}</a>
+      <a href="mailto:{{ D.CONTACT.email }}">{{ D.CONTACT.email }}</a>
     </div>
     <div class="foot-cols">
       <nav aria-label="{{ t.f_homes }}"><h3>{{ t.f_homes }}</h3><ul>

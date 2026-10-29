@@ -100,8 +100,8 @@ def price_html(l, lang="en"):
     vat = {"en": "+ VAT", "de": "+ MwSt.", "he": '+ מע"מ'}[lang]
     return Markup(money(l["price"], lang) + (f' <small>{vat}</small>' if l["vat"] else ''))
 
-DEED_T = {"de": {"issued": "Title Deed ausgestellt", "after-completion": "Title Deed nach Fertigstellung", "pending": "Title Deed ausstehend", "n/a": "Pachtobjekt"},
-          "he": {"issued": "טאבו הונפק", "after-completion": "טאבו לאחר סיום הבנייה", "pending": "טאבו בהמתנה", "n/a": "נכס בחכירה"}}
+DEED_T = {"de": {"issued": "Title Deed ausgestellt", "after-completion": "Title Deed nach Fertigstellung", "pending": "Title Deed ausstehend", "n/a": "Pachtobjekt", "unknown": "Title Deed nicht angegeben"},
+          "he": {"issued": "טאבו הונפק", "after-completion": "טאבו לאחר סיום הבנייה", "pending": "טאבו בהמתנה", "n/a": "נכס בחכירה", "unknown": "מצב הטאבו לא צוין"}}
 def deed_text(k, lang="en"):
     return DEED_T[lang][k] if lang in DEED_T else D.DEED[k]
 
@@ -114,7 +114,7 @@ def nice_date(s, lang="en"):
     return f"{int(d)}{sep}{MONTHS[lang][int(m)-1]} {y}"
 
 def deed_chip(l, lang="en"):
-    cls = {"issued": "chip", "after-completion": "chip", "pending": "chip chip-warn", "n/a": "chip chip-quiet"}[l["deed"]]
+    cls = {"issued": "chip", "after-completion": "chip", "pending": "chip chip-warn", "n/a": "chip chip-quiet", "unknown": "chip chip-warn"}[l["deed"]]
     label = deed_text(l["deed"], lang)
     if l["purpose"] == "to-rent":
         cls, label = "chip chip-quiet", "Long let"
@@ -125,6 +125,7 @@ def slug(s):
 
 HAVE = PH.available()
 for l in D.LISTINGS:
+    if not l.get("deed"): l["deed"] = "unknown"
     l["photos"] = make_listing_photos(l["ref"], l["photo_files"]) if l.get("photo_files") else (HAVE.get(l["ref"], []) if D.SAMPLE else [])
     l["area_name"] = D.AREAS[l["area"]]["name"]
     l["agent_obj"] = D.AGENTS[l["agent"]]

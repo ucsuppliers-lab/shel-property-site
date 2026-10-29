@@ -72,6 +72,7 @@ DEED = {
     "after-completion": "Deed after completion",
     "pending": "Title deed pending",
     "n/a": "Leasehold premises",
+    "unknown": "Title deed status not given",
 }
 
 LISTINGS = [
@@ -256,6 +257,9 @@ try:
     import import_csv as _imp
     _agents = _imp.load_agents()
     _rows, _extra, LISTING_PROBLEMS = _imp.load_listings(_agents)
+    if _os.environ.get("SHOW_DRAFTS") == "1" or _os.environ.get("SITE_NAME") == "shel-property-staging":
+        _agents["_draft"] = {"name": "Agent not added yet", "office": "", "since": None, "reg": "not added", "licence": "not added",
+                             "phone": "", "about": "", "licence_checked": ""}
     _bad = [r for r in _rows if r["area"] not in AREAS]
     for r in _bad: LISTING_PROBLEMS.append(f'{r["ref"]}: area "{r["area"]}" is not one of the site areas')
     _rows = [r for r in _rows if r["area"] in AREAS]

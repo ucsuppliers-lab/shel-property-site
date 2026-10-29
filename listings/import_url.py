@@ -64,6 +64,10 @@ def extract(url, html):
         try: ld += list(walk_ld(json.loads(s.string or "")))
         except Exception: pass
     for t in soup(["script", "style", "noscript", "svg"]): t.decompose()
+    h1 = soup.find("h1")
+    h1 = re.sub(r"\s+", " ", h1.get_text(" ")).strip() if h1 else None
+    paras = [re.sub(r"\s+", " ", p.get_text(" ")).strip() for p in soup.find_all(["p", "div"]) if not p.find(["p", "div"])]
+    long_para = max((x for x in paras if 120 < len(x) < 3000 and "cookie" not in x.lower()), key=len, default=None)
     text = re.sub(r"\s+", " ", soup.get_text(" ")).strip()
     low = text.lower()
 
@@ -75,16 +79,21 @@ def extract(url, html):
                 if v not in (None, "", []): return v
         return None
 
-    title = first(ldv("name"), meta("og:title", "twitter:title"), soup.title.string if soup.title else None)
-    title = re.split(r"\s+[|–-]\s+", title.strip())[0] if title else None
+    site = (meta("og:site_name") or "").lower()
+    cands = [h1, ldv("name"), meta("og:title", "twitter:title"), soup.title.string if soup.title else None]
+    cands = [re.split(r"\s+[|–]\s+", c.strip())[0] for c in cands if isinstance(c, str) and c.strip()]
+    title = next((c for c in cands if c.lower() != site and len(c) > 8 and not re.search(r"group|ltd|limited|estates?$|realty$", c, re.I)), cands[0] if cands else None)
     desc = first(ldv("description"), meta("og:description", "description"))
+    if long_para and (not desc or len(desc) < 120): desc = long_para
+    head = " ".join(filter(None, [title, urllib.parse.unquote(url).replace("-", " ").lower()])).lower()
     price = num(first(ldv("price"), meta("product:price:amount", "og:price:amount")))
     if not price:
         m = re.search(r"(?:€|eur\s?)\s?(\d{1,3}(?:[.,\s]\d{3})+|\d{4,})", text, re.I) or re.search(r"(\d{1,3}(?:[.,]\d{3})+)\s?(?:€|eur)", text, re.I)
         price = num(m.group(1)) if m else None
     beds = num(ldv("numberOfBedrooms", "numberOfRooms"))
     if not beds:
-        m = re.search(r"(\d{1,2})\s*(?:-|\s)?(?:bed(?:room)?s?|br)\b", low); beds = num(m.group(1)) if m else None
+        m = re.search(r"(\d{1,2})\s*(?:-|\s)?(?:bed(?:room)?s?|br)\b", head) or re.search(r"(\d{1,2})\s*(?:-|\s)?(?:bed(?:room)?s?|br)\b", low)
+        beds = num(m.group(1)) if m else None
     baths = num(ldv("numberOfBathroomsTotal", "numberOfFullBathrooms"))
     if not baths:
         m = re.search(r"(\d{1,2})\s*(?:bath(?:room)?s?)\b", low); baths = num(m.group(1)) if m else None
@@ -104,7 +113,8 @@ def extract(url, html):
     m = re.search(r"(?:built|construction|completed|year built)\D{0,15}((?:19|20)\d{2})", low); year = num(m.group(1)) if m else None
     hay = " ".join(filter(None, [title, url.lower(), low[:4000]])).lower()
     area = next((k for k, v in D.AREAS.items() if v["name"].lower() in hay or k in hay), None)
-    kind = next((t for w, t in TYPE_WORDS if re.search(r"\b" + re.escape(w) + r"\b", (title or "").lower() + " " + low[:1500])), None)
+    kind = next((t for w, t in TYPE_WORDS if re.search(r"\b" + re.escape(w) + r"\b", head)), None) or \
+           next((t for w, t in TYPE_WORDS if w not in ("land", "plot") and re.search(r"\b" + re.escape(w) + r"\b", low[:3000])), None)
     rent = bool(re.search(r"\b(for rent|to rent|to let|per month|/month|monthly rent)\b", hay))
     newb = bool(re.search(r"\b(new build|new-build|off[- ]plan|under construction|\+ ?vat|plus vat)\b", hay))
     purpose = "to-rent" if rent else "land" if kind in ("Land", "Building plot") else "new-build" if newb else "resale"

@@ -14,14 +14,15 @@ jobs:
   import:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: pip install -r requirements.txt beautifulsoup4==4.12.3
       - name: Read the page and save a draft
         env:
           PAYLOAD: ${{ inputs.payload }}
           URL: ${{ inputs.url }}
         run: |
-          if [ -n "$URL" ]; then python3 listings/import_url.py "$URL"; else python3 listings/import_url.py; fi
+          set -o pipefail
+          if [ -n "$URL" ]; then python3 listings/import_url.py "$URL" 2>&1 | tee run.log; else python3 listings/import_url.py 2>&1 | tee run.log; fi || { echo "::error::$(tail -c 900 run.log | tr '\n' ' ')"; exit 1; }
       - name: Save the draft in the editor
         run: |
           git config user.name "Shel website editor"

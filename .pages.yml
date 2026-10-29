@@ -30,6 +30,18 @@ content:
     path: content/listings
     format: json
     filename: "{fields.ref}.json"
+    actions:
+      - name: import-url
+        label: Import from a link
+        workflow: import-url.yml
+        scope: collection
+        confirm:
+          title: "Build a draft property from this page?"
+          button: Import
+        fields:
+          - { name: url, label: "Link to the property page", type: text, required: true }
+          - { name: agent_id, label: "Agent short code (e.g. sunrise-estates)", type: text }
+          - { name: ref, label: "Reference (leave blank to make one)", type: text }
     view:
       fields: [ref, title, area, price, published]
       primary: title
@@ -122,6 +134,8 @@ content:
       - { name: photo_rights_confirmed, label: "Agent confirms we may use these photos", type: boolean, default: false }
       - { name: latitude, label: Latitude, type: number, description: "From Google Maps. Approximate is fine; the site shows an area circle." }
       - { name: longitude, label: Longitude, type: number }
+      - { name: source_url, label: "Imported from", type: string, readonly: true, description: "The page this draft was built from. Check every field against it." }
+      - { name: imported_on, label: "Imported on", type: string, hidden: true }
       - { name: date_listed, label: "Date listed", type: date }
       - { name: last_confirmed, label: "Agent last confirmed available", type: date }
 

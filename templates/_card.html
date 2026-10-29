@@ -16,7 +16,7 @@
       {% if l.covered %}<span>{{ icons.area }}{{ l.covered }} m²</span>{% endif %}
       {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) }} m² plot</span>{% elif l.extra and l.extra[0] in ('veranda','terrace') %}<span>{{ icons.plot }}{{ l.extra[1] }} m² {{ l.extra[0] }}</span>{% elif l.extra and l.extra[0] == 'sleeps' %}<span>Sleeps {{ l.extra[1] }}</span>{% endif %}
     </div>
-    <div class="card-foot">{{ deed_chip(l) }}<span>Listed {{ nice_date(l.added) }}</span></div>
+    <div class="card-foot">{% if l.draft %}<span class="chip chip-warn">Hidden draft</span>{% endif %}{{ deed_chip(l) }}<span>Listed {{ nice_date(l.added) }}</span></div>
     <p class="agent-line"><span class="tick" aria-hidden="true">✓</span> {{ l.agent_obj.name }}{% if SAMPLE %} (sample){% endif %} · Reg. {{ l.agent_obj.reg }} · Licence {{ l.agent_obj.licence }}{% if l.energy %} · Energy {{ l.energy }}{% endif %}</p>
   </div>
 </article>

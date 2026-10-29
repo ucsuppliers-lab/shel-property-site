@@ -41,7 +41,7 @@
         {% if l.covered %}<span>{{ icons.area }}{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</span>{% endif %}
         {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} {{ 'מ״ר' if lg == 'he' else 'm²' }} {{ lt.plot|lower if lg == 'en' else lt.plot }}</span>{% endif %}
       </div>
-      <div class="chips">{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}{% if C and C.checked %}<span class="chip chip-check">✓ {% if C.kind == 'developer' %}{{ {'en':'Developer checked','de':'Bauträger geprüft','he':'היזם נבדק'}[lg] }}{% else %}{{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}{% endif %}</span>{% endif %}</div>
+      <div class="chips">{% if l.draft %}<span class="chip chip-warn">Hidden draft: not on the public site</span>{% endif %}{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}{% if C and C.checked %}<span class="chip chip-check">✓ {% if C.kind == 'developer' %}{{ {'en':'Developer checked','de':'Bauträger geprüft','he':'היזם נבדק'}[lg] }}{% else %}{{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}{% endif %}</span>{% endif %}</div>
       <div class="actions">
         <a class="btn btn-primary" href="#enquire">{{ lt.viewing }}</a>
         <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}">{{ lt.call }}</button>

@@ -257,7 +257,7 @@ try:
     import import_csv as _imp
     _agents = _imp.load_agents()
     _rows, _extra, LISTING_PROBLEMS = _imp.load_listings(_agents)
-    if _os.environ.get("SHOW_DRAFTS") == "1":
+    if _os.environ.get("SHOW_DRAFTS") == "1" or _os.environ.get("SITE_NAME") == "shel-property-staging":
         _agents["_draft"] = {"name": "Agent not added yet", "office": "", "since": None, "reg": "not added", "licence": "not added",
                              "phone": "", "about": "", "licence_checked": ""}
     _bad = [r for r in _rows if r["area"] not in AREAS]

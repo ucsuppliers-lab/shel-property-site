@@ -50,7 +50,8 @@ def load_agents():
 def load_listings(agents):
     rows, extra, problems = [], {}, []
     for i, r in enumerate(_csv_rows("listings.csv") + _json_rows("listings"), start=2):
-        DRAFTS = os.environ.get("SHOW_DRAFTS") == "1"  # private previews only: show hidden drafts too
+        # Private sites only (deploy previews, and the password-protected staging project): show hidden drafts too.
+        DRAFTS = os.environ.get("SHOW_DRAFTS") == "1" or os.environ.get("SITE_NAME") == "shel-property-staging"
         if str(r.get("published", "yes")).lower() in ("false", "no", "0") and not DRAFTS:
             continue
         if not (r.get("ref") or "").strip():
@@ -84,6 +85,7 @@ def load_listings(agents):
             "added": r.get("date_listed") or "", "tags": [], "features": [f.strip() for f in (r.get("features") or "").split("|") if f.strip()],
             "photo": r.get("photo_caption") or r.get("title") or "", "tone": "sky", "desc": r.get("description", "").strip(),
             "lat": _num(r.get("latitude")), "lng": _num(r.get("longitude")),
+            "draft": str(r.get("published", "yes")).lower() in ("false", "no", "0") or r.get("agent_id") == "_draft",
             "photo_files": [x for x in (r.get("photos") or []) if x] if isinstance(r.get("photos"), list) else [],
         })
         extra[ref] = {"year": _num(r.get("year_built"), int), "fees": _num(r.get("common_fees_month"), int),

@@ -11,7 +11,7 @@
   "plot_m2": 311,
   "energy_class": "A",
   "area": "paphos-town",
-  "type": "Villa",
+  "type": "House",
   "purpose": "resale",
   "plus_vat": true,
   "latitude": 34.76250063091021,
@@ -29,5 +29,7 @@
   "date_listed": "2026-10-29",
   "last_confirmed": "2026-10-29",
   "source_url": "https://foxrealty.com.cy/property/36375/villa-for-sale-paphos-universal",
-  "imported_on": "2026-10-29"
+  "imported_on": "2026-10-29",
+  "locality": "Universal",
+  "subtype": "Villa"
 }

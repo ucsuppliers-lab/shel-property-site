@@ -22,45 +22,53 @@
     <a href="{{ root }}{{ l.purpose }}/index.html">{{ D.PURPOSES[l.purpose].title if lg == 'en' else T[lg].nav_sale }}</a><span aria-hidden="true">/</span>
     <span aria-current="page">{{ lt.ref }} {{ l.ref }}</span>
   </nav>
-  <div class="listing-top">
-    <div class="gallery" aria-label="{{ {"en":"Photos","de":"Fotos","he":"תמונות"}[lg] }}">
-      {% for i in range(3) %}
-      {% if l.photos|length > i %}<div class="photo">{{ photo_img(l.photos[i], root, title ~ (', ' ~ (i + 1) if i else ''), eager=(i == 0), sizes=("(max-width: 980px) 100vw, 620px" if i == 0 else "(max-width: 980px) 100vw, 300px")) }}{% if i == 0 and SAMPLE %}<span class="cap cap-sample">{{ {"en":"Sample photos","de":"Beispielfotos","he":"תמונות לדוגמה"}[lg] }}</span>{% endif %}</div>
-      {% else %}<div class="photo">{{ scene(l.ref ~ ('' if i == 0 else 'bc'[i-1]), (l.tone if i == 0 else ['sky','sand'][i-1])) }}<span class="cap">{{ ('Photo: ' ~ l.photo) if i == 0 else ('Photo 2' if i == 1 else 'More photos') }}</span></div>{% endif %}
-      {% endfor %}
-    </div>
-
-    <aside class="summary" aria-label="{{ {"en":"Summary","de":"Übersicht","he":"סיכום"}[lg] }}">
-      <div class="price" data-eur="{{ l.price }}" data-period="{{ l.period or '' }}">{{ price(l, lg) }}</div>
-      {% if lang|default('en') != 'de' %}<p class="fx" data-fx="{{ 'ILS' if lang|default('en') == 'he' else 'GBP' }}" data-eur="{{ l.price }}" data-approx="{{ lt.approx }}" data-note="{{ lt.fx_note|replace('{d}', D.FX.date) }}"></p>{% endif %}
+  <div class="lx-head">
+    <div class="lx-title">
       <h1>{{ title }}</h1>
-      <p class="place">{{ place }}, {{ {"en":"Paphos","de":"Paphos","he":"פאפוס"}[lg] }} · {{ lt.ref }} {{ l.ref }}</p>
-      <div class="icon-row">
-        {% if l.beds %}<span>{{ icons.bed }}{{ l.beds }} {{ lt.beds|lower if lg == 'en' else lt.beds }}</span>{% elif l.beds == 0 %}<span>{{ icons.bed }}Studio</span>{% endif %}
-        {% if l.baths %}<span>{{ icons.bath }}{{ l.baths }} {{ lt.baths|lower if lg == 'en' else lt.baths }}</span>{% endif %}
-        {% if l.covered %}<span>{{ icons.area }}{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</span>{% endif %}
-        {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} {{ 'מ״ר' if lg == 'he' else 'm²' }} {{ lt.plot|lower if lg == 'en' else lt.plot }}</span>{% endif %}
+      <p class="lx-meta">{{ l.loc_name }}, {{ {"en":"Paphos","de":"Paphos","he":"פאפוס"}[lg] }}{% if l.beds %} · {{ l.beds }} Beds{% elif l.beds == 0 %} · Studio{% endif %}{% if l.baths %} · {{ l.baths }} Baths{% endif %}{% if l.covered %} · {{ l.covered }} m²{% endif %}{% if l.plot %} · {{ "{:,}".format(l.plot) }} m² plot{% endif %} · Ref: <strong>{{ l.ref }}</strong></p>
+      <div class="chips">{% if l.draft %}<span class="chip chip-warn">Hidden draft: not on the public site</span>{% endif %}{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}{% if C and C.checked %}<span class="chip chip-check">✓ {{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}</span>{% endif %}</div>
+    </div>
+    <div class="lx-price">
+      <div class="price" data-eur="{{ l.price }}" data-period="{{ l.period or '' }}">{{ price(l, lg) }}</div>
+      {% if lg != 'de' %}<p class="fx" data-fx="{{ 'ILS' if lg == 'he' else 'GBP' }}" data-eur="{{ l.price }}" data-approx="{{ lt.approx }}" data-note="{{ lt.fx_note|replace('{d}', D.FX.date) }}"></p>{% endif %}
+      <button type="button" class="save save-inline" data-ref="{{ l.ref }}" aria-pressed="false" data-on="Added to favourites" data-off="Add to favourites">{{ icons.heart }} <span class="save-text">Add to favourites</span></button>
+    </div>
+  </div>
+  <div class="lx-top">
+    <div class="slider" aria-roledescription="carousel" aria-label="{{ {"en":"Photos","de":"Fotos","he":"תמונות"}[lg] }}">
+      <div class="slides" tabindex="0">
+        {% if l.photos %}{% for k in l.photos %}<div class="slide">{{ photo_img(k, root, title ~ ', photo ' ~ loop.index, eager=loop.first, sizes="(max-width: 980px) 100vw, 860px") }}</div>{% endfor %}
+        {% else %}<div class="slide">{{ scene(l.ref, l.tone) }}</div>{% endif %}
       </div>
-      <div class="chips">{% if l.draft %}<span class="chip chip-warn">Hidden draft: not on the public site</span>{% endif %}{{ deed_chip(l, lg) }}{% if l.energy %}<span class="chip chip-energy">{{ lt.energy }} {{ l.energy }}</span>{% endif %}{% if C and C.checked %}<span class="chip chip-check">✓ {% if C.kind == 'developer' %}{{ {'en':'Developer checked','de':'Bauträger geprüft','he':'היזם נבדק'}[lg] }}{% else %}{{ {'en':'Licence checked','de':'Lizenz geprüft','he':'רישיון נבדק'}[lg] }}{% endif %}</span>{% endif %}</div>
-      <div class="actions">
-        <a class="btn btn-primary" href="#enquire">{{ lt.viewing }}</a>
-        <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}">{{ lt.call }}</button>
-        <button type="button" class="btn btn-outline" data-reveal="phone-{{ l.ref }}">{{ lt.whatsapp }}</button>
-        <a class="btn btn-outline btn-wide" href="#enquire" data-view="video">{{ lt.video }}</a>
+      {% if l.photos|length > 1 %}<button type="button" class="sl-prev" aria-label="Previous photo">{{ icons.left }}</button><button type="button" class="sl-next" aria-label="Next photo">{{ icons.right }}</button>
+      <span class="sl-count"><span class="sl-n">1</span> / {{ l.photos|length }}</span>{% endif %}
+      {% if l.photos|length > 1 %}<div class="thumbs">{% for k in l.photos %}<button type="button" data-i="{{ loop.index0 }}" aria-label="Photo {{ loop.index }}"><img src="{{ root }}img/{{ k }}-m.jpg" alt="" loading="lazy"></button>{% endfor %}</div>{% endif %}
+    </div>
+    <aside class="lx-contact" aria-labelledby="lx-c">
+      <h2 id="lx-c">Contact us</h2>
+      <form class="lx-form" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate>
+        <input name="name" placeholder="Full name" aria-label="Full name" autocomplete="name" required>
+        <input name="email" type="email" placeholder="Email address" aria-label="Email address" autocomplete="email" required>
+        <input name="phone" type="tel" placeholder="Phone number" aria-label="Phone number" autocomplete="tel">
+        <textarea name="message" aria-label="Message">I'm interested in Ref. {{ l.ref }}, {{ title }}.</textarea>
+        <p class="lx-consent">We pass your enquiry to {{ A.name }}, the licensed agent for this home, and keep a copy to follow up. See our <a href="{{ root }}privacy.html">privacy notice</a>.</p>
+        <button class="btn btn-primary" type="submit">Enquire now</button>
+        <p class="form-note" role="status" tabindex="-1" hidden></p>
+      </form>
+      <div class="lx-actions">
+        <button type="button" class="btn btn-outline btn-small" data-reveal="phone-{{ l.ref }}">{{ lt.call }}</button>
+        <button type="button" class="btn btn-outline btn-small" data-reveal="phone-{{ l.ref }}">{{ lt.whatsapp }}</button>
+        <button type="button" class="btn btn-outline btn-small" data-print>Download PDF</button>
       </div>
       <p id="phone-{{ l.ref }}" class="callout" hidden>{{ lt.reveal|replace('{a}', A.name)|replace('{p}', A.phone)|replace('{r}', l.ref) }}</p>
-      <div class="tool-row">
-        <button type="button" class="save save-inline" data-ref="{{ l.ref }}" aria-pressed="false" data-on="{{ {"en":"Saved","de":"Gemerkt","he":"נשמר"}[lg] }}" data-off="{{ 'Save this plot' if l.purpose == 'land' and lg == 'en' else lt.save }}">{{ icons.heart }} <span class="save-text">{{ 'Save this plot' if l.purpose == 'land' and lg == 'en' else lt.save }}</span></button>
-        <button type="button" class="btn btn-outline btn-small" data-reveal="pdf-{{ l.ref }}">{{ lt.pdf }}</button>
-      </div>
-      <p id="pdf-{{ l.ref }}" class="callout" hidden>{{ {"en":"The live site makes a one-page summary of this home, in your language, to print or send. Not in this draft.","de":"Die fertige Seite erstellt ein einseitiges Exposé in Ihrer Sprache zum Drucken oder Weitersenden. Nicht in diesem Entwurf.","he":"באתר המלא תוכלו להוריד סיכום של עמוד אחד על הנכס, בשפה שלכם, להדפסה או לשליחה. לא בטיוטה זו."}[lg] }}</p>
       <div class="licence">
-        <p><a href="{{ root }}agents/{{ l.agent }}.html">{{ A.name }}</a>{% if SAMPLE %} ({{ {"en":"sample","de":"Beispiel","he":"לדוגמה"}[lg] }}){% endif %}, {{ lt.lic }}{% if l.agent == 'developer-d' %}, {{ lt.sellsfor }}{% endif %}. {{ lt.regno }} {{ A.reg }}, {{ lt.licno }} {{ A.licence }}.</p>
-        {% if C and C.checked %}<p class="checked">{{ (lt.checked_dev if C.kind == 'developer' else lt.checked_agent)|replace('{d}', nice_date(C.checked, lg))|replace('{s}', C.source if lg == 'en' else C['source_' ~ lg]) }}</p>{% else %}<p class="checked" style="color:var(--warn-ink)">{{ {"en":"Licence not checked yet.","de":"Lizenz noch nicht geprüft.","he":"הרישיון טרם נבדק."}[lg] }}</p>{% endif %}
-        <p>{{ lt.check_note }} <a href="{{ root }}trust.html#checks">{{ T[lang|default('en')].f_check }}</a></p>
+        <p><a href="{{ root }}agents/{{ l.agent }}.html">{{ A.name }}</a>, {{ lt.lic }}. {{ lt.regno }} {{ A.reg }}, {{ lt.licno }} {{ A.licence }}.</p>
+        {% if C and C.checked %}<p class="checked">{{ (lt.checked_dev if C.kind == 'developer' else lt.checked_agent)|replace('{d}', nice_date(C.checked, lg))|replace('{s}', C.source if lg == 'en' else C['source_' ~ lg]) }}</p>{% else %}<p class="checked" style="color:var(--warn-ink)">Licence not checked yet.</p>{% endif %}
+        <p>{{ lt.check_note }} <a href="{{ root }}trust.html#checks">{{ T[lg].f_check }}</a></p>
       </div>
     </aside>
-
+  </div>
+  <div class="lx-body">
     <div class="listing-main">
       <section class="block" aria-labelledby="key">
         <h2 id="key">{{ lt.key }}</h2>
@@ -93,27 +101,12 @@
             <h3>The plot</h3>
             <dl>
               <dt>Plot size</dt><dd>{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} m²</dd>
-              <dt>Zone</dt><dd>{{ l.zone }}</dd>
-              <dt>Building density</dt><dd>{{ l.density }}<small>as stated by the agent</small></dd>
-              <dt>Access</dt><dd>{{ l.access }}</dd>
-              <dt>Utilities</dt><dd>{{ l.utilities }}</dd>
-              <dt>Seller</dt><dd>{{ l.seller }}</dd>
+              {% if l.zone or l.zoning %}<dt>Zone</dt><dd>{{ l.zone or l.zoning }}</dd>{% endif %}
+              {% if l.density %}<dt>Building density</dt><dd>{{ l.density }}<small>as stated by the agent</small></dd>{% endif %}
+              {% if l.access %}<dt>Access</dt><dd>{{ l.access }}</dd>{% endif %}
+              {% if l.utilities %}<dt>Utilities</dt><dd>{{ l.utilities }}</dd>{% endif %}
+              {% if l.seller %}<dt>Seller</dt><dd>{{ l.seller }}</dd>{% endif %}
               <dt>{{ lt.energy }}</dt><dd>{{ lt.energy_none }}</dd>
-            </dl>
-          </section>
-          {% else %}
-          <section aria-label="{{ lt.prop }}">
-            <h3>{{ lt.prop }}</h3>
-            <dl>
-              <dt>{{ lt.type }}</dt><dd>{{ kind }}</dd>
-              {% if l.beds is not none %}<dt>{{ lt.beds }}</dt><dd>{{ l.beds if l.beds else 'Studio' }}</dd>{% endif %}
-              {% if l.baths %}<dt>{{ lt.baths }}</dt><dd>{{ l.baths }}</dd>{% endif %}
-              {% if l.covered %}<dt>{{ lt.living }}</dt><dd>{{ l.covered }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
-              {% if l.extra and l.extra[0] in ('veranda','terrace') %}<dt>{{ l.extra[0]|capitalize }}</dt><dd>{{ l.extra[1] }} m²</dd>{% endif %}
-              {% if l.plot %}<dt>{{ lt.plot }}</dt><dd>{{ "{:,}".format(l.plot) if l.plot is not none else "–" }} {{ 'מ״ר' if lg == 'he' else 'm²' }}</dd>{% endif %}
-              {% if l.extra and l.extra[0] == 'sleeps' %}<dt>Sleeps</dt><dd>{{ l.extra[1] }}</dd>{% endif %}
-              {% if l.year %}<dt>{{ lt.built }}</dt><dd>{{ l.year }}</dd>{% endif %}
-              <dt>{{ lt.energy }}</dt><dd>{{ l.energy if l.energy else lt.energy_none }}</dd>
             </dl>
           </section>
           {% endif %}
@@ -140,6 +133,35 @@
       </section>
 
       {% if l.project %}<p class="callout">Part of <a href="{{ root }}developments/{{ l.project.slug }}.html">{{ l.project.name }}</a>: {{ l.project.homes }} homes, finished by {{ l.project.finish }}.</p>{% endif %}
+      <section class="block" aria-labelledby="details">
+        <h2 id="details">Property details</h2>
+        <dl class="lx-dl">
+          <dt>Property type</dt><dd>{{ l.ptype }}{% if l.sub %} ({{ l.sub|lower }}){% endif %}</dd>
+          {% if l.covered %}<dt>Covered area</dt><dd>{{ l.covered }} m²</dd>{% endif %}
+          {% if l.veranda %}<dt>Covered veranda</dt><dd>{{ l.veranda }} m²</dd>{% endif %}
+          {% if l.plot %}<dt>Plot</dt><dd>{{ "{:,}".format(l.plot) }} m²</dd>{% endif %}
+          {% if l.beds is not none %}<dt>Bedrooms</dt><dd>{{ l.beds if l.beds else 'Studio' }}</dd>{% endif %}
+          {% if l.baths %}<dt>Bathrooms</dt><dd>{{ l.baths }}</dd>{% endif %}
+          {% if l.toilets %}<dt>Extra toilets</dt><dd>{{ l.toilets }}</dd>{% endif %}
+          {% if l.floor %}<dt>Floor</dt><dd>{{ l.floor }}</dd>{% endif %}
+          {% if l.parking %}<dt>Parking spaces</dt><dd>{{ l.parking }}</dd>{% endif %}
+          {% if l.year %}<dt>Year built</dt><dd>{{ l.year }}</dd>{% endif %}
+        </dl>
+      </section>
+      <section class="block" aria-labelledby="other">
+        <h2 id="other">Other information</h2>
+        <dl class="lx-dl">
+          {% if l.condition %}<dt>Condition</dt><dd>{{ l.condition }}</dd>{% endif %}
+          {% if l.furnished %}<dt>Furnished</dt><dd>{{ l.furnished }}</dd>{% endif %}
+          {% if l.zoning %}<dt>Zoning</dt><dd>{{ l.zoning }}</dd>{% endif %}
+          <dt>Energy class</dt><dd>{{ l.energy or ('Not needed for land' if l.ptype == 'Land' else 'Not given') }}</dd>
+          <dt>Title deed</dt><dd>{{ deed_text(l.deed) }}</dd>
+          {% if l.sea_km %}<dt>Distance to sea</dt><dd>{{ '%g'|format(l.sea_km) }} km</dd>{% endif %}
+          {% if l.airport_km %}<dt>Distance to airport</dt><dd>{{ '%g'|format(l.airport_km) }} km</dd>{% endif %}
+          {% if l.school_km %}<dt>Distance to schools</dt><dd>{{ '%g'|format(l.school_km) }} km</dd>{% endif %}
+          {% if l.shops_km %}<dt>Distance to shops</dt><dd>{{ '%g'|format(l.shops_km) }} km</dd>{% endif %}
+        </dl>
+      </section>
       <section class="block" aria-labelledby="about">
         <h2 id="about">{{ lt.about }}</h2>
         <p class="desc">{{ tr.desc or l.desc }}</p>

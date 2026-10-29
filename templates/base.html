@@ -18,6 +18,10 @@
 <body>
 <a class="skip" href="#main">{{ t.skip }}</a>
 <div class="draft" role="note">{{ t.draft|safe }}</div>
+<div class="topbar"><div class="wrap">
+  <div class="topbar-l"><a href="tel:{{ D.CONTACT.phone_tel }}" dir="ltr">{{ icons.phone }}<span>{{ D.CONTACT.phone }}</span></a><a href="mailto:{{ D.CONTACT.email }}">{{ icons.mail }}<span>{{ D.CONTACT.email }}</span></a></div>
+  <div class="topbar-r"><a href="https://www.facebook.com/profile.php?id=61595975607076" rel="noopener" target="_blank" aria-label="Shel Property on Facebook">{{ icons.fb }}</a></div>
+</div></div>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="{{ root }}{{ 'index.html' if lang == 'en' else lang ~ '/index.html' }}" aria-label="Shel Property">
@@ -26,13 +30,15 @@
     </a>
     <nav class="nav" aria-label="{{ t.nav_main }}">
       <div class="nav-drop{% if nav in ('for-sale', 'new-build', 'resale', 'developments', 'land') %} is-current{% endif %}">
-        <a class="nav-drop-link" href="{{ root }}for-sale/index.html"{% if nav == 'for-sale' %} aria-current="page"{% endif %}>{{ t.nav_salemenu }}</a>
+        <a class="nav-drop-link" href="{{ root }}for-sale/index.html"{% if nav == 'for-sale' %} aria-current="page"{% endif %}>{{ {"en":"Properties","de":"Immobilien","he":"נכסים"}[lang] }}</a>
         <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="sale-menu" aria-label="{{ t.nav_salemenu }}: {{ t.nav_new }}, {{ t.nav_sale }}, {{ t.nav_dev }}, {{ t.nav_land }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-drop-menu" id="sale-menu" hidden>
+          <a href="{{ root }}for-sale/index.html">{{ t.nav_allsale }}</a>
           <a href="{{ root }}new-build/index.html"{% if nav == 'new-build' %} aria-current="page"{% endif %}>{{ t.nav_new }}</a>
           <a href="{{ root }}resale/index.html"{% if nav == 'resale' %} aria-current="page"{% endif %}>{{ t.nav_sale }}</a>
           <a href="{{ root }}developments/index.html"{% if nav == 'developments' %} aria-current="page"{% endif %}>{{ t.nav_dev }}</a>
           <a href="{{ root }}land/index.html"{% if nav == 'land' %} aria-current="page"{% endif %}>{{ t.nav_land }}</a>
+          <a href="{{ root }}saved.html">{{ {"en":"Favourites","de":"Favoriten","he":"מועדפים"}[lang] }}</a>
         </div>
       </div>
       <div class="nav-drop{% if nav in ('services', 'abroad', 'desk') %} is-current{% endif %}">
@@ -53,6 +59,7 @@
         <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="about-menu" aria-label="{{ t.nav_about }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-drop-menu" id="about-menu" hidden>
           <a href="{{ root }}about.html">{{ t.f_about }}</a>
+          <a href="{{ root }}news/index.html">{{ {"en":"News","de":"News","he":"חדשות"}[lang] }}</a>
           <a href="{{ root }}guides/index.html">{{ t.f_guides }}</a>
           <a href="{{ root }}trust.html">{{ t.f_trust }}</a>
         </div>
@@ -60,7 +67,7 @@
       <a href="{{ root }}contact.html"{% if nav == 'contact' %} aria-current="page"{% endif %}>{{ t.f_contact }}</a>
     </nav>
     <div class="header-tools">
-      <a class="icon-link" href="{{ root }}saved.html" aria-label="{{ t.saved }}">{{ icons.heart }}<span class="count" data-saved-count hidden>0</span></a>
+      <a class="btn btn-fav" href="{{ root }}saved.html">{{ icons.heart }}<span>{{ {"en":"Favourites","de":"Favoriten","he":"מועדפים"}[lang] }}</span><span class="count" data-saved-count hidden>0</span></a>
       <nav class="langs" aria-label="{{ t.lang_label }}">
         {% for code in ['en', 'de', 'he'] %}
         {% set target = alt.get(code) or ('index.html' if code == 'en' else code ~ '/index.html') %}
@@ -119,12 +126,21 @@
         <li><a href="{{ root }}contact.html">{{ t.f_contact }}</a></li>
       </ul></nav>
     </div>
+    <nav class="foot-popular" aria-label="{{ {"en":"Popular searches","de":"Beliebte Suchen","he":"חיפושים פופולריים"}[lang] }}">
+      {% for label, q in [("Houses for sale in Paphos","for-sale/index.html?type=House"),("Apartments for sale in Paphos","for-sale/index.html?type=Apartment"),("Villas for sale in Paphos","for-sale/index.html?type=House&subh=Villa"),("Land for sale in Paphos","land/index.html"),("New builds in Paphos","new-build/index.html"),("Property in Peyia","for-sale/index.html?loc=Peyia"),("Property in Kato Paphos","for-sale/index.html?loc=Kato+Paphos"),("Property in Tala","for-sale/index.html?loc=Tala")] %}<a href="{{ root }}{{ q }}">{{ label }}</a>{% endfor %}
+    </nav>
     <div class="foot-legal">
       <nav aria-label="{{ {"en":"Legal","de":"Rechtliches","he":"מידע משפטי"}[lang] }}"><a href="{{ root }}privacy.html">{{ t.f_privacy }}</a><a href="{{ root }}cookies.html">{{ t.f_cookies }}</a><a href="{{ root }}terms.html">{{ t.f_terms }}</a><a href="{{ root }}accessibility.html">{{ t.f_access }}</a><a href="{{ root }}trust.html#eu-representative">{{ t.f_eurep }}</a></nav>
       <p>{{ t.f_legal }}</p>
     </div>
   </div>
 </footer>
+<aside class="side-contact" aria-label="{{ t.f_contact }}">
+  <a class="side-tab" href="{{ root }}contact.html">{{ t.f_contact }}</a>
+  <a href="{{ root }}saved.html" aria-label="{{ {"en":"Favourites","de":"Favoriten","he":"מועדפים"}[lang] }}">{{ icons.heart }}</a>
+  <a href="tel:{{ D.CONTACT.phone_tel }}" aria-label="{{ D.CONTACT.phone }}">{{ icons.phone }}</a>
+  <a href="mailto:{{ D.CONTACT.email }}" aria-label="{{ D.CONTACT.email }}">{{ icons.mail }}</a>
+</aside>
 <script src="{{ root }}app.js"></script>
 </body>
 </html>

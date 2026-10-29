@@ -1,0 +1,12 @@
+{% extends "_info.html" %}
+{% block title %}{{ n.title }} | Shel Property{% endblock %}
+{% block description %}{{ n.summary }}{% endblock %}
+{% block crumb %}<a href="{{ root }}news/index.html">News</a><span aria-hidden="true">/</span><span>{{ n.title }}</span>{% endblock %}
+{% block body %}
+<article class="news-article">
+  <p class="eyebrow">{{ nice_date(n.date) }}</p>
+  <h1>{{ n.title }}</h1>
+  {% if n.image %}<img class="news-hero" src="{{ root }}{{ n.image }}" alt="">{% endif %}
+  <div class="prose">{{ n.html }}</div>
+</article>
+{% endblock %}

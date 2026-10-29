@@ -1,22 +1,25 @@
-<article class="card" data-ref="{{ l.ref }}" data-kind="{{ l.kind }}" data-price="{{ l.price }}" data-beds="{{ l.beds if l.beds is not none else '' }}" data-deed="{{ l.deed }}" data-vat="{{ 1 if l.vat else 0 }}" data-sea="{{ l.sea_km or '' }}" data-added="{{ l.added }}" data-features="{{ l.features_lc }}" data-vat5="{{ 1 if (l.vat and l.kind not in ('Restaurant','Shop') and l.price <= 475000) else 0 }}">
+<article class="card fx-card" data-ref="{{ l.ref }}" data-purpose="{{ l.purpose }}" data-type="{{ l.ptype }}" data-sub="{{ l.sub or '' }}" data-loc="{{ l.loc_name }}" data-price="{{ l.price }}" data-beds="{{ l.beds if l.beds is not none else '' }}" data-year="{{ l.year or '' }}" data-covered="{{ l.covered or '' }}" data-plot="{{ l.plot or '' }}" data-cond="{{ l.condition or '' }}" data-zone="{{ l.zoning or '' }}" data-furn="{{ l.furnished or '' }}" data-deed="{{ l.deed }}" data-vat="{{ 1 if l.vat else 0 }}" data-added="{{ l.added }}" data-features="{{ l.features_lc }}">
+  <a class="card-whole" href="{{ root }}{{ l.path }}" tabindex="-1" aria-hidden="true"></a>
   <div class="photo">
-    {% if l.photos %}{{ photo_img(l.photos[0], root, l.photo ~ ', ' ~ l.title ~ ' in ' ~ l.area_name) }}{% else %}{{ scene(l.ref, l.tone) }}{% endif %}
+    {% if l.photos %}{{ photo_img(l.photos[0], root, l.photo ~ ', ' ~ l.title ~ ' in ' ~ l.loc_name) }}{% else %}{{ scene(l.ref, l.tone) }}{% endif %}
     {% if l.sponsored %}<span class="sponsored">Sponsored</span>{% endif %}
-    {% if l.tags %}<div class="badges">{% for t in l.tags %}<span class="badge{% if not loop.first %} badge-light{% endif %}">{{ t }}</span>{% endfor %}</div>{% endif %}
-    {% if l.photos %}{% if SAMPLE %}<span class="cap cap-sample">Sample photo</span>{% endif %}{% else %}<span class="cap">Photo: {{ l.photo }}</span>{% endif %}
+    {% if l.draft %}<span class="badge badge-draft">Hidden draft</span>{% elif l.tags %}<div class="badges">{% for t in l.tags %}<span class="badge{% if not loop.first %} badge-light{% endif %}">{{ t }}</span>{% endfor %}</div>{% endif %}
   </div>
-  <button type="button" class="save" data-ref="{{ l.ref }}" aria-pressed="false" aria-label="Save this home">{{ icons.heart }}</button>
+  <button type="button" class="save" data-ref="{{ l.ref }}" aria-pressed="false" aria-label="Add to favourites">{{ icons.heart }}</button>
   <div class="card-body">
-    <div class="price" data-eur="{{ l.price }}">{{ price(l) }}</div>
     <h3 class="card-title"><a href="{{ root }}{{ l.path }}">{{ l.title }}</a></h3>
-    <p class="place">{{ l.area_name }}, Paphos district</p>
-    <div class="facts">
-      {% if l.beds %}<span>{{ icons.bed }}{{ l.beds }}<span class="visually-hidden"> bedroom{{ 's' if l.beds != 1 }} </span></span>{% elif l.beds == 0 %}<span>{{ icons.bed }}Studio</span>{% endif %}
-      {% if l.baths %}<span>{{ icons.bath }}{{ l.baths }}<span class="visually-hidden"> bathroom{{ 's' if l.baths != 1 }} </span></span>{% endif %}
-      {% if l.covered %}<span>{{ icons.area }}{{ l.covered }} m²</span>{% endif %}
-      {% if l.plot %}<span>{{ icons.plot }}{{ "{:,}".format(l.plot) }} m² plot</span>{% elif l.extra and l.extra[0] in ('veranda','terrace') %}<span>{{ icons.plot }}{{ l.extra[1] }} m² {{ l.extra[0] }}</span>{% elif l.extra and l.extra[0] == 'sleeps' %}<span>Sleeps {{ l.extra[1] }}</span>{% endif %}
+    <p class="place">{{ l.loc_name }}, Paphos</p>
+    <ul class="specs">
+      {% if l.beds %}<li>{{ l.beds }} Beds</li>{% elif l.beds == 0 %}<li>Studio</li>{% endif %}
+      {% if l.baths %}<li>{{ l.baths }} Baths</li>{% endif %}
+      {% if not l.beds and l.covered %}<li>{{ l.covered }} m²</li>{% endif %}
+      {% if l.ptype == 'Land' and l.plot %}<li>{{ "{:,}".format(l.plot) }} m²</li>{% endif %}
+      <li>Ref: <strong>{{ l.ref }}</strong></li>
+    </ul>
+    <div class="card-bottom">
+      <div class="price" data-eur="{{ l.price }}">{{ money(l.price) }}{% if l.vat %}<small>+VAT</small>{% endif %}</div>
+      <span class="card-go" aria-hidden="true">{{ icons.arrow }}</span>
     </div>
-    <div class="card-foot">{% if l.draft %}<span class="chip chip-warn">Hidden draft</span>{% endif %}{{ deed_chip(l) }}<span>Listed {{ nice_date(l.added) }}</span></div>
-    <p class="agent-line"><span class="tick" aria-hidden="true">✓</span> {{ l.agent_obj.name }}{% if SAMPLE %} (sample){% endif %} · Reg. {{ l.agent_obj.reg }} · Licence {{ l.agent_obj.licence }}{% if l.energy %} · Energy {{ l.energy }}{% endif %}</p>
+    <p class="agent-line">{{ deed_text(l.deed) }} · {{ l.agent_obj.name }}, licence {{ l.agent_obj.licence }}</p>
   </div>
 </article>

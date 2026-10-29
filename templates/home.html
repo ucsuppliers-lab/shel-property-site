@@ -11,28 +11,23 @@
 
   </div>
 </section>
+
 <section class="search-band home-search" aria-label="Search property">
   <div class="wrap">
-    <form class="filters home-filters" id="hero-search" role="search" aria-label="Search property" data-pages='{{ PAGES|tojson }}'>
-      <div class="search-row search-row-6">
-        <label class="field" data-sale-only>Category
-          <select name="cat"><option value="for-sale">All for sale</option><option value="new-build">New build</option><option value="resale">Resale</option><option value="developments">Development</option><option value="land">Land</option></select>
-        </label>
-        <label class="field">Location
-          <select name="area"><option value="">All of the Paphos district</option>{% for k, a in D.AREAS.items() %}<option value="{{ k }}">{{ a.name }}</option>{% endfor %}</select>
-        </label>
-        <label class="field">Type
-          <select name="type"><option value="">Any type</option><option>Apartment</option><option>Villa</option><option>Townhouse</option><option>House</option><option>Bungalow</option><option>Plot</option></select>
-        </label>
-        <label class="field">Max price
-          <select name="max"><option value="">No max</option><option value="250000">€250,000</option><option value="400000">€400,000</option><option value="600000">€600,000</option><option value="1000000">€1,000,000</option></select>
-        </label>
-        <label class="field">Bedrooms
-          <select name="beds"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select>
-        </label>
-        <button class="btn btn-primary" type="submit">{{ icons.search }} Search</button>
+    <form class="fx-bar-search" id="hero-search" role="search" aria-label="Search property" data-root="{{ root }}">
+      <select name="cat" aria-label="Category"><option value="for-sale">For sale (all)</option><option value="resale">Resale</option><option value="new-build">New build</option><option value="land">Land</option></select>
+      <div class="msel" data-name="loc">
+        <button type="button" class="msel-btn" aria-expanded="false" aria-label="Area"><span class="msel-val" data-any="Area">Area</span>{{ icons.chev }}</button>
+        <div class="msel-panel" hidden><input type="search" class="msel-find" placeholder="Search…" aria-label="Search areas"><div class="msel-list">{% for v in LOCALITIES %}<label><input type="checkbox" name="loc" value="{{ v }}"> {{ v }}</label>{% endfor %}</div></div>
       </div>
+      <select name="type" aria-label="Type"><option value="">Type</option>{% for v in TYPES %}<option>{{ v }}</option>{% endfor %}</select>
+      <select name="bmin" aria-label="Bedrooms"><option value="">Bedrooms</option><option value="0">Studio</option>{% for v in range(1,10) %}<option value="{{ v }}">{{ v }}+</option>{% endfor %}</select>
+      <select name="pmin" aria-label="Price min"><option value="">Price (min)</option>{% for v in PRICES %}<option value="{{ v }}">€{{ "{:,}".format(v) }}</option>{% endfor %}</select>
+      <select name="pmax" aria-label="Price max"><option value="">Price (max)</option>{% for v in PRICES %}<option value="{{ v }}">€{{ "{:,}".format(v) }}</option>{% endfor %}</select>
+      <input name="ref" type="text" placeholder="Reference" aria-label="Reference" autocomplete="off">
+      <button class="btn btn-primary fx-go" type="submit" aria-label="Search">{{ icons.search }}<span>Search</span></button>
     </form>
+    <a class="fx-adv-link" href="{{ root }}for-sale/index.html#fx-adv">Advanced filters {{ icons.chev }}</a>
   </div>
 </section>
 
@@ -44,6 +39,53 @@
       <a class="guide-card" href="{{ root }}services/legal.html"><h3>Legal and title deeds</h3><p>What your lawyer checks before you sign, and introductions to licensed lawyers in Cyprus.</p></a>
       <a class="guide-card" href="{{ root }}services/finance.html"><h3>Finance and tax</h3><p>Moving money from abroad, mortgages and the costs on top of the price.</p></a>
       <a class="guide-card" href="{{ root }}services/residency.html"><h3>Residency</h3><p>Living in Cyprus as a UK or Israeli buyer, with introductions to licensed specialists.</p></a>
+    </div>
+  </div>
+</section>
+
+{% if featured %}<section class="section" aria-labelledby="selected">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="selected">Selected properties</h2></div><a href="{{ root }}for-sale/index.html">View more</a></div>
+    <div class="grid grid-3">{% for l in featured %}{% include "_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+<section class="section" aria-labelledby="latest">
+  <div class="wrap">
+    <div class="section-head">
+      <div><h2 id="latest">New on the market</h2><p>{% if D.SAMPLE %}Sample listings{% elif not latest %}New homes from licensed agents are being added now.{% endif %}</p></div>
+      <a href="{{ root }}for-sale/index.html">View more</a>
+    </div>
+    <div class="grid grid-3">
+      {% for l in latest %}{% include "_card.html" %}{% endfor %}
+    </div>
+    {% if not latest %}<p class="empty">We're adding the first homes from licensed agents in Paphos now. Check back soon, or <a href="{{ root }}contact.html">tell us what you're looking for</a>.</p>{% endif %}
+  </div>
+</section>
+
+<section class="section band-sand" aria-labelledby="areas">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="areas">Locations</h2><p>From the harbour in Kato Paphos to Polis on the north coast.</p></div></div>
+    <div class="tiles loc-tiles">
+      {% for k, a in D.AREAS.items() %}<a class="tile" href="{{ root }}for-sale/{{ k }}.html"><strong>{{ a.name }}</strong><span>{% if area_counts[k] %}{{ area_counts[k] }} listing{{ 's' if area_counts[k] != 1 }}{% else %}View area{% endif %}</span></a>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="story">
+  <div class="wrap story">
+    <div><p class="eyebrow">Our story</p><h2 id="story">A team in London and Paphos</h2>
+    <p>We started Shel Property because buying in Paphos from abroad meant chasing answers across time zones and trusting listings you couldn't check. So we built the site around the questions buyers ask first, and put people in both cities to answer them.</p>
+    <a href="{{ root }}about.html">More about us</a></div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="news">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="news">Latest news</h2></div><a href="{{ root }}news/index.html">View more</a></div>
+    <div class="guides">
+      {% for n in NEWS[:3] %}<a class="guide-card news-card" href="{{ root }}news/{{ n.slug }}.html">{% if n.image %}<img src="{{ root }}{{ n.image }}" alt="" loading="lazy">{% endif %}<p class="eyebrow">{{ nice_date(n.date) }}</p><h3>{{ n.title }}</h3><p>{{ n.summary }}</p></a>{% else %}
+      {% for g in D.GUIDES[:3] %}<a class="guide-card" href="{{ root }}guides/{{ g.slug }}.html"><p class="eyebrow">Guide</p><h3>{{ g.title }}</h3><p>{{ g.lead }}</p></a>{% endfor %}{% endfor %}
     </div>
   </div>
 </section>
@@ -91,19 +133,6 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="latest">
-  <div class="wrap">
-    <div class="section-head">
-      <div><h2 id="latest">New on the market</h2><p>{% if D.SAMPLE %}Sample listings{% elif not latest %}New homes from licensed agents are being added now.{% endif %}</p></div>
-      <a href="{{ root }}for-sale/index.html">See all property for sale</a>
-    </div>
-    <div class="grid">
-      {% for l in latest %}{% include "_card.html" %}{% endfor %}
-    </div>
-    {% if not latest %}<p class="empty">We're adding the first homes from licensed agents in Paphos now. Check back soon, or <a href="{{ root }}contact.html">tell us what you're looking for</a>.</p>{% endif %}
-  </div>
-</section>
-
 <section class="section band-sand" aria-labelledby="every">
   <div class="wrap">
     <div class="section-head"><div><h2 id="every">On every home for sale</h2><p>A sale listing can't go live on Shel until the first four are filled in.</p></div><a href="{{ root }}trust.html">How we check</a></div>
@@ -115,18 +144,6 @@
       <li><strong>What it costs to buy</strong><span>Transfer fees, VAT and legal fees worked out on the price, with our sources.</span></li>
       <li><strong>Listed and last confirmed</strong><span>Two dates, so you can see the home is still on the market.</span></li>
     </ul>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="areas">
-  <div class="wrap">
-    <div class="section-head"><div><h2 id="areas">Search by area</h2><p>From the harbour in Kato Paphos to Polis on the north coast.</p></div></div>
-    <div class="tiles">
-      {% for k, a in D.AREAS.items() if area_counts[k] %}
-      {% set first = (PAGES.get('for-sale/' ~ k) or PAGES.get('resale/' ~ k) or PAGES.get('new-build/' ~ k) or PAGES.get('land/' ~ k)) %}
-      <a class="tile" href="{{ root }}{{ first }}"><strong>{{ a.name }}</strong><span>{{ area_counts[k] }} listing{{ 's' if area_counts[k] != 1 }}</span></a>
-      {% endfor %}
-    </div>
   </div>
 </section>
 
@@ -154,14 +171,6 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="story">
-  <div class="wrap story">
-    <div><p class="eyebrow">Our story</p><h2 id="story">A team in London and Paphos</h2>
-    <p>We started Shel Property because buying in Paphos from abroad meant chasing answers across time zones and trusting listings you couldn't check. So we built the site around the questions buyers ask first, and put people in both cities to answer them.</p>
-    <a href="{{ root }}about.html">More about us</a></div>
-  </div>
-</section>
-
 <section class="section band-sky" aria-labelledby="ask">
   <div class="wrap alerts">
     <div><h2 id="ask" style="font-size: clamp(28px,3.5vw,34px)">Any questions? Talk to us.</h2><p style="color: var(--drift); margin-top: 6px">Email the buyer desk and a member of our London or Paphos team will reply.</p></div>
@@ -176,4 +185,5 @@
     <a class="btn btn-white" href="{{ root }}for-agents.html">See the founding offer</a>
   </div>
 </section>
+
 {% endblock %}

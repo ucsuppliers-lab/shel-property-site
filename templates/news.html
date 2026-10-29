@@ -1,0 +1,14 @@
+{% extends "_info.html" %}
+{% block title %}News | Shel Property{% endblock %}
+{% block description %}News from the Shel Property team about buying property in Paphos, Cyprus.{% endblock %}
+{% block crumb %}News{% endblock %}
+{% block body %}
+<h1>News</h1>
+{% if NEWS %}
+<div class="guides news-list">
+  {% for n in NEWS %}<a class="guide-card news-card" href="{{ root }}news/{{ n.slug }}.html">{% if n.image %}<img src="{{ root }}{{ n.image }}" alt="" loading="lazy">{% endif %}<p class="eyebrow">{{ nice_date(n.date) }}</p><h2>{{ n.title }}</h2><p>{{ n.summary }}</p></a>{% endfor %}
+</div>
+{% else %}
+<p>Our first articles are on their way. Meanwhile, our <a href="{{ root }}guides/index.html">buying guides</a> answer the questions buyers ask us most.</p>
+{% endif %}
+{% endblock %}

@@ -4,7 +4,9 @@ If listings.csv has rows, they replace the sample listings when the site is buil
 Every row is checked; a row that fails a check is skipped and reported, never published.
 Photos: put files in listings/photos/<ref>-1.jpg, <ref>-2.jpg ... (agent must confirm rights).
 """
-import csv, os, re
+import csv, os, re, sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import taxonomy as TX
 HERE = os.path.dirname(os.path.abspath(__file__))
 PURPOSES = {"resale", "new-build", "land"}  # rentals removed 29 Oct 2026
 DEEDS = {"issued", "after-completion", "pending"}
@@ -65,6 +67,8 @@ def load_listings(agents):
         if r.get("purpose") != "land" and (r.get("energy_class") or "").strip() not in ENERGY: errs.append("energy_class missing (A-G or exempt)")
         if r.get("purpose") != "to-rent" and r.get("title_deed") not in DEEDS: errs.append("title_deed must be issued / after-completion / pending")
         if not _yes(r.get("photo_rights_confirmed")): errs.append("photo rights not confirmed by agent")
+        if not (r.get("area") or "").strip() and TX.HUB_OF.get(r.get("locality") or ""):
+            r = dict(r, area=TX.HUB_OF[r["locality"]])
         if not (r.get("area") or "").strip(): errs.append("area missing")
         if errs and DRAFTS:
             problems.append(f"row {i} ({ref}) DRAFT, would be held back: " + "; ".join(errs))
@@ -74,8 +78,16 @@ def load_listings(agents):
         if errs:
             problems.append(f"row {i} ({ref}): " + "; ".join(errs))
             continue
+        ptype, psub = TX.type_and_sub((r.get("type") or "").strip(), (r.get("subtype") or "").strip())
         rows.append({
-            "ref": ref, "purpose": r["purpose"], "area": (r.get("area") or "").strip(), "kind": (r.get("type") or "Property").strip(),
+            "ptype": ptype, "sub": psub, "locality": (r.get("locality") or "").strip() or None,
+            "condition": (r.get("condition") or "").strip() or ("Resale" if r["purpose"] == "resale" else None),
+            "furnished": (r.get("furnished") or "").strip() or None, "zoning": (r.get("zoning") or "").strip() or None,
+            "floor": (str(r.get("floor") or "")).strip() or None, "parking": _num(r.get("parking_spaces"), int),
+            "veranda": _num(r.get("veranda_m2"), int), "toilets": _num(r.get("toilets"), int),
+            "airport_km": _num(r.get("distance_to_airport_km")), "school_km": _num(r.get("distance_to_schools_km")),
+            "shops_km": _num(r.get("distance_to_amenities_km")), "featured": _yes(str(r.get("featured", ""))),
+            "ref": ref, "purpose": r["purpose"], "area": (r.get("area") or "").strip(), "kind": (psub or ptype) if psub not in ("Plot", "Field", "Development land", "Whole floor", "Residential", "Commercial") else ptype,
             "title": (r.get("title") or "").strip(), "price": _num(r["price"], int),
             "period": "month" if r["purpose"] == "to-rent" else None, "vat": _yes(r.get("plus_vat")),
             "beds": _num(r.get("bedrooms"), int), "baths": _num(r.get("bathrooms"), int),

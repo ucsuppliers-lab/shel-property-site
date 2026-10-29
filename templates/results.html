@@ -2,6 +2,16 @@
 {% set where = area.name if area else "Paphos district" %}
 {% block title %}{{ P.title }} in {{ where }} | Shel Property{% endblock %}
 {% block description %}{{ listings|length }} {{ P.noun }} listing{{ 's' if listings|length != 1 }} in {{ where }}, Cyprus, from registered, licensed agents. Title deed status shown on every listing.{% endblock %}
+{% macro opts(values, fmt='') %}{% for v in values %}<option value="{{ v }}">{% if fmt == 'eur' %}€{{ "{:,}".format(v) }}{% elif fmt == 'm2' %}{{ "{:,}".format(v) }} m²{% else %}{{ v }}{% endif %}</option>{% endfor %}{% endmacro %}
+{% macro msel(name, label, values) %}
+<div class="msel" data-name="{{ name }}">
+  <button type="button" class="msel-btn" aria-expanded="false"><span class="msel-val" data-any="Any">Any</span>{{ icons.chev }}</button>
+  <div class="msel-panel" hidden>
+    {% if values|length > 12 %}<input type="search" class="msel-find" placeholder="Search…" aria-label="Search {{ label|lower }}">{% endif %}
+    <div class="msel-list">{% for v in values %}<label><input type="checkbox" name="{{ name }}" value="{{ v }}"> {{ v }}</label>{% endfor %}</div>
+  </div>
+</div>
+{% endmacro %}
 {% block main %}
 <section class="search-band">
 <div class="wrap">
@@ -11,63 +21,74 @@
     {% else %}<span aria-current="page">{{ P.title }}</span>{% endif %}
   </nav>
   <div class="results-head">
-    <div>
-      <h1>{{ P.title }} in {{ where }}</h1>
-      <p>{% if area %}{{ area.blurb }} {% endif %}{% if listings %}{% set one, many = ('plot', 'plots') if pur == 'land' else ('property', 'properties') %}<span id="result-count" data-one="{{ one }}" data-many="{{ many }}">{{ listings|length }} {{ one if listings|length == 1 else many }}</span> from licensed agents.{% if D.SAMPLE %} Sample listings.{% endif %}{% else %}Homes from licensed agents, with the title deed status shown on every listing.{% endif %}</p>
-    </div>
-    <button type="button" class="btn btn-outline" data-reveal="alert-note">Email me new matches</button>
+    <h1>{{ P.title }} in {{ where }}</h1>
   </div>
-      <form id="filters" class="filters" aria-label="Filter results">
-        <label class="field">Type
-          <select name="type"><option value="">Any type</option>{% for k in listings|map(attribute='kind')|unique|sort %}<option>{{ k }}</option>{% endfor %}</select>
-        </label>
-        <label class="field">Min price
-          <input name="min" type="number" inputmode="numeric" min="0" step="1000" placeholder="No min">
-        </label>
-        <label class="field">Max price
-          <input name="max" type="number" inputmode="numeric" min="0" step="1000" placeholder="No max">
-        </label>
-        {% if pur != 'land' %}<label class="field">Bedrooms
-          <select name="beds"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select>
-        </label>{% endif %}
-        <div class="checks" role="group" aria-label="Must have">
-          {% if pur in ('for-sale','resale','new-build','land') %}<label class="check"><input type="checkbox" name="deed" value="1">Title deed issued only</label>{% endif %}
-          {% if pur != 'land' %}<label class="check"><input type="checkbox" name="pool" value="1">Private or shared pool</label>{% endif %}
-          <label class="check"><input type="checkbox" name="seaview" value="1">Sea view</label>
-          {% if pur in ('for-sale','new-build') %}<label class="check"><input type="checkbox" name="novat" value="1">No VAT</label>{% endif %}
-          {% if pur in ('for-sale','new-build') %}<label class="check"><input type="checkbox" name="vat5" value="1">5% VAT may apply</label>{% endif %}
-          <button class="btn btn-outline" type="reset" style="min-height:38px;padding:6px 12px;font-size:14px">Clear</button>
-        </div>
-      </form>
-      {% if areas_here|length > 1 %}
-      <nav class="checks" aria-label="Areas" style="margin-bottom:14px">
-        {% if area %}<a class="check" href="{{ root }}{{ pur }}/index.html">All areas</a>{% endif %}
-        {% for a, name, n in areas_here %}{% if not area or area.slug != a %}<a class="check" href="{{ root }}{{ pur }}/{{ a }}.html">{{ name }} ({{ n }})</a>{% endif %}{% endfor %}
-      </nav>
-      {% endif %}
+  <form id="filters" class="filters fx-filters" aria-label="Filter results" data-scope="{{ pur }}" data-root="{{ root }}">
+    <div class="fx-head"><strong>Filters</strong><button type="reset" class="fx-reset">{{ icons.reset }} Reset filters</button></div>
+    <div class="fx-row">
+      <label class="field">Category
+        <select name="cat">{% for k, t in [('for-sale','For sale (all)'),('resale','Resale'),('new-build','New build'),('land','Land')] %}<option value="{{ k }}"{% if k == pur %} selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+      </label>
+      <label class="field">District
+        <select name="district"><option value="paphos">Paphos</option></select>
+      </label>
+      <div class="field"><span class="flabel">Area</span>{{ msel('loc', 'Area', LOCALITIES) }}</div>
+      <label class="field">Type
+        <select name="type"><option value="">Any</option>{{ opts(TYPES) }}</select>
+      </label>
+      <div class="field"><span class="flabel">Bedrooms</span>
+        <div class="pair"><select name="bmin" aria-label="Bedrooms min"><option value="">Min</option><option value="0">Studio</option>{{ opts(range(1,10)) }}<option value="10">10+</option></select>
+        <select name="bmax" aria-label="Bedrooms max"><option value="">Max</option><option value="0">Studio</option>{{ opts(range(1,11)) }}</select></div>
+      </div>
+      <div class="field"><span class="flabel">Price</span>
+        <div class="pair"><select name="pmin" aria-label="Price min"><option value="">Min</option>{{ opts(PRICES, 'eur') }}</select>
+        <select name="pmax" aria-label="Price max"><option value="">Max</option>{{ opts(PRICES, 'eur') }}</select></div>
+      </div>
+      <label class="field">Reference<input name="ref" type="text" placeholder="Ref" autocomplete="off"></label>
+    </div>
+    <button type="button" class="fx-more" aria-expanded="false" aria-controls="fx-adv">Advanced filters {{ icons.chev }}</button>
+    <div class="fx-adv" id="fx-adv" hidden>
+      <div class="field"><span class="flabel">Year built</span>
+        <div class="pair"><select name="ymin" aria-label="Year built from"><option value="">Min</option>{{ opts(YEARS) }}</select><select name="ymax" aria-label="Year built to"><option value="">Max</option>{{ opts(YEARS) }}</select></div></div>
+      <div class="field"><span class="flabel">Covered area</span>
+        <div class="pair"><select name="cmin" aria-label="Covered area min"><option value="">Min</option>{{ opts(COVERED, 'm2') }}</select><select name="cmax" aria-label="Covered area max"><option value="">Max</option>{{ opts(COVERED, 'm2') }}</select></div></div>
+      <div class="field"><span class="flabel">Plot area</span>
+        <div class="pair"><select name="lmin" aria-label="Plot area min"><option value="">Min</option>{{ opts(PLOT, 'm2') }}</select><select name="lmax" aria-label="Plot area max"><option value="">Max</option>{{ opts(PLOT, 'm2') }}</select></div></div>
+      <div class="field"><span class="flabel">Condition</span>{{ msel('cond', 'Condition', CONDITIONS) }}</div>
+      <div class="field"><span class="flabel">House type</span>{{ msel('subh', 'House type', SUBTYPES['House']) }}</div>
+      <label class="field">Apartment type<select name="suba"><option value="">Any</option>{{ opts(SUBTYPES['Apartment']) }}</select></label>
+      <div class="field"><span class="flabel">Land type</span>{{ msel('subl', 'Land type', SUBTYPES['Land']) }}</div>
+      <div class="field"><span class="flabel">Zoning</span>{{ msel('zone', 'Zoning', ZONING) }}</div>
+      <div class="field"><span class="flabel">Furnished</span>{{ msel('furn', 'Furnished', FURNISHED) }}</div>
+      <div class="checks" role="group" aria-label="Must have">
+        <label class="check"><input type="checkbox" name="deed" value="1">Title deed issued</label>
+        <label class="check"><input type="checkbox" name="pool" value="1">Pool</label>
+        <label class="check"><input type="checkbox" name="seaview" value="1">Sea view</label>
+        <label class="check"><input type="checkbox" name="novat" value="1">No VAT</label>
+      </div>
+    </div>
+  </form>
 </div>
 </section>
 <div class="wrap">
   {% if D.BEFORE.get(pur) %}<aside class="before" aria-label="Before you buy"><strong>Before you buy</strong><p>{{ D.BEFORE[pur] }}</p><p class="before-links">{% for href, text in D.BEFORE_LINKS[pur] %}<a href="{{ root }}{{ href }}">{{ text }}</a>{% endfor %}</p></aside>{% endif %}
-  <p id="alert-note" class="callout" hidden style="margin-bottom:14px">Email alerts come with the live site. Nothing is saved in this draft.</p>
 
-  <div class="results{% if not listings %} results-solo{% endif %}">
-    <section aria-label="Results">
-      <div class="result-bar">
-        <span>Newest first unless you change it. Sponsored listings are labelled. <a href="{{ root }}trust.html#ranking">How listings are ranked</a></span>
-        <label class="field">Show prices in&nbsp;<select id="currency"><option value="EUR">€ euros</option><option value="GBP">£ pounds (approx.)</option><option value="ILS">₪ shekels (approx.)</option></select></label>
-        <label class="field">Sort&nbsp;<select id="sort"><option value="new">Newest</option><option value="low">Lowest price</option><option value="high">Highest price</option><option value="sea">Closest to the sea</option></select></label>
-      </div>
-      <div class="grid">
-        {% for l in listings %}{% include "_card.html" %}{% endfor %}
-      </div>
-      {% if not listings %}<p class="empty">We're adding the first homes from licensed agents now. Check back soon, or <a href="{{ root }}contact.html">tell us what you're looking for</a>.</p>{% endif %}
-      {% if listings %}<p id="empty" class="empty" hidden>Nothing matches those filters. Try a higher price or fewer must-haves.</p>{% endif %}
-    </section>
-{% if listings %}    <aside class="map-panel" aria-label="Map">
-      {{ leaflet_map(listings, root, 0.72) }}
-      <p class="map-note">Illustrative map. The live site uses a real street map. Draw-your-own-area search comes once there are enough listings to make it useful.</p>
-    </aside>{% endif %}
+  <div class="fx-bar">
+    {% set one, many = ('plot', 'plots') if pur == 'land' else ('property', 'properties') %}<h2 class="fx-count"><span id="result-count" data-one="{{ one }}" data-many="{{ many }}">{{ listings|length }} {{ one if listings|length == 1 else many }}</span> for sale</h2>
+    <div class="fx-tools">
+      {% if listings %}<button type="button" class="btn btn-outline btn-small" id="map-toggle" aria-expanded="false" aria-controls="map-panel">{{ icons.pin }} Show map</button>{% endif %}
+      <label class="field inline">Prices in <select id="currency"><option value="EUR">€ euros</option><option value="GBP">£ pounds (approx.)</option><option value="ILS">₪ shekels (approx.)</option></select></label>
+      <label class="field inline">Sort by <select id="sort"><option value="new">Recently added</option><option value="old">Oldest listings</option><option value="low">Price ascending</option><option value="high">Price descending</option></select></label>
+    </div>
   </div>
+  {% if listings %}<div class="map-panel fx-map" id="map-panel" hidden>{{ leaflet_map(listings, root, 0.42) }}</div>{% endif %}
+
+  <div class="grid grid-3" data-per-page="12">
+    {% for l in listings %}{% include "_card.html" %}{% endfor %}
+  </div>
+  {% if not listings %}<p class="empty">We're adding the first homes from licensed agents now. Check back soon, or <a href="{{ root }}contact.html">tell us what you're looking for</a>.</p>{% else %}
+  <p id="empty" class="empty" hidden>Nothing matches those filters. Try a wider price range or fewer filters.</p>{% endif %}
+  <nav class="pager" aria-label="Pages" hidden></nav>
+  <p class="fx-note">Sponsored listings are labelled. <a href="{{ root }}trust.html#ranking">How listings are ranked</a></p>
 </div>
 {% endblock %}

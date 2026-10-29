@@ -11,6 +11,7 @@ import data as D
 import i18n as I18N
 from seal import wave_seal_g, icon_g
 import photos as PH
+import taxonomy as TX
 from PIL import Image as _Im
 
 OUT = os.path.join(HERE, "out")
@@ -26,6 +27,14 @@ FAVICON = "data:image/svg+xml," + re.sub(r"\s+", " ", (
 )).replace("#", "%23").replace('"', "'")
 
 ICONS = {
+    "reset": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg>',
+    "pin": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    "arrow": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>',
+    "phone": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+    "mail": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+    "fb": '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V5.5h-3c-2.5 0-4 1.7-4 4V12H7.5v3.5H10V22h3.5v-6.5h3l.5-3.5h-3.5V9.8c0-.5.3-.8.5-.8z"/></svg>',
+    "left": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+    "right": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
     "bed": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-7h18v7M3 14h18M7 11V8h5v3"/></svg>',
     "bath": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3zM6 12V6a2 2 0 0 1 4 0"/></svg>',
     "area": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h3M9 4v3"/></svg>',
@@ -126,8 +135,12 @@ def slug(s):
 HAVE = PH.available()
 for l in D.LISTINGS:
     if not l.get("deed"): l["deed"] = "unknown"
+    if not l.get("ptype"): l["ptype"], l["sub"] = TX.type_and_sub(l.get("kind"))
+    for k in ("locality", "condition", "furnished", "zoning", "floor", "parking", "veranda", "toilets", "airport_km", "school_km", "shops_km", "featured"):
+        l.setdefault(k, None)
     l["photos"] = make_listing_photos(l["ref"], l["photo_files"]) if l.get("photo_files") else (HAVE.get(l["ref"], []) if D.SAMPLE else [])
     l["area_name"] = D.AREAS[l["area"]]["name"]
+    l["loc_name"] = l.get("locality") or l["area_name"]
     l["agent_obj"] = D.AGENTS[l["agent"]]
     l["path"] = f'property/{l["ref"]}-{slug(l["title"])}-{l["area"]}.html'
     l["features_lc"] = " ".join(f.lower() for f in l["features"])
@@ -161,7 +174,7 @@ PAGES = pages_index()
 
 env = Environment(loader=FileSystemLoader(os.path.join(HERE, "templates")), autoescape=select_autoescape(["html"]), trim_blocks=True, lstrip_blocks=True)
 env.globals.update(T=I18N.T, L=I18N.L, deed_text=deed_text, nice_date=nice_date, photo_img=photo_img, HERO=('hero' in HAVE), seal=seal_svg, icons={k: Markup(v) for k, v in ICONS.items()}, scene=scene, price=price_html, deed_chip=deed_chip,
-                   money=money, D=D, PAGES=PAGES, FAVICON=FAVICON, today=date(2026, 10, 23))
+                   money=money, D=D, TYPES=TX.TYPES, SUBTYPES=TX.SUBTYPES, CONDITIONS=TX.CONDITIONS, ZONING=TX.ZONING, FURNISHED=TX.FURNISHED, PRICES=TX.PRICES, COVERED=TX.COVERED, PLOT=TX.PLOT, YEARS=TX.YEARS, LOCALITIES=TX.LOCALITIES, PAGES=PAGES, FAVICON=FAVICON, today=date(2026, 10, 23))
 
 def write(rel, tpl, **ctx):
     depth = rel.count("/")
@@ -226,7 +239,7 @@ def leaflet_map(listings, root, aspect=0.75, area_circle=False):
         if not l.get("lat") and k:  # spread homes in the same area so markers don't sit on top of each other
             lat += 0.004 * _m.sin(k * 2.1); lng += 0.005 * _m.cos(k * 2.1)
         pins.append({"lat": round(lat, 5), "lng": round(lng, 5), "label": price_short(l), "title": l["title"],
-                     "area": l["area_name"], "href": root + l["path"]})
+                     "area": l.get("loc_name") or l["area_name"], "href": root + l["path"], "ref": l["ref"]})
     import html as _h
     data = _h.escape(_j.dumps({"pins": pins, "circle": area_circle}), quote=True)
     return Markup(f'<div class="lmap" style="aspect-ratio:{aspect:.3f}" data-map="{data}">'
@@ -239,6 +252,25 @@ def price_short(l):
     return f"€{p/1000:.0f}k" if p < 1_000_000 else f"€{p/1_000_000:.1f}m"
 
 env.globals.update(map_svg=map_svg, leaflet_map=leaflet_map, SAMPLE=D.SAMPLE)
+
+def load_news():
+    import yaml, markdown
+    d = os.path.join(HERE, "content", "news"); out = []
+    if os.path.isdir(d):
+        for f in sorted(os.listdir(d)):
+            if not f.endswith(".md"): continue
+            raw = open(os.path.join(d, f), encoding="utf-8").read()
+            meta, body = {}, raw
+            if raw.startswith("---"):
+                _, fm, body = raw.split("---", 2); meta = yaml.safe_load(fm) or {}
+            if meta.get("published") is False: continue
+            dt = str(meta.get("date") or f[:10])
+            out.append({"slug": slug(meta.get("title") or f[:-3]), "title": meta.get("title") or f[:-3], "date": dt[:10],
+                        "summary": meta.get("summary") or "", "image": (meta.get("image") or "").lstrip("/"),
+                        "html": Markup(markdown.markdown(body.strip()))})
+    return sorted(out, key=lambda n: n["date"], reverse=True)
+NEWS = load_news()
+env.globals.update(NEWS=NEWS)
 
 def card_html(l, root):
     return env.get_template("_card.html").render(l=l, root=root)
@@ -254,12 +286,12 @@ def build():
             if f.endswith(".jpg"): shutil.copy(os.path.join(CACHE, f), os.path.join(OUT, "img", f))
     made = []
     area_counts = {k: sum(1 for l in D.LISTINGS if l["area"] == k) for k in D.AREAS}
-    made.append(write("index.html", "home.html", latest=LIST_BY_DATE[:8], area_counts=area_counts, page_title=None, nav=None, alt={"en": "index.html", "de": "de/index.html", "he": "he/index.html"}))
+    made.append(write("index.html", "home.html", latest=LIST_BY_DATE[:6], featured=[l for l in LIST_BY_DATE if l.get("featured")][:6], area_counts=area_counts, page_title=None, nav=None, alt={"en": "index.html", "de": "de/index.html", "he": "he/index.html"}))
     for pur, P in D.PURPOSES.items():
         ls = [l for l in LIST_BY_DATE if in_cat(l, pur)]
         areas_here = [(a, D.AREAS[a]["name"], sum(1 for l in ls if l["area"] == a)) for a in D.AREAS if any(l["area"] == a for l in ls)]
         made.append(write(f"{pur}/index.html", "results.html", listings=ls, pur=pur, P=P, area=None, areas_here=areas_here, nav=pur))
-        area_pages = [(a, D.AREAS[a]["name"], 0) for a in D.AREAS] if (pur == "for-sale" and not areas_here) else areas_here
+        area_pages = [(a, D.AREAS[a]["name"], 0) for a in D.AREAS] if pur == "for-sale" else areas_here
         for a, name, n in area_pages:
             made.append(write(f"{pur}/{a}.html", "results.html", listings=[l for l in ls if l["area"] == a], pur=pur, P=P,
                               area=dict(D.AREAS[a], slug=a), areas_here=areas_here, nav=pur))
@@ -298,6 +330,12 @@ def build():
         made.append(write(f"agents/{k}.html", "agent.html", a=a, key=k, listings=[l for l in LIST_BY_DATE if l["agent"] == k], nav="agents"))
     made.append(write("for-agents.html", "for_agents.html", nav=None))
     made.append(write("guides/index.html", "guides.html", nav=None))
+    made.append(write("news/index.html", "news.html", nav="about"))
+    for n in NEWS:
+        made.append(write(f"news/{n['slug']}.html", "news_item.html", n=n, nav="about"))
+        if n["image"] and os.path.exists(os.path.join(HERE, n["image"])):
+            os.makedirs(os.path.dirname(os.path.join(OUT, n["image"])), exist_ok=True)
+            shutil.copy(os.path.join(HERE, n["image"]), os.path.join(OUT, n["image"]))
     for g in D.GUIDES:
         made.append(write(f"guides/{g['slug']}.html", f"guide_{g['slug'].replace('-', '_')}.html", g=g, nav=None))
     saved_data = [{"ref": l["ref"], "card": card_html(l, "")} for l in LIST_BY_DATE]

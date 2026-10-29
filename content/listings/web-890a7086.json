@@ -7,7 +7,7 @@
   "price": 240000,
   "covered_m2": 1361,
   "title_deed": "issued",
-  "type": "Building plot",
+  "type": "Land",
   "purpose": "land",
   "plus_vat": true,
   "latitude": 34.700797,
@@ -24,5 +24,7 @@
   "last_confirmed": "2026-10-29",
   "source_url": "https://foxrealty.com.cy/property/53906",
   "imported_on": "2026-10-29",
-  "area": "paphos-town"
+  "area": "paphos-town",
+  "locality": "Paphos town",
+  "subtype": "Plot"
 }

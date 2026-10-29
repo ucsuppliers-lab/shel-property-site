@@ -30,95 +30,191 @@
     if (document.getElementById("saved-list")) renderSavedPage();
   });
 
-  /* hero search */
-  var hero = document.getElementById("hero-search");
-  if (hero) {
-    var purpose = "for-sale";
-    hero.querySelectorAll(".tab").forEach(function (t) {
-      t.addEventListener("click", function () {
-        hero.querySelectorAll(".tab").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
-        t.setAttribute("aria-pressed", "true"); purpose = t.dataset.purpose;
-        var sc = hero.querySelector("[data-sale-only]"); if (sc) sc.hidden = purpose !== "for-sale";
+  /* ---- search: query string carries the filters between pages (shareable links) ---- */
+  var CAT_PAGE = { "for-sale": "for-sale/index.html", "resale": "resale/index.html", "new-build": "new-build/index.html", "land": "land/index.html" };
+
+  /* multi-select drop-downs (Area, Condition, …) */
+  function initMsel(root) {
+    root.querySelectorAll(".msel").forEach(function (m) {
+      var btn = m.querySelector(".msel-btn"), panel = m.querySelector(".msel-panel"), val = m.querySelector(".msel-val"), find = m.querySelector(".msel-find");
+      function label() {
+        var on = Array.prototype.filter.call(m.querySelectorAll("input[type=checkbox]"), function (c) { return c.checked; }).map(function (c) { return c.value; });
+        val.textContent = on.length === 0 ? val.dataset.any : (on.length === 1 ? on[0] : on.length + " selected");
+      }
+      m._label = label;
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = panel.hidden;
+        document.querySelectorAll(".msel-panel").forEach(function (p) { p.hidden = true; p.parentNode.querySelector(".msel-btn").setAttribute("aria-expanded", "false"); });
+        panel.hidden = !open; btn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open && find) find.focus();
+      });
+      panel.addEventListener("click", function (e) { e.stopPropagation(); });
+      panel.addEventListener("change", label);
+      if (find) find.addEventListener("input", function () {
+        var q = find.value.toLowerCase();
+        m.querySelectorAll(".msel-list label").forEach(function (l) { l.hidden = q && l.textContent.toLowerCase().indexOf(q) === -1; });
+      });
+      label();
+    });
+    document.addEventListener("click", function () { root.querySelectorAll(".msel-panel").forEach(function (p) { p.hidden = true; }); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") root.querySelectorAll(".msel-panel").forEach(function (p) { p.hidden = true; }); });
+  }
+  function formToQuery(form, skip) {
+    var parts = [];
+    new FormData(form).forEach(function (v, k) { if (v !== "" && k !== skip && !(k === "district" && v === "paphos")) parts.push(encodeURIComponent(k) + "=" + encodeURIComponent(v)); });
+    return parts.join("&");
+  }
+  function queryToForm(form, qs) {
+    var q = new URLSearchParams(qs);
+    q.forEach(function (v, k) {
+      form.querySelectorAll('[name="' + k + '"]').forEach(function (el) {
+        if (el.type === "checkbox") { if (el.value === v) el.checked = true; }
+        else if (k !== "cat") el.value = v;
       });
     });
+    form.querySelectorAll(".msel").forEach(function (m) { if (m._label) m._label(); });
+  }
+
+  /* home search bar */
+  var hero = document.getElementById("hero-search");
+  if (hero) {
+    initMsel(hero);
     hero.addEventListener("submit", function (e) {
       e.preventDefault();
-      var pages = JSON.parse(hero.dataset.pages);
-      var catSel = hero.querySelector("[name=cat]");
-      if (purpose === "for-sale" && catSel && catSel.value) purpose = catSel.value;
-      var area = hero.querySelector("[name=area]").value;
-      var url = (area && pages[purpose + "/" + area]) ? pages[purpose + "/" + area] : pages[purpose];
-      var params = [];
-      ["type", "max", "beds"].forEach(function (n) { var v = hero.querySelector("[name=" + n + "]").value; if (v) params.push(n + "=" + encodeURIComponent(v)); });
-      try { if (params.length) sessionStorage.setItem("shel-filters", params.join("&")); else sessionStorage.removeItem("shel-filters"); } catch (err) {}
-      window.location.href = url;
+      var cat = hero.querySelector("[name=cat]").value || "for-sale";
+      var q = formToQuery(hero, "cat");
+      window.location.href = hero.dataset.root + CAT_PAGE[cat] + (q ? "?" + q : "");
     });
   }
 
-  /* results filtering */
+  /* results filtering, sorting and pages */
   var filters = document.getElementById("filters");
   if (filters) {
+    initMsel(filters);
+    var scope = filters.dataset.scope;
     var cards = Array.prototype.slice.call(document.querySelectorAll(".grid .card"));
     var grid = document.querySelector(".grid");
-    var countEl = document.getElementById("result-count");
-    var empty = document.getElementById("empty");
-    try {
-      var pre = sessionStorage.getItem("shel-filters");
-      if (pre) {
-        pre.split("&").forEach(function (kv) {
-          var p = kv.split("="), el = filters.querySelector("[name=" + p[0] + "]");
-          if (el) el.value = decodeURIComponent(p[1]);
-        });
-        sessionStorage.removeItem("shel-filters");
-      }
-    } catch (err) {}
-    function apply() {
-      var f = new FormData(filters);
-      var type = f.get("type"), min = +f.get("min") || 0, max = +f.get("max") || Infinity, beds = +(f.get("beds") || 0);
-      var deed = f.get("deed"), pool = f.get("pool"), sea = f.get("seaview"), novat = f.get("novat");
-      var shown = 0;
-      cards.forEach(function (c) {
-        var d = c.dataset, ok = true;
-        if (type && d.kind !== type) ok = false;
-        if (+d.price < min || +d.price > max) ok = false;
-        if (beds && (d.beds === "" || +d.beds < beds)) ok = false;
-        if (deed && d.deed !== "issued") ok = false;
-        if (pool && d.features.indexOf("pool") === -1) ok = false;
-        if (sea && d.features.indexOf("sea view") === -1) ok = false;
-        if (novat && d.vat === "1") ok = false;
-        if (f.get("vat5") && d.vat5 !== "1") ok = false;
-        c.hidden = !ok; if (ok) shown++;
-        var pin = document.querySelector('.pin[data-ref="' + d.ref + '"]');
-        if (pin) { if (ok) pin.removeAttribute("hidden"); else pin.setAttribute("hidden", ""); }
+    var per = +(grid.dataset.perPage || 12), page = 1;
+    var countEl = document.getElementById("result-count"), empty = document.getElementById("empty"), pager = document.querySelector(".pager");
+    queryToForm(filters, location.search);
+    var more = filters.querySelector(".fx-more"), adv = document.getElementById("fx-adv");
+    if (more && location.hash === "#fx-adv") { document.getElementById("fx-adv").hidden = false; more.setAttribute("aria-expanded", "true"); }
+    if (more) {
+      more.addEventListener("click", function () { adv.hidden = !adv.hidden; more.setAttribute("aria-expanded", adv.hidden ? "false" : "true"); });
+      if (adv.querySelector("select option:checked:not([value=''])") || adv.querySelector("input:checked")) { adv.hidden = false; more.setAttribute("aria-expanded", "true"); }
+    }
+    function all(name) { return Array.prototype.map.call(filters.querySelectorAll('[name="' + name + '"]:checked'), function (c) { return c.value; }); }
+    function num(name) { var v = filters.querySelector('[name="' + name + '"]'); return v && v.value !== "" ? +v.value : null; }
+    function between(x, lo, hi) { if (lo === null && hi === null) return true; if (x === "" || x === undefined) return false; x = +x; return (lo === null || x >= lo) && (hi === null || x <= hi); }
+    var visible = [];
+    function apply(keepPage) {
+      var type = filters.querySelector("[name=type]").value, ref = (filters.querySelector("[name=ref]").value || "").trim().toLowerCase();
+      var locs = all("loc"), cond = all("cond"), zone = all("zone"), furn = all("furn");
+      var subs = all("subh").concat(all("subl")), suba = filters.querySelector("[name=suba]").value;
+      var deed = all("deed").length, pool = all("pool").length, sea = all("seaview").length, novat = all("novat").length;
+      visible = cards.filter(function (c) {
+        var d = c.dataset;
+        if (type && d.type !== type) return false;
+        if (ref && d.ref.toLowerCase().indexOf(ref) === -1) return false;
+        if (locs.length && locs.indexOf(d.loc) === -1) return false;
+        if (!between(d.beds, num("bmin"), num("bmax"))) return false;
+        if (!between(d.price, num("pmin"), num("pmax"))) return false;
+        if (!between(d.year, num("ymin"), num("ymax"))) return false;
+        if (!between(d.covered, num("cmin"), num("cmax"))) return false;
+        if (!between(d.plot, num("lmin"), num("lmax"))) return false;
+        if (cond.length && cond.indexOf(d.cond) === -1) return false;
+        if (zone.length && zone.indexOf(d.zone) === -1) return false;
+        if (furn.length && furn.indexOf(d.furn) === -1) return false;
+        if (subs.length && subs.indexOf(d.sub) === -1) return false;
+        if (suba && d.sub !== suba) return false;
+        if (deed && d.deed !== "issued") return false;
+        if (pool && d.features.indexOf("pool") === -1) return false;
+        if (sea && d.features.indexOf("sea view") === -1) return false;
+        if (novat && d.vat === "1") return false;
+        return true;
       });
-      if (countEl) countEl.textContent = shown + " " + (shown === 1 ? (countEl.dataset.one || "property") : (countEl.dataset.many || "properties"));
-      if (empty) empty.hidden = shown !== 0;
+      if (!keepPage) page = 1;
+      render();
+      var q = formToQuery(filters, "cat");
+      try { history.replaceState(null, "", location.pathname + (q ? "?" + q : "")); } catch (err) {}
+      var refs = {}; visible.forEach(function (c) { refs[c.dataset.ref] = 1; });
+      document.querySelectorAll(".lmap-pin [data-ref], .pin[data-ref]").forEach(function (p) { var el = p.closest(".lmap-pin") || p; el.style.display = refs[p.dataset.ref] ? "" : "none"; });
+    }
+    function render() {
+      var pages = Math.max(1, Math.ceil(visible.length / per));
+      if (page > pages) page = pages;
+      cards.forEach(function (c) { c.hidden = true; });
+      visible.slice((page - 1) * per, page * per).forEach(function (c) { c.hidden = false; });
+      if (countEl) countEl.textContent = visible.length + " " + (visible.length === 1 ? countEl.dataset.one : countEl.dataset.many);
+      if (empty) empty.hidden = visible.length !== 0;
+      if (!pager) return;
+      pager.hidden = pages < 2; pager.innerHTML = "";
+      function add(label, p, cur, aria) {
+        var b = document.createElement("button"); b.type = "button"; b.textContent = label; if (aria) b.setAttribute("aria-label", aria);
+        if (cur) b.setAttribute("aria-current", "page"); if (p === null) b.disabled = true;
+        b.addEventListener("click", function () { page = p; render(); window.scrollTo({ top: document.querySelector(".fx-bar").offsetTop - 90, behavior: "smooth" }); });
+        pager.appendChild(b);
+      }
+      add("‹", page > 1 ? page - 1 : null, false, "Previous page");
+      for (var i = 1; i <= pages; i++) {
+        if (i === 1 || i === pages || Math.abs(i - page) <= 1) add(String(i), i, i === page);
+        else if (Math.abs(i - page) === 2) { var s = document.createElement("span"); s.textContent = "…"; pager.appendChild(s); }
+      }
+      add("›", page < pages ? page + 1 : null, false, "Next page");
     }
     function sort() {
       var how = document.getElementById("sort").value;
       cards.sort(function (a, b) {
         if (how === "low") return a.dataset.price - b.dataset.price;
         if (how === "high") return b.dataset.price - a.dataset.price;
-        if (how === "sea") return (+a.dataset.sea || 99) - (+b.dataset.sea || 99);
+        if (how === "old") return a.dataset.added.localeCompare(b.dataset.added);
         return b.dataset.added.localeCompare(a.dataset.added);
       });
       cards.forEach(function (c) { grid.appendChild(c); });
+      apply(true);
     }
-    filters.addEventListener("change", apply);
-    filters.addEventListener("input", apply);
-    filters.addEventListener("reset", function () { setTimeout(apply, 0); });
+    filters.addEventListener("change", function (e) {
+      if (e.target.name === "cat") {
+        var q = formToQuery(filters, "cat");
+        window.location.href = filters.dataset.root + CAT_PAGE[e.target.value] + (q ? "?" + q : "");
+        return;
+      }
+      apply();
+    });
+    filters.querySelector("[name=ref]").addEventListener("input", function () { apply(); });
+    filters.addEventListener("reset", function () {
+      setTimeout(function () { filters.querySelector("[name=cat]").value = scope; filters.querySelectorAll(".msel").forEach(function (m) { m._label(); }); apply(); }, 0);
+    });
     filters.addEventListener("submit", function (e) { e.preventDefault(); apply(); });
     var sortEl = document.getElementById("sort");
     if (sortEl) sortEl.addEventListener("change", sort);
     apply();
-    /* card <-> pin */
-    cards.forEach(function (c) {
-      var pin = document.querySelector('.pin[data-ref="' + c.dataset.ref + '"]');
-      if (!pin) return;
-      c.addEventListener("mouseenter", function () { pin.classList.add("active"); pin.parentNode.appendChild(pin); });
-      c.addEventListener("mouseleave", function () { pin.classList.remove("active"); });
+    var mt = document.getElementById("map-toggle"), mp = document.getElementById("map-panel");
+    if (mt && mp) mt.addEventListener("click", function () {
+      mp.hidden = !mp.hidden; mt.setAttribute("aria-expanded", mp.hidden ? "false" : "true");
+      mt.lastChild.textContent = mp.hidden ? " Show map" : " Hide map";
+      var lm = mp.querySelector(".lmap"); if (lm && lm._map) setTimeout(function () { lm._map.invalidateSize(); if (lm._fit) lm._fit(); }, 50);
     });
   }
+
+  /* photo slider on property pages */
+  document.querySelectorAll(".slider").forEach(function (sl) {
+    var track = sl.querySelector(".slides"), n = sl.querySelector(".sl-n"), thumbs = sl.querySelectorAll(".thumbs button");
+    if (!track) return;
+    var count = track.children.length;
+    function idx() { return Math.round(Math.abs(track.scrollLeft) / track.clientWidth); }
+    function go(i) { i = (i + count) % count; track.scrollTo({ left: (document.dir === "rtl" ? -1 : 1) * i * track.clientWidth, behavior: "smooth" }); }
+    function mark() { var i = idx(); if (n) n.textContent = i + 1; thumbs.forEach(function (t, k) { t.setAttribute("aria-current", k === i ? "true" : "false"); }); }
+    var p = sl.querySelector(".sl-prev"), q = sl.querySelector(".sl-next");
+    if (p) p.addEventListener("click", function () { go(idx() - 1); });
+    if (q) q.addEventListener("click", function () { go(idx() + 1); });
+    thumbs.forEach(function (t) { t.addEventListener("click", function () { go(+t.dataset.i); }); });
+    track.addEventListener("scroll", function () { clearTimeout(track._t); track._t = setTimeout(mark, 80); });
+    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") go(idx() + 1); if (e.key === "ArrowLeft") go(idx() - 1); });
+    mark();
+  });
+  document.querySelectorAll("[data-print]").forEach(function (b) { b.addEventListener("click", function () { window.print(); }); });
 
   /* reveal notes */
   document.querySelectorAll("[data-reveal]").forEach(function (b) {
@@ -291,13 +387,14 @@
         if (d.circle) {
           L.circle([p.lat, p.lng], { radius: 700, color: "#0E4470", weight: 2, fillColor: "#24ADA9", fillOpacity: .18 }).addTo(map);
         } else {
-          var icon = L.divIcon({ className: "lmap-pin", html: "<span>" + p.label + "</span>", iconSize: null });
+          var icon = L.divIcon({ className: "lmap-pin", html: '<span data-ref="' + (p.ref || "") + '">' + p.label + "</span>", iconSize: null });
           L.marker([p.lat, p.lng], { icon: icon, title: p.title }).addTo(map)
             .bindPopup('<a href="' + p.href + '"><strong>' + p.title + "</strong></a><br>" + p.area + " · " + p.label);
         }
       });
-      if (pts.length === 1) map.setView(pts[0], d.circle ? 13 : 14);
-      else map.fitBounds(pts, { padding: [40, 40] });
+      el._map = map;
+      el._fit = function () { if (pts.length === 1) map.setView(pts[0], d.circle ? 13 : 14); else map.fitBounds(pts, { padding: [40, 40] }); };
+      el._fit();
       el.classList.add("is-live");
     });
   };

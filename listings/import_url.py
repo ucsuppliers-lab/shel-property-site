@@ -15,6 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 import data as D  # site areas
+import taxonomy as TX
 
 UA = {"User-Agent": "Mozilla/5.0 (compatible; ShelPropertyImporter/1.0; +https://shelproperty.com)",
       "Accept-Language": "en-GB,en;q=0.8"}
@@ -163,7 +164,21 @@ def extract(url, html):
         u = urllib.parse.urljoin(url, u)
         key = re.sub(r"[-_]?\d{2,4}x\d{2,4}", "", u.split("?")[0])
         if key not in seen: seen.add(key); photos.append(u)
-    return dict(title=title, description=desc, price=price, bedrooms=beds, bathrooms=baths, covered_m2=covered, plot_m2=plot_m2,
+    loc = TX.find_locality(head) or TX.find_locality(low[:4000])
+    if loc and not area: area = TX.HUB_OF.get(loc)
+    ptype, psub = TX.type_and_sub(kind) if kind else (None, None)
+    cond = next((c for c in ["Off plan", "Under construction", "Key ready", "Completed", "Resale", "Incomplete"]
+                 if re.search(r"\b" + c.lower().replace(" ", "[ -]") + r"\b", low[:5000])), None)
+    furn = next((f for f, pat in [("Fully furnished", r"fully furnished"), ("Partially furnished", r"partially furnished"),
+                                  ("Optional furnished", r"optional(ly)? furnished"), ("Unfurnished", r"unfurnished")] if re.search(pat, low)), None)
+    def dist(word):
+        m = re.search(r"(?:distance to |from (?:the )?)" + word + r"[^0-9]{0,12}(\d+(?:[.,]\d+)?)\s*(km|m)\b", low)
+        return (num(m.group(1)) / (1000 if m.group(2) == "m" else 1)) if m else None
+    sea = sea or dist("sea")
+    extra = dict(locality=loc, subtype=psub, condition=cond, furnished=furn, distance_to_airport_km=dist("airport"),
+                 distance_to_schools_km=dist("schools?"), distance_to_amenities_km=dist("amenities"))
+    if ptype: kind = ptype
+    return dict(**extra, title=title, description=desc, price=price, bedrooms=beds, bathrooms=baths, covered_m2=covered, plot_m2=plot_m2,
                 energy_class=energy, title_deed=deed, distance_to_sea_km=sea, year_built=year, area=area, type=kind,
                 purpose=purpose, plus_vat=bool(re.search(r"(?:€\s?[\d.,]{4,}|[\d.,]{4,}\s?€)\s*(?:\+|plus)\s?vat", low) or re.search(r"\+ ?vat|plus vat", head)), latitude=lat, longitude=lng,
                 features="|".join(feats)), photos

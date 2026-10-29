@@ -1,0 +1,31 @@
+name: Import property from a link
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: "Sent by the website editor"
+        required: false
+      url:
+        description: "Page to import (when run by hand)"
+        required: false
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -r requirements.txt beautifulsoup4==4.12.3
+      - name: Read the page and save a draft
+        env:
+          PAYLOAD: ${{ inputs.payload }}
+          URL: ${{ inputs.url }}
+        run: |
+          if [ -n "$URL" ]; then python3 listings/import_url.py "$URL"; else python3 listings/import_url.py; fi
+      - name: Save the draft in the editor
+        run: |
+          git config user.name "Shel website editor"
+          git config user.email "adam@shelproperty.com"
+          git add content
+          git commit -m "Draft property imported from a link [skip netlify]" || echo "Nothing new"
+          git push

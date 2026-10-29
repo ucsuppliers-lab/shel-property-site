@@ -1,0 +1,27 @@
+{
+  "published": false,
+  "ref": "web-890a7086",
+  "agent_id": "",
+  "title": "Plot, For Sale, Paphos, Pafos (center)",
+  "description": "By submitting this form, you consent to FOX Smart Estate Agency processing your personal data for the purpose of responding to your inquiry and providing information about relevant properties. Your data will be processed in accordance with our Privacy Policy.",
+  "price": 240000,
+  "covered_m2": 1361,
+  "title_deed": "issued",
+  "type": "Building plot",
+  "purpose": "to-rent",
+  "plus_vat": true,
+  "latitude": 34.700797,
+  "longitude": 32.590979,
+  "features": "",
+  "photos": [
+    "/content/photos/web-890a7086-1.jpg",
+    "/content/photos/web-890a7086-2.jpg",
+    "/content/photos/web-890a7086-3.jpg"
+  ],
+  "photo_caption": "",
+  "photo_rights_confirmed": false,
+  "date_listed": "2026-10-29",
+  "last_confirmed": "2026-10-29",
+  "source_url": "https://foxrealty.com.cy/property/53906",
+  "imported_on": "2026-10-29"
+}

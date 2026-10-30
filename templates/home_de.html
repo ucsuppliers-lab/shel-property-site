@@ -11,6 +11,9 @@
     <div class="hero-actions"><a class="btn btn-primary" href="{{ root }}for-sale/index.html" hreflang="en">Alle Angebote ansehen (Englisch)</a><a class="btn btn-white" href="{{ root }}de/ratgeber-kauf-aus-deutschland.html">Ratgeber: Kauf aus Deutschland</a></div>
   </div>
 </section>
+{% set S = {"search":"Immobilien suchen","cat":"Kategorie","all":"Alle Kaufangebote","resale":"Bestand","new":"Neubau","land":"Grundstücke","area":"Ort","find":"Suchen…","type":"Objektart","types":{"House":"Haus","Apartment":"Wohnung","Land":"Grundstück","Office":"Büro","Shop/Showroom":"Laden","Building":"Gebäude","Mixed use building":"Wohn- und Geschäftshaus","Warehouse/Factory":"Lager / Gewerbe","Project":"Projekt","Restaurant":"Restaurant"},"beds":"Schlafzimmer","pmin":"Preis (min)","pmax":"Preis (max)","ref":"Referenz","go":"Suchen","adv":"Erweiterte Filter","note":"Die Angebote selbst sind derzeit auf Englisch.","selected":"Ausgewählte Immobilien","latest":"Neu auf dem Markt","more":"Alle ansehen","locations":"Orte","empty":"Wir nehmen gerade die ersten Angebote lizenzierter Makler in Paphos auf."} %}
+{% include "_home_search.html" %}
+
 <section class="section" aria-labelledby="why">
   <div class="wrap">
     <div class="section-head"><div><h2 id="why">Was anders ist, wenn Sie aus Deutschland kaufen</h2></div></div>

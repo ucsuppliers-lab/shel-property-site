@@ -270,7 +270,7 @@ def load_news():
                         "html": Markup(markdown.markdown(body.strip()))})
     return sorted(out, key=lambda n: n["date"], reverse=True)
 NEWS = load_news()
-env.globals.update(NEWS=NEWS)
+env.globals.update(NEWS=NEWS, LIST_BY_DATE=LIST_BY_DATE)
 
 def card_html(l, root):
     return env.get_template("_card.html").render(l=l, root=root)

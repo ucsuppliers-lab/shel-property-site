@@ -250,19 +250,26 @@
   refreshSaved();
 
 
+  /* mobile menu */
+  var burger = document.querySelector(".burger"), mainNav = document.getElementById("main-nav");
+  if (burger && mainNav) burger.addEventListener("click", function () {
+    var open = !mainNav.classList.contains("is-open");
+    mainNav.classList.toggle("is-open", open); burger.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
   /* Sale drop-down in the main menu */
   document.querySelectorAll(".nav-drop").forEach(function (drop) {
     var btn = drop.querySelector(".nav-drop-btn"), menu = drop.querySelector(".nav-drop-menu");
     var setOpen = function (open) {
       btn.setAttribute("aria-expanded", open ? "true" : "false"); menu.hidden = !open;
-      if (open) { var r = btn.getBoundingClientRect(); document.documentElement.style.setProperty("--drop-top", (r.bottom + 6) + "px"); }
+
     };
     var hover = window.matchMedia && window.matchMedia("(hover: hover) and (min-width: 901px)").matches;
     /* With a mouse the menu is already open from hovering, so a click keeps it open; the keyboard toggles it */
     btn.addEventListener("click", function (e) { e.stopPropagation(); setOpen(hover && e.detail > 0 ? true : menu.hidden); });
-    document.addEventListener("click", function (e) { if (!drop.contains(e.target)) setOpen(false); });
+    document.addEventListener("click", function (e) { if (hover && !drop.contains(e.target)) setOpen(false); });
     drop.addEventListener("keydown", function (e) { if (e.key === "Escape") { setOpen(false); btn.focus(); } });
-    drop.addEventListener("focusout", function (e) { if (!drop.contains(e.relatedTarget)) setOpen(false); });
+    drop.addEventListener("focusout", function (e) { if (hover && !drop.contains(e.relatedTarget)) setOpen(false); });
     if (hover) {
       var t;
       drop.addEventListener("mouseenter", function () { clearTimeout(t); setOpen(true); });

@@ -1,0 +1,40 @@
+{# Home search bar and listing sections shared by the English, German and Hebrew home pages. S = labels in the page language. #}
+<section class="search-band home-search" aria-label="{{ S.search }}">
+  <div class="wrap">
+    <form class="fx-bar-search" id="hero-search" role="search" aria-label="{{ S.search }}" data-root="{{ root }}">
+      <select name="cat" aria-label="{{ S.cat }}"><option value="for-sale">{{ S.all }}</option><option value="resale">{{ S.resale }}</option><option value="new-build">{{ S.new }}</option><option value="land">{{ S.land }}</option></select>
+      <div class="msel" data-name="loc">
+        <button type="button" class="msel-btn" aria-expanded="false" aria-label="{{ S.area }}"><span class="msel-val" data-any="{{ S.area }}">{{ S.area }}</span>{{ icons.chev }}</button>
+        <div class="msel-panel" hidden><input type="search" class="msel-find" placeholder="{{ S.find }}" aria-label="{{ S.find }}"><div class="msel-list" dir="ltr">{% for v in LOCALITIES %}<label><input type="checkbox" name="loc" value="{{ v }}"> {{ v }}</label>{% endfor %}</div></div>
+      </div>
+      <select name="type" aria-label="{{ S.type }}"><option value="">{{ S.type }}</option>{% for v in TYPES %}<option value="{{ v }}">{{ S.types.get(v, v) }}</option>{% endfor %}</select>
+      <select name="bmin" aria-label="{{ S.beds }}"><option value="">{{ S.beds }}</option><option value="0">Studio</option>{% for v in range(1,10) %}<option value="{{ v }}">{{ v }}+</option>{% endfor %}</select>
+      <select name="pmin" aria-label="{{ S.pmin }}"><option value="">{{ S.pmin }}</option>{% for v in PRICES %}<option value="{{ v }}">€{{ "{:,}".format(v) }}</option>{% endfor %}</select>
+      <select name="pmax" aria-label="{{ S.pmax }}"><option value="">{{ S.pmax }}</option>{% for v in PRICES %}<option value="{{ v }}">€{{ "{:,}".format(v) }}</option>{% endfor %}</select>
+      <input name="ref" type="text" placeholder="{{ S.ref }}" aria-label="{{ S.ref }}" autocomplete="off" dir="ltr">
+      <button class="btn btn-primary fx-go" type="submit" aria-label="{{ S.go }}">{{ icons.search }}<span>{{ S.go }}</span></button>
+    </form>
+    <a class="fx-adv-link" href="{{ root }}for-sale/index.html#fx-adv">{{ S.adv }} {{ icons.chev }}</a>
+    {% if S.note %}<p class="fx-lang-note">{{ S.note }}</p>{% endif %}
+  </div>
+</section>
+{% set featured = LIST_BY_DATE|selectattr('featured')|list %}
+{% if featured %}<section class="section" aria-labelledby="selected">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="selected">{{ S.selected }}</h2></div><a href="{{ root }}for-sale/index.html">{{ S.more }}</a></div>
+    <div class="grid grid-3" dir="ltr">{% for l in featured[:6] %}{% include "_card.html" %}{% endfor %}</div>
+  </div>
+</section>{% endif %}
+<section class="section" aria-labelledby="latest">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="latest">{{ S.latest }}</h2></div><a href="{{ root }}for-sale/index.html">{{ S.more }}</a></div>
+    {% if LIST_BY_DATE %}<div class="grid grid-3" dir="ltr">{% for l in LIST_BY_DATE[:6] %}{% include "_card.html" %}{% endfor %}</div>
+    {% else %}<p class="empty">{{ S.empty }}</p>{% endif %}
+  </div>
+</section>
+<section class="section band-sand" aria-labelledby="areas">
+  <div class="wrap">
+    <div class="section-head"><div><h2 id="areas">{{ S.locations }}</h2></div></div>
+    <div class="tiles loc-tiles" dir="ltr">{% for k, a in D.AREAS.items() %}<a class="tile" href="{{ root }}for-sale/{{ k }}.html"><strong>{{ a.name }}</strong></a>{% endfor %}</div>
+  </div>
+</section>

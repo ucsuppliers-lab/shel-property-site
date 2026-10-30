@@ -628,3 +628,39 @@ html[lang="he"] .eyebrow { letter-spacing: .08em; }
   body { background: #fff; }
 }
 @media (max-width: 900px) { .header-tools .btn-fav { display: inline-flex; padding: 8px 10px; } }
+
+/* mobile menu (hamburger), as on large portals */
+.burger { display: none; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; cursor: pointer; flex-direction: column; justify-content: center; align-items: center; gap: 5px; order: 2; }
+.burger span { display: block; width: 20px; height: 2px; background: var(--ink); transition: transform .2s, opacity .2s; }
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+@media (max-width: 900px) {
+  .burger { display: inline-flex; }
+  .site-header .wrap { flex-wrap: wrap; }
+  .header-tools { order: 1; margin-inline-start: auto; }
+  .nav { display: none; order: 3; flex-basis: 100%; flex-direction: column; overflow: visible; gap: 0; padding: 6px 0 10px; border-top: 1px solid var(--line); max-height: calc(100vh - 140px); overflow-y: auto; }
+  .nav.is-open { display: flex; }
+  .nav > a, .nav-drop { padding: 4px 0; border-bottom: 1px solid var(--line); }
+  .nav > a { padding: 12px 0; font-size: 17px; }
+  .nav-drop { flex-wrap: wrap; justify-content: space-between; align-items: center; }
+  .nav-drop-link { font-size: 17px; padding: 8px 0; }
+  .nav-drop-btn { min-width: 44px; height: 44px; }
+  .nav-drop-menu { position: static; flex-basis: 100%; box-shadow: none; border: 0; padding: 0 0 8px; min-width: 0; background: var(--foam); }
+  .nav .nav-drop-menu a { padding: 10px 14px; }
+}
+.fx-lang-note { color: var(--mist); font-size: 13px; margin-top: 6px; }
+[dir="rtl"] .grid[dir="ltr"] .save { left: auto; right: 8px; }
+@media (max-width: 900px) {
+  .brand { order: 0; }
+  .burger { order: 2; }
+  .header-tools { order: 1; margin-inline-start: auto; }
+  .nav { order: 3; }
+}
+@media (max-width: 900px) {
+  .site-header .wrap { gap: 8px; flex-wrap: wrap; }
+  .header-tools { gap: 6px; }
+  .langs a { padding-inline: 8px; min-width: 34px; }
+  .btn-fav { width: 42px; padding: 0; justify-content: center; }
+}
+@media (max-width: 420px) { .brand-name .brand-prop { display: none; } .brand svg { width: 36px; height: 36px; } }

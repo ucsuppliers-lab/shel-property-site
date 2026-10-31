@@ -1,0 +1,10 @@
+{% extends "_info.html" %}
+{% block title %}Thank you | Shel Property{% endblock %}
+{% block description %}Your message has reached the Shel Property team.{% endblock %}
+{% block crumb %}Thank you{% endblock %}
+{% block body %}
+<h1>Thank you</h1>
+<p>Your message has reached our team. If you asked about a home, we've passed your details to the licensed agent listing it, and one of us will follow up within one working day.</p>
+<p>If it's urgent, call us on <a href="tel:{{ D.CONTACT.phone_tel }}">{{ D.CONTACT.phone }}</a> or email <a href="mailto:{{ D.CONTACT.email }}">{{ D.CONTACT.email }}</a>.</p>
+<p><a class="btn btn-primary" href="{{ root }}for-sale/index.html">Back to the properties</a></p>
+{% endblock %}

@@ -11,6 +11,10 @@ import data as D
 import i18n as I18N
 from seal import wave_seal_g, icon_g
 import photos as PH
+SITE_URL = "https://shelproperty.com"
+LIVE = os.environ.get("SHEL_LIVE") == "1"
+# Enquiry forms send to Netlify Forms (then email to adam@) only when switched on. Off until the company details and privacy notice are final.
+FORMS_LIVE = os.environ.get("SHEL_FORMS") == "1"  # set only on the public site at launch: lets search engines in
 import taxonomy as TX
 from PIL import Image as _Im
 
@@ -176,10 +180,25 @@ env = Environment(loader=FileSystemLoader(os.path.join(HERE, "templates")), auto
 env.globals.update(T=I18N.T, L=I18N.L, deed_text=deed_text, nice_date=nice_date, photo_img=photo_img, HERO=('hero' in HAVE), seal=seal_svg, icons={k: Markup(v) for k, v in ICONS.items()}, scene=scene, price=price_html, deed_chip=deed_chip,
                    money=money, D=D, TYPES=TX.TYPES, SUBTYPES=TX.SUBTYPES, CONDITIONS=TX.CONDITIONS, ZONING=TX.ZONING, FURNISHED=TX.FURNISHED, PRICES=TX.PRICES, COVERED=TX.COVERED, PLOT=TX.PLOT, YEARS=TX.YEARS, LOCALITIES=TX.LOCALITIES, PAGES=PAGES, FAVICON=FAVICON, today=date(2026, 10, 23))
 
+SITEMAP = []
+def form_attrs(name, msg):
+    if FORMS_LIVE:
+        return Markup(f'name="{name}" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field"')
+    return Markup(f'data-draft="{msg}"')
+
+def form_hidden(name, ref=""):
+    if not FORMS_LIVE: return ""
+    r = f'<input type="hidden" name="listing_ref" value="{ref}">' if ref else ""
+    return Markup(f'<input type="hidden" name="form-name" value="{name}"><p hidden><label>Leave this empty <input name="bot-field"></label></p>{r}')
+
+def pretty_path(rel):
+    return "" if rel == "index.html" else (rel[:-10] if rel.endswith("/index.html") else rel)
 def write(rel, tpl, **ctx):
     depth = rel.count("/")
     root = "../" * depth
-    html = env.get_template(tpl).render(root=root, rel=rel, **ctx)
+    html = env.get_template(tpl).render(root=root, rel=rel, canonical=SITE_URL + "/" + pretty_path(rel), pretty=pretty_path, **ctx)
+    if not (ctx.get("l") or {}).get("draft"):
+        SITEMAP.append((rel, SITE_URL + "/" + pretty_path(rel), ctx.get("alt") or {}))
     html = re.sub(r"\n\s*\n+", "\n", html)
     path = os.path.join(OUT, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -270,7 +289,7 @@ def load_news():
                         "html": Markup(markdown.markdown(body.strip()))})
     return sorted(out, key=lambda n: n["date"], reverse=True)
 NEWS = load_news()
-env.globals.update(NEWS=NEWS, LIST_BY_DATE=LIST_BY_DATE)
+env.globals.update(form_attrs=form_attrs, form_hidden=form_hidden, SITE_URL=SITE_URL, LIVE=LIVE, FORMS_LIVE=FORMS_LIVE, NEWS=NEWS, LIST_BY_DATE=LIST_BY_DATE)
 
 def card_html(l, root):
     return env.get_template("_card.html").render(l=l, root=root)
@@ -340,9 +359,26 @@ def build():
         made.append(write(f"guides/{g['slug']}.html", f"guide_{g['slug'].replace('-', '_')}.html", g=g, nav=None))
     saved_data = [{"ref": l["ref"], "card": card_html(l, "")} for l in LIST_BY_DATE]
     made.append(write("saved.html", "saved.html", saved_json=Markup(json.dumps(saved_data).replace("</", "<\\/")), nav=None))
+    made.append(write("thanks.html", "thanks.html", nav=None))
     for page in ["about", "contact", "report", "privacy", "cookies", "terms"]:
         made.append(write(f"{page}.html", f"info_{page}.html", nav=None))
+    write_seo_files()
     return made
+
+NO_INDEX = ("saved.html", "agents/dashboard.html", "thanks.html")
+def write_seo_files():
+    """robots.txt and sitemap.xml. Until launch (SHEL_LIVE=1) robots.txt shuts search engines out."""
+    from xml.sax.saxutils import escape
+    langs = {"en": "en-GB", "de": "de", "he": "he"}
+    rows = []
+    for rel, url, alt in SITEMAP:
+        if rel in NO_INDEX or "/_draft" in rel: continue
+        links = "".join(f'<xhtml:link rel="alternate" hreflang="{langs[c]}" href="{escape(SITE_URL + "/" + pretty_path(p))}"/>' for c, p in alt.items())
+        rows.append(f"<url><loc>{escape(url)}</loc>{links}</url>")
+    open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n")
+    robots = (f"User-agent: *\nDisallow: /saved.html\nDisallow: /agents/dashboard.html\n\nSitemap: {SITE_URL}/sitemap.xml\n" if LIVE
+              else "# Not live yet: search engines kept out until launch\nUser-agent: *\nDisallow: /\n")
+    open(os.path.join(OUT, "robots.txt"), "w").write(robots)
 
 if __name__ == "__main__":
     made = build()

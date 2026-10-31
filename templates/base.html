@@ -4,11 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{% block title %}{% endblock %}</title>
-<meta name="description" content="{% block description %}{% endblock %}">
-<meta name="robots" content="noindex, nofollow">
+{% set page_title %}{{ self.title() }}{% endset %}{% set page_desc %}{{ self.description()|trim }}{% endset %}
+<meta name="description" content="{{ page_desc }}">
+<meta name="robots" content="{{ 'index, follow' if LIVE and rel not in ('saved.html', 'agents/dashboard.html') and not (l is defined and l.draft) else 'noindex, nofollow' }}">
+<link rel="canonical" href="{{ canonical }}">
 <link rel="icon" href="{{ FAVICON }}">
-{% for code, path in alt.items() %}<link rel="alternate" hreflang="{{ T[code].html_lang }}" href="{{ root }}{{ path }}">
-{% endfor %}
+{% for code, path in alt.items() %}<link rel="alternate" hreflang="{{ T[code].html_lang }}" href="{{ SITE_URL }}/{{ pretty(path) }}">
+{% endfor %}{% if alt.get('en') %}<link rel="alternate" hreflang="x-default" href="{{ SITE_URL }}/{{ pretty(alt['en']) }}">
+{% endif %}<meta property="og:site_name" content="Shel Property">
+<meta property="og:type" content="{{ 'product' if l is defined else 'website' }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_desc }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:locale" content="{{ {'en':'en_GB','de':'de_DE','he':'he_IL'}[lang] }}">
+{% set og_img = ('img/' ~ l.photos[0] ~ '-l.jpg') if (l is defined and l.photos) else ('img/hero-l.jpg' if HERO else '') %}{% if og_img %}<meta property="og:image" content="{{ SITE_URL }}/{{ og_img }}">
+<meta name="twitter:card" content="summary_large_image">{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800{% if lang == 'he' %}&family=Assistant:wght@400;600;700;800&family=Frank+Ruhl+Libre:wght@500;700{% endif %}&display=swap">
@@ -19,7 +29,7 @@
 <a class="skip" href="#main">{{ t.skip }}</a>
 <div class="draft" role="note">{{ t.draft|safe }}</div>
 <div class="topbar"><div class="wrap">
-  <div class="topbar-l"><a href="tel:{{ D.CONTACT.phone_tel }}" dir="ltr">{{ icons.phone }}<span>{{ D.CONTACT.phone }}</span></a><a href="mailto:{{ D.CONTACT.email }}">{{ icons.mail }}<span>{{ D.CONTACT.email }}</span></a></div>
+  <div class="topbar-l"><a href="tel:{{ D.CONTACT.phone_tel }}" dir="ltr">{{ icons.phone }}<span>{{ D.CONTACT.phone }}</span></a><a href="mailto:{{ D.CONTACT.email }}" aria-label="{{ D.CONTACT.email }}">{{ icons.mail }}<span>{{ D.CONTACT.email }}</span></a></div>
   <div class="topbar-r"><a href="https://www.facebook.com/profile.php?id=61595975607076" rel="noopener" target="_blank" aria-label="Shel Property on Facebook">{{ icons.fb }}</a></div>
 </div></div>
 <header class="site-header">
@@ -68,7 +78,7 @@
       <a href="{{ root }}contact.html"{% if nav == 'contact' %} aria-current="page"{% endif %}>{{ t.f_contact }}</a>
     </nav>
     <div class="header-tools">
-      <a class="btn btn-fav" href="{{ root }}saved.html">{{ icons.heart }}<span>{{ {"en":"Favourites","de":"Favoriten","he":"מועדפים"}[lang] }}</span><span class="count" data-saved-count hidden>0</span></a>
+      <a class="btn btn-fav" href="{{ root }}saved.html" aria-label="{{ {"en":"Favourites","de":"Favoriten","he":"מועדפים"}[lang] }}">{{ icons.heart }}<span>{{ {"en":"Favourites","de":"Favoriten","he":"מועדפים"}[lang] }}</span><span class="count" data-saved-count hidden>0</span></a>
       <nav class="langs" aria-label="{{ t.lang_label }}">
         {% for code in ['en', 'de', 'he'] %}
         {% set target = alt.get(code) or ('index.html' if code == 'en' else code ~ '/index.html') %}

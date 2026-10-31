@@ -6,7 +6,7 @@
   <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Buying in Cyprus</span></nav>
   <div class="results-head"><div><h1>Buying in Cyprus</h1><p>The three things buyers ask about first.</p></div></div>
   <div class="guides" style="padding-bottom:56px">
-    {% for g in D.GUIDES %}<a class="guide-card" href="{{ root }}guides/{{ g.slug }}.html"><h3>{{ g.title }}</h3><p>{{ g.lead }}</p></a>{% endfor %}
+    {% for g in D.GUIDES %}<a class="guide-card" href="{{ root }}guides/{{ g.slug }}.html"><h2 class="card-h">{{ g.title }}</h2><p>{{ g.lead }}</p></a>{% endfor %}
   </div>
 </div>
 {% endblock %}

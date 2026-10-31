@@ -46,7 +46,7 @@
     </div>
     <aside class="lx-contact" aria-labelledby="lx-c">
       <h2 id="lx-c">Contact us</h2>
-      <form class="lx-form" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate>
+      <form class="lx-form" {{ form_attrs('listing-enquiry', 'Thanks. This is a draft site, so nothing was sent.') }} novalidate>{{ form_hidden('listing-enquiry', l.ref) }}
         <input name="name" placeholder="Full name" aria-label="Full name" autocomplete="name" required>
         <input name="email" type="email" placeholder="Email address" aria-label="Email address" autocomplete="email" required>
         <input name="phone" type="tel" placeholder="Phone number" aria-label="Phone number" autocomplete="tel">
@@ -181,7 +181,7 @@
 
       <section class="block" aria-labelledby="enquire">
         <h2 id="enquire">{{ lt.ask|replace('{a}', A.name)|replace('{k}', kind|lower) }}</h2>
-        <form class="enquiry" data-draft="{{ lt.sent }}" novalidate>
+        <form class="enquiry" {{ form_attrs('listing-viewing-request', lt.sent) }} novalidate>{{ form_hidden('listing-viewing-request', l.ref) }}
           <label class="field">{{ lt.name }}<input name="name" required autocomplete="name"></label>
           <label class="field">{{ lt.email }}<input name="email" type="email" required autocomplete="email"></label>
           <div class="field full">{{ lt.phone }}

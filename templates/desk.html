@@ -22,7 +22,7 @@
       </ol>
       <p class="callout">We don't negotiate for you or recommend one agent over another, and nobody pays us when a home sells. Your own lawyer acts for you in the purchase.</p>
     </div>
-    <form class="enquiry" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate aria-labelledby="ask">
+    <form class="enquiry" {{ form_attrs('buyer-desk', 'Thanks. This is a draft site, so nothing was sent.') }} novalidate aria-labelledby="ask">{{ form_hidden('buyer-desk') }}
       <h2 id="ask" class="full h3">Ask the buyer desk</h2>
       <label class="field">Your name<input name="name" required autocomplete="name"></label>
       <label class="field">Email<input name="email" type="email" required autocomplete="email"></label>
@@ -45,7 +45,7 @@
       <p class="band-lead">Save the homes you want to see, then tell us when you're flying. We send your dates to each agent, and each one books its own viewing with you. We put the confirmed times into one plan, area by area, so you're not crossing the district twice in a day.</p>
       <p>Paphos airport has flights from the UK all year, and in summer 2026 there were direct flights from Berlin, Cologne, Düsseldorf, Memmingen and Munich. Many flights from Israel land at Larnaca, about 90 minutes' drive away.</p>
     </div>
-    <form class="enquiry" data-draft="Thanks. This is a draft site, so no trip was requested." novalidate aria-label="Viewing trip">
+    <form class="enquiry" {{ form_attrs('viewing-trip', 'Thanks. This is a draft site, so no trip was requested.') }} novalidate aria-label="Viewing trip">{{ form_hidden('viewing-trip') }}
       <label class="field">Arriving<input name="from" type="date"></label>
       <label class="field">Leaving<input name="to" type="date"></label>
       <label class="field">Flying from<input name="airport" placeholder="e.g. Manchester"></label>

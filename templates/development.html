@@ -52,7 +52,7 @@
       <section class="block" aria-labelledby="where"><h2 id="where">Where it is</h2>{{ map_svg(units or [], root, 2.4) }}<p class="map-note" style="margin-top:8px">The pin shows the area, not the exact plot.</p></section>
       <section class="block" aria-labelledby="enquire">
         <h2 id="enquire">Ask {{ A.name }} about the project</h2>
-        <form class="enquiry" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate>
+        <form class="enquiry" {{ form_attrs('development-enquiry', 'Thanks. This is a draft site, so nothing was sent.') }} novalidate>{{ form_hidden('development-enquiry') }}
           <label class="field">Your name<input name="name" required autocomplete="name"></label>
           <label class="field">Email<input name="email" type="email" required autocomplete="email"></label>
           <label class="field">Your budget<select name="budget"><option value="">Choose</option><option>Up to €400,000</option><option>€400,000 to €600,000</option><option>Over €600,000</option></select></label>

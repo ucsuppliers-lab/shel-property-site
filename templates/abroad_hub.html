@@ -6,14 +6,14 @@
   <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ root }}index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Buying from abroad</span></nav>
   <div class="results-head"><div><h1>Buying in Paphos from abroad</h1><p>Start with the guide for where you're buying from. Each one is written in that language.</p></div></div>
   <div class="markets" style="padding-bottom:36px">
-    <a class="market" href="{{ root }}buying-from-abroad/from-the-uk.html"><span class="market-flag" aria-hidden="true">UK</span><h3>Buying from the UK</h3><p>Permit, residency after Brexit, VAT, costs and protecting your money. In English.</p><span class="market-go">Read the guide {{ icons.chev }}</span></a>
-    <a class="market" href="{{ root }}de/ratgeber-kauf-aus-deutschland.html" hreflang="de" lang="de"><span class="market-flag" aria-hidden="true">DE</span><h3>Kauf aus Deutschland</h3><p>Ohne Genehmigung, aber mit anderen Regeln: Anwalt statt Notar, Kaufnebenkosten, Steuern. Auf Deutsch.</p><span class="market-go">Zum Ratgeber {{ icons.chev }}</span></a>
-    <a class="market" href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he" lang="he" dir="rtl"><span class="market-flag" aria-hidden="true">IL</span><h3>קנייה מישראל</h3><p>היתר רכישה, מיסוי על שכירות, תשואה נטו ועורכי דין עצמאיים. בעברית.</p><span class="market-go">למדריך {{ icons.chev }}</span></a>
+    <a class="market" href="{{ root }}buying-from-abroad/from-the-uk.html"><span class="market-flag" aria-hidden="true">UK</span><h2 class="card-h">Buying from the UK</h2><p>Permit, residency after Brexit, VAT, costs and protecting your money. In English.</p><span class="market-go">Read the guide {{ icons.chev }}</span></a>
+    <a class="market" href="{{ root }}de/ratgeber-kauf-aus-deutschland.html" hreflang="de" lang="de"><span class="market-flag" aria-hidden="true">DE</span><h2 class="card-h">Kauf aus Deutschland</h2><p>Ohne Genehmigung, aber mit anderen Regeln: Anwalt statt Notar, Kaufnebenkosten, Steuern. Auf Deutsch.</p><span class="market-go">Zum Ratgeber {{ icons.chev }}</span></a>
+    <a class="market" href="{{ root }}he/madrich-kniya-mi-israel.html" hreflang="he" lang="he" dir="rtl"><span class="market-flag" aria-hidden="true">IL</span><h2 class="card-h">קנייה מישראל</h2><p>היתר רכישה, מיסוי על שכירות, תשואה נטו ועורכי דין עצמאיים. בעברית.</p><span class="market-go">למדריך {{ icons.chev }}</span></a>
   </div>
   <div class="guides" style="padding-bottom:56px">
-    <a class="guide-card" href="{{ root }}buying-from-abroad/permit.html"><h3>Do I need a permit?</h3><p>Pick your citizenship and see what applies, plus the changes Parliament is discussing.</p></a>
-    <a class="guide-card" href="{{ root }}buying-from-abroad/costs.html"><h3>Buying costs calculator</h3><p>Transfer fees, VAT and legal fees on any price.</p></a>
-    {% for g in D.GUIDES %}<a class="guide-card" href="{{ root }}guides/{{ g.slug }}.html"><h3>{{ g.title }}</h3><p>{{ g.lead }}</p></a>{% endfor %}
+    <a class="guide-card" href="{{ root }}buying-from-abroad/permit.html"><h2 class="card-h">Do I need a permit?</h2><p>Pick your citizenship and see what applies, plus the changes Parliament is discussing.</p></a>
+    <a class="guide-card" href="{{ root }}buying-from-abroad/costs.html"><h2 class="card-h">Buying costs calculator</h2><p>Transfer fees, VAT and legal fees on any price.</p></a>
+    {% for g in D.GUIDES %}<a class="guide-card" href="{{ root }}guides/{{ g.slug }}.html"><h2 class="card-h">{{ g.title }}</h2><p>{{ g.lead }}</p></a>{% endfor %}
   </div>
 </div>
 {% endblock %}

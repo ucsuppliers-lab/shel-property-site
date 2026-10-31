@@ -9,7 +9,7 @@
     {% for k, a in D.AGENTS.items() %}
     {% set n = D.LISTINGS|selectattr('agent','equalto',k)|list|length %}
     <article class="agent-card">
-      <h3><a href="{{ root }}agents/{{ k }}.html">{{ a.name }}</a></h3>
+      <h2 class="card-h"><a href="{{ root }}agents/{{ k }}.html">{{ a.name }}</a></h2>
       <p>{{ a.office }} office · since {{ a.since }} · {{ n }} listing{{ 's' if n != 1 }}</p>
       <p>{{ a.about }}</p>
       <p class="agent-line">Reg. no. {{ a.reg }} · Licence no. {{ a.licence }}</p>

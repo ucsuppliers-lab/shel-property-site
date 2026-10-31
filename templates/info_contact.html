@@ -5,7 +5,7 @@
 {% block body %}
 <h1>Contact us</h1>
 <p>Our team works from London and Paphos, in English and Hebrew. For a question about a home, use the enquiry form on its listing: it goes straight to the agent. For anything else, write to us here.</p>
-<form class="enquiry" data-draft="Thanks. This is a draft site, so nothing was sent." novalidate>
+<form class="enquiry" {{ form_attrs('contact', 'Thanks. This is a draft site, so nothing was sent.') }} novalidate>{{ form_hidden('contact') }}
   <label class="field">Your name<input name="name" required autocomplete="name"></label>
   <label class="field">Email<input name="email" type="email" required autocomplete="email"></label>
   <label class="field full">About<select name="topic"><option>I'm an agent or developer</option><option>A listing I've seen</option><option>Something else</option></select></label>
